@@ -1,0 +1,184 @@
+{
+    "author": "utom & Jebbs",
+    "commands" : [
+        {
+            "name": "Toolbar",
+            "identifier": "commandToolbar",
+            "shortcut": "ctrl shift b",
+            "handler" : "commandToolbar",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Toolbar 2.0 (beta)",
+            "identifier": "commandToolbar2",
+            "shortcut": "ctrl shift x",
+            "handler" : "commandToolbar2",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Mark Overlay",
+            "identifier": "commandOverlays",
+            "shortcut": "ctrl shift 1",
+            "handler" : "commandOverlays",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Mark Sizes",
+            "identifier": "commandSizes",
+            "shortcut": "ctrl shift 2",
+            "handler" : "commandSizes",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Mark Spacings",
+            "identifier": "commandSpacings",
+            "shortcut": "ctrl shift 3",
+            "handler" : "commandSpacings",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Mark Properties",
+            "identifier": "commandProperties",
+            "shortcut": "ctrl shift 4",
+            "handler" : "commandProperties",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Mark Note",
+            "identifier": "commandNote",
+            "shortcut": "ctrl shift 5",
+            "handler" : "commandNote",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Spec Export",
+            "identifier": "commandExport",
+            "shortcut": "ctrl shift e",
+            "handler" : "commandExport",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Toggle Hidden",
+            "identifier": "commandHidden",
+            "shortcut": "ctrl shift h",
+            "handler": "commandHidden",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Toggle Locked",
+            "identifier": "commandLocked",
+            "shortcut": "ctrl shift l",
+            "handler": "commandLocked",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Clear Marks",
+            "identifier": "commandClear",
+            "shortcut": "",
+            "handler": "commandClear",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Settings",
+            "identifier": "commandSettings",
+            "shortcut": "",
+            "handler": "commandSettings",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Color Names",
+            "identifier": "commandColor",
+            "shortcut": "ctrl shift c",
+            "handler": "commandColor",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Make Exportable",
+            "identifier": "commandExportable",
+            "shortcut": "ctrl shift s",
+            "handler": "commandExportable",
+            "script": "mark.bundle.js"
+        },
+        {
+            "name": "Documention",
+            "identifier": "linkHelp",
+            "handler": "linkHelp",
+            "script": "links.sketchscript"
+        },
+        {
+            "name": "Feedback",
+            "identifier": "linkFeedback",
+            "handler": "linkFeedback",
+            "script": "links.sketchscript"
+        },
+        {
+            "name": "Donate",
+            "identifier": "linkDonate",
+            "handler": "linkDonate",
+            "script": "links.sketchscript"
+        },
+        {
+            "name": "Design Sites",
+            "identifier": "linkNiudana",
+            "handler": "linkNiudana",
+            "script": "links.sketchscript"
+        },
+        {
+            "name": "Sketch.im",
+            "identifier": "linkSketchim",
+            "handler": "linkSketchim",
+            "script": "links.sketchscript"
+        },
+        {
+            "name": "Init",
+            "identifier": "commandInit",
+            "handlers": {
+                    "actions": {
+                        "OpenDocument": "commandInit"
+                    }
+                },
+            "script": "mark.bundle.js"
+        }
+    ],
+    "menu" : {
+        "isRoot" : false,
+        "shortcut" : "",
+        "items" : [
+            "commandToolbar",
+            "commandToolbar2",
+            "-",
+            "commandOverlays",
+            "commandSizes",
+            "commandSpacings",
+            "commandProperties",
+            "commandNote",
+            "-",
+            "commandExportable",
+            "commandColor",
+            "commandExport",
+            "-",
+            "commandHidden",
+            "commandLocked",
+            "commandClear",
+            "-",
+            "commandSettings",
+            "linkDonate",
+            {
+              "title": "Help",
+              "items": [
+                "linkHelp",
+                "linkFeedback",
+                "linkDonate"
+              ]
+            }
+        ],
+        "title" : "Sketch Measure"
+    },
+    "identifier": "co.jebbs.measure",
+    "appcast": "https://raw.githubusercontent.com/qjebbs/sketch-measure/master/appcast.xml",
+    "homepage": "http://utom.design/measure/",
+    "version": "2.9.1",
+    "description" : "Make it a fun to create spec for developers and teammates",
+    "authorEmail" : "qjebbs@gmail.com",
+    "name" : "Sketch Measure"
+}

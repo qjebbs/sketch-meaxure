@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Colors - Sketch Measure 2.0</title>
+
+    <link href="assets/css/normalize.css" rel="stylesheet">
+    <link href="assets/css/app.css" rel="stylesheet">
+    <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="assets/js/common.js"></script>
+    <script type="text/javascript">
+    <!--
+    var colorsData = {},
+        init = function(data) {
+        $(document).on({
+            dragleave:function(event){
+                event.preventDefault();
+            },
+            drop:function(event){
+                event.preventDefault();
+            },
+            dragenter:function(event){
+                event.preventDefault();
+            },
+            dragover:function(event){
+                event.preventDefault();
+            }
+        });
+
+        $('body').html([
+            '<div id="page" class="container">',
+                '<div id="color-list">',
+                    '<div class="empty">',
+                        '<h3>' + _('No colors added!') + '</h3>',
+                        '<p>' + _('You can select shape layer to add colors or import colors') + '</p>',
+                    '</div>',
+                '</div>',
+                '<div class="options-bar m0">',
+                    '<div class="button-settings" tabindex="0">',
+                        '<ul class="checkbutton">',
+                            '<li class="c-import">' + _('Import Colors from .json') + '</li>',
+                            '<li class="c-export">' + _('Export Colors to .json') + '</li>',
+                            '<li class="c-export-xml">' + _('Export Colors to .xml') + '</li>',
+                        '</ul>',
+                    '</div>',
+                    '<button class="button-add"></button>',
+                '</div>',
+            '</div>',
+            '<div id="message" class="message"></div>'
+            ].join(''));
+
+        if(data.length > 0){
+            $('#color-list').empty();
+        }
+
+        addColors(data, true);
+
+
+        // $('#color-list').on({
+        //     click: function(event){
+        //         if(!selectMultiple) $('.selected').removeClass('selected');
+        //         if($(this).hasClass('selected')){
+        //             $(this).removeClass('selected');
+        //         }
+        //         else{
+        //             $(this).addClass('selected');
+        //         }
+        //         event.stopPropagation();
+        //     }
+        // }, '.color-item');
+        $('#color-list').on({
+            dblclick: function(){
+                $(this).addClass('edit');
+                $(this).find('.color-name-edit input').select();
+            }
+        }, '.color-item');
+        $('#color-list').on({
+            click: function(){
+                var colorID = $(this).attr('color-id');
+                delete colorsData[colorID];
+                $(this).parent().remove();
+                pullData();
+            }
+        }, '.remove');
+        $('#color-list').on({
+            blur: function(){
+                var text = $(this).val();
+                if(text){
+                    $(this).parent().parent().parent().removeClass('edit');
+                    $(this).parent().parent().find('.color-name').text(text);
+                }
+                pullData();
+            },
+            keypress: function(event){
+                var eventObj = event || e,
+                    keyCode = eventObj.keyCode || eventObj.which;
+
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122) || (keyCode >= 48 && keyCode <= 57) || keyCode == 95){
+                    return true;
+                }
+                else if(keyCode == 13){
+                    var text = $(this).val();
+                    $(this).blur();
+                    return false;
+                }
+                else{
+                    return false;
+                }
+            }
+        }, 'input');
+
+        $('.file-import,.c-import').click(function(){
+            SMAction('import');
+            $('.button-settings').blur();
+        });
+        $('.c-export').click(function(){
+            SMAction('export');
+            $('.button-settings').blur();
+        });
+        $('.c-export-xml').click(function(){
+            SMAction('export-xml');
+            $('.button-settings').blur();
+        });
+        $('.button-add').click(function(){
+            SMAction('add');
+        });
+
+        $('body').click(function(){
+            $('.selected').removeClass('selected');
+        })
+
+    },
+    pullData = function(){
+        var colorNames = [];
+        $('input[name=color-name]').each(function(){
+            var $this = $(this),
+                name = $this.val(),
+                color = JSON.parse(decodeURI($this.attr('data-colors')));
+            colorNames.push({
+                name: name,
+                color: color
+            });
+        });
+        SMAction('submit', colorNames);
+    },
+    addColors = function(data, option){
+        var colorsHTML = [],
+            already = false;
+        $.each(data, function(index, color){
+            var colorID = color.color['argb-hex'],
+                classEdit = (!color.name)? ' edit': '';
+            if(!colorsData[colorID]){
+                colorsData[colorID] = true;
+                colorsHTML.push(
+                   '<div class="color-item' + classEdit + '">',
+                        '<div class="color"><em style="background: ' + color.color['css-rgba'] + ';"></em></div>',
+                        '<div class="color-text">',
+                            '<div class="color-name">' + color.name + '</div>',
+                            '<div class="color-name-edit"><input data-colors="' + encodeURI(JSON.stringify(color.color)) + '" type="text" name="color-name" value="' + color.name + '" placeholder="' + _('Set Name...') + '"></div>',
+                            '<div class="color-value">' + color.color['color-hex'] + '</div>',
+                        '</div>',
+                        '<div class="remove" color-id="' + color.color['argb-hex'] + '"></div>',
+                    '</div>'
+                    );
+            }
+            else{
+                already = true;
+            }
+        });
+
+        if(already){
+            // message(_('Some colors are already in this list.'));
+        }
+
+        if($('.empty').length > 0 && data.length > 0){
+            $('#color-list').empty();
+        }
+
+        $('#color-list').append(colorsHTML.join(''));
+        if(!option){
+            $('#color-list').scrollTop($('.color-item').length * 80);
+            pullData();
+        }
+
+    },
+    message = function(msg){
+        var $message = $('#message').text(msg);
+        $message.hide().fadeIn().delay( 1000 ).fadeOut('fast');
+    }
+
+    // $(function(){
+    //     init([{"name":"","color":{"r":255,"g":255,"b":255,"a":1,"color-hex":"#FFFFFF 100%","argb-hex":"#FFFFFFFF","css-rgba":"rgba(255,255,255,1)","ui-color":"(r:1.00 g:1.00 b:1.00 a:1.00)"}},{"name":"defaultBlue","color":{"r":15,"g":136,"b":224,"a":1,"color-hex":"#0F88E0 100%","argb-hex":"#FF0F88E0","css-rgba":"rgba(15,136,224,1)","ui-color":"(r:0.06 g:0.53 b:0.88 a:1.00)"}}]);
+    // });
+    -->
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

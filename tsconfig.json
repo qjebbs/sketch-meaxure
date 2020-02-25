@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "rootDir": "src",
+        "noEmitOnError": true,
+        "typeRoots": [
+            "node_modules/@types",
+            "src/@custom_types"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "src/@custom_types",
+    ]
+}
