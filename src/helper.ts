@@ -1,8 +1,10 @@
 import { logger } from "./logger";
 import { context } from "./context";
 
+let sketch = require('sketch');
+
 export function message(message) {
-    context.document.showMessage(message);
+    sketch.UI.message(message);
 }
 
 export function extend(options, target) {

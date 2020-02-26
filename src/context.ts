@@ -4,8 +4,9 @@ import { initLanguage } from "./language";
 import * as path from '@skpm/path';
 import { extend } from "./helper";
 
-export let context: any = {};
-export function initContext(ctx) {
+export let context: any = undefined;
+function initContext(ctx) {
+    context = {};
     extend(ctx, context);
     context.prefs = NSUserDefaults.standardUserDefaults();
     // context.version = context.plugin.version() + "";
@@ -27,5 +28,15 @@ export function initContext(ctx) {
     context.configs = getConfigs();
     context.language = initLanguage();
 
+    return context;
+}
+
+export function initOrUpdateContext(ctx?) {
+    if (!ctx && !context) throw new Error("Context not initialized");
+    // initialized the context
+    if (ctx) return initContext(ctx);
+    // update the context
+    context.document = NSDocumentController.sharedDocumentController().currentDocument();
+    context.selection = context.document.selectedLayers().layers();
     return context;
 }
