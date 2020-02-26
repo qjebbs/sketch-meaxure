@@ -1,21 +1,24 @@
 declare interface CocoaScriptObject {
     setShouldKeepAround(flag: boolean);
+    scheduleWithRepeatingInterval_jsFunction(interval: number, callback: Function);
 }
-declare var coscript: CocoaScriptObject;
+declare const coscript: CocoaScriptObject;
 
-declare var nil;
-declare var NSUUID;
-declare var NSHeight;
-declare var NSObject;
-declare var MOClassDescription;
+declare const nil;
+declare const NSUUID;
+declare const NSHeight;
+declare const NSObject;
+declare const MOClassDescription;
 declare function NSClassFromString(string);
 declare function NSSelectorFromString(string);
 declare function NSMakePoint(x: number, y: number);
 declare function NSMakeSize(width: number, height: number);
 declare function NSMakeRect(x: number, y: number, width: number, height: number);
-
+declare function NSTemporaryDirectory();
 declare namespace NSString {
     function stringWithContentsOfFile_encoding_error(...args);
+    function stringWithString(str: string);
+    function alloc();
 }
 
 declare namespace NSColor {
@@ -33,15 +36,16 @@ declare namespace NSEvent {
 declare namespace NSPanel {
     function alloc();
 }
-declare var NSWindowTitleHidden;
-declare var NSWindowCloseButton;
-declare var NSWindowMiniaturizeButton;
-declare var NSWindowZoomButton;
-declare var NSFloatingWindowLevel;
-declare var NSMomentaryChangeButton;
-declare var NSTitledWindowMask;
-declare var NSFullSizeContentViewWindowMask;
-declare var NSAlternateKeyMask;
+declare const NSWindowTitleHidden;
+declare const NSWindowCloseButton;
+declare const NSWindowMiniaturizeButton;
+declare const NSWindowZoomButton;
+declare const NSFloatingWindowLevel;
+declare const NSMomentaryChangeButton;
+declare const NSTitledWindowMask;
+declare const NSFullSizeContentViewWindowMask;
+declare const NSAlternateKeyMask;
+declare const NSOKButton;
 
 declare namespace WebView {
     function alloc();
@@ -84,6 +88,7 @@ declare namespace NSWorkspace {
 
 declare interface FileManager {
     fileExistsAtPath(path: string): boolean;
+    createDirectoryAtPath_withIntermediateDirectories_attributes_error(...args);
 }
 
 declare namespace NSFileManager {
@@ -91,4 +96,13 @@ declare namespace NSFileManager {
 }
 declare namespace NSDocumentController {
     function sharedDocumentController();
+}
+declare namespace NSPredicate {
+    function predicateWithFormat(key: string, match: string);
+}
+declare namespace NSData {
+    function dataWithContentsOfURL(url: string);
+}
+declare namespace NSSavePanel {
+    function savePanel();
 }

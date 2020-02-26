@@ -1,8 +1,9 @@
-import { settingsPanel } from "./panel";
-import { initOrUpdateContext } from "./context";
+import { settingsPanel } from "./panels/settingsPanel";
+import { initOrUpdateContext } from "./state/context";
 import { logger } from "./logger";
-import { markToolbar } from "./toolbar";
+import { markToolbar } from "./panels/toolbar";
 import { message } from "./helper";
+import { exportSpecification } from "./exporter/export";
 
 export function commandInit(context) {
     return false;
@@ -91,8 +92,7 @@ export function commandExportable(context?) {
 }
 export function commandExport(context?) {
     initOrUpdateContext(context);
-    //TODO: export command to be implemented
-    message("export command to be implemented");
+    exportSpecification();
 }
 export function commandToolbar2(context?) {
     initOrUpdateContext(context);

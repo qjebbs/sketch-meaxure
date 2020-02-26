@@ -1,7 +1,4 @@
-import { logger } from "./logger";
-import { context } from "./context";
-
-export let prefix = "SMConfigs2",
+export const prefix = "SMConfigs2",
     regexNames = /(?:\#(?:width|height|spacing|properties)-(?:left|right|center|top|bottom|middle|horizontal|vertical))|(?:\#(?:coordinate|overlay))|(?:OVERLAY|WIDTH|HEIGHT|TOP|RIGHT|BOTTOM|LEFT|VERTICAL|HORIZONTAL|NOTE|PROPERTY|LITE)\#/,
     colors = {
         overlay: {
@@ -94,4 +91,10 @@ export let prefix = "SMConfigs2",
                 a: 1
             }
         }
-    }
+    },
+    BorderPositions = ["center", "inside", "outside"],
+    FillTypes = ["color", "gradient"],
+    GradientTypes = ["linear", "radial", "angular"],
+    ShadowTypes = ["outer", "inner"],
+    TextAligns = ["left", "right", "center", "justify", "left"],
+    ResizingType = ["stretch", "corner", "resize", "float"];

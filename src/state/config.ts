@@ -1,16 +1,24 @@
 import { context } from "./context";
 import { prefix } from "./common";
-import { extend } from "./helper";
-import { logger } from "./logger";
+import { extend } from "../helper";
 
-export interface Config {
+export interface MarkConfig {
     scale?: number;
     unit?: string;
     colorFormat?: string;
     artboardOrder?: string;
+    order: string;
+    exportInfluenceRect: boolean;
+    exportOption: boolean;
+    colors: any;
+    sizes: any;
+    spacings: any;
+    properties: "color" | "border";
+    isHidden: boolean;
+    isLocked:boolean;
 }
 
-export function getConfigs(): Config {
+export function getConfigs(): MarkConfig {
     var configsData = /*this.*/context.UIMetadata.objectForKey(/*this.*/prefix);
     return JSON.parse(configsData);
 }

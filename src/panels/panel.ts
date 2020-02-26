@@ -1,11 +1,10 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
-import { _ } from './language';
-import { Config, setConfigs } from './config';
-import { message, extend } from './helper';
-import { context } from './context';
-import { logger } from './logger';
+import { _ } from '../state/language';
+import { message, extend } from '../helper';
+import { context } from '../state/context';
 
 export function SMPanel(options) {
+    coscript.setShouldKeepAround(true);
     options = /*this.*/extend(options, {
         url: /*this.*/context.resourcesRoot + "/panel/settings.html",
         width: 240,
@@ -66,7 +65,7 @@ export function SMPanel(options) {
                 ].join("");
 
                 windowObject.evaluateWebScript(SMAction);
-                windowObject.evaluateWebScript(context.language);
+                windowObject.evaluateWebScript(context.languageData);
                 windowObject.evaluateWebScript(DOMReady);
             }),
             "webView:didChangeLocationWithinPageForFrame:": (function (webView, webFrame) {
@@ -136,7 +135,7 @@ export function SMPanel(options) {
             threadDictionary.removeObjectForKey(options.identifier);
         }
 
-        // self.wantsStop = true;
+        context.wantsStop = true;
         if (options.floatWindow) {
             Panel.close();
         } else {
@@ -173,82 +172,4 @@ export function SMPanel(options) {
     }
 
     return result;
-}
-export function settingsPanel() {
-    let data: Config = {};
-
-    if (/*this.*/context.configs) {
-        data.scale = /*this.*/context.configs.scale;
-        data.unit = /*this.*/context.configs.unit;
-        data.colorFormat = /*this.*/context.configs.colorFormat;
-        data.artboardOrder = /*this.*/context.configs.artboardOrder;
-    }
-
-    return /*this.*/SMPanel({
-        width: 240,
-        height: 386,
-        data: data,
-        callback: function (data) {
-            logger.debug("setting panel returned:", data);
-            /*self.*/context.configs = /*self.*/setConfigs(data);
-        }
-    });
-
-}
-export function sizesPanel() {
-    var self = this,
-        data: any = {};
-
-    if (/*this.*/context.configs.sizes && /*this.*/context.configs.sizes.widthPlacement) data.widthPlacement = /*this.*/context.configs.sizes.widthPlacement;
-    if (/*this.*/context.configs.sizes && /*this.*/context.configs.sizes.heightPlacement) data.heightPlacement = /*this.*/context.configs.sizes.heightPlacement;
-    if (/*this.*/context.configs.sizes && /*this.*/context.configs.sizes.byPercentage) data.byPercentage = /*this.*/context.configs.sizes.byPercentage;
-
-    return /*this.*/SMPanel({
-        url: /*this.*/context.resourcesRoot + "/panel/sizes.html",
-        width: 240,
-        height: 358,
-        data: data,
-        callback: function (data) {
-            /*self.*/context.configs = /*self.*/setConfigs({
-            sizes: data
-        });
-        }
-    });
-}
-export function spacingsPanel() {
-    var self = this,
-        data: any = {};
-
-    data.placements = (/*this.*/context.configs.spacings && /*this.*/context.configs.spacings.placements) ? /*this.*/context.configs.spacings.placements : ["top", "left"];
-    if (/*this.*/context.configs.spacings && /*this.*/context.configs.spacings.byPercentage) data.byPercentage = /*this.*/context.configs.spacings.byPercentage;
-
-    return /*this.*/SMPanel({
-        url: /*this.*/context.resourcesRoot + "/panel/spacings.html",
-        width: 240,
-        height: 314,
-        data: data,
-        callback: function (data) {
-            /*self.*/context.configs = /*self.*/setConfigs({
-            spacings: data
-        });
-        }
-    });
-}
-export function propertiesPanel() {
-    var self = this,
-        data = (/*this.*/context.configs.properties) ? /*this.*/context.configs.properties : {
-            placement: "top",
-            properties: ["color", "border"]
-        };
-    return /*this.*/SMPanel({
-        url: /*this.*/context.resourcesRoot + "/panel/properties.html",
-        width: 280,
-        height: 356,
-        data: data,
-        callback: function (data) {
-            /*self.*/context.configs = /*self.*/setConfigs({
-            properties: data
-        });
-        }
-    });
 }

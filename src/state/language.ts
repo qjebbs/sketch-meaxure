@@ -1,6 +1,4 @@
 import { context } from "./context";
-import { logger } from "./logger";
-
 
 let I18N = {};
 let webI18N = {
@@ -11,15 +9,15 @@ let macOSVersion = NSDictionary.dictionaryWithContentsOfFile("/System/Library/Co
 let lang = NSUserDefaults.standardUserDefaults().objectForKey("AppleLanguages").objectAtIndex(0);
 
 export function initLanguage(): string {
-    let language = "";
     lang = (macOSVersion >= "10.12") ? lang.split("-").slice(0, -1).join("-") : lang;
     let langFile = context.resourcesRoot + "/i18n/" + lang + ".json";
-    if (NSFileManager.defaultManager().fileExistsAtPath(langFile)) {
-        language = NSString.stringWithContentsOfFile_encoding_error(langFile, 4, nil);
-        I18N[lang] = JSON.parse(language);
-        language = "I18N[\'" + webI18N[lang] + "\'] = " + language;
+    if (!NSFileManager.defaultManager().fileExistsAtPath(langFile)) {
+        return "";
     }
-    return language;
+    let language = "";
+    language = NSString.stringWithContentsOfFile_encoding_error(langFile, 4, nil);
+    I18N[lang] = JSON.parse(language);
+    return `I18N['${webI18N[lang]}'] = ${language}`;
 }
 
 export function _(str, data?) {

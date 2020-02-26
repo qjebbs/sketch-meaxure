@@ -1,5 +1,5 @@
-import { context } from "./context";
-import { commandOverlays, commandSizes, commandSpacings, commandProperties, commandNote, commandExportable, commandColor, commandExport, commandHidden, commandLocked, commandSettings } from ".";
+import { context } from "../state/context";
+import { commandOverlays, commandSizes, commandSpacings, commandProperties, commandNote, commandExportable, commandColor, commandExport, commandHidden, commandLocked, commandSettings } from "..";
 
 function getImage(size, name) {
     var isRetinaDisplay = (NSScreen.mainScreen().backingScaleFactor() > 1) ? true : false;
