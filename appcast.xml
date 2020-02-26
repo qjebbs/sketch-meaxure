@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Sketch MeaXure</title>
+    <link>https://raw.githubusercontent.com/qjebbs/sketch-meaxure/master/appcast.xml</link>
+    <description>Make it a fun to create spec for developers and teammates</description>
+    <language>en</language>
+		<item>
+			<title>Version 2.9.1</title>
+			<description>
+				<![CDATA[
+					<ul>
+						<li>Fixes, works with latest version up to V63.1</li>
+						<li>Sort artboards by row position</li>
+						<li>Sort artboards by column position</li>
+						<li>Artboard sort setting</li>
+					</ul>
+				]]>
+			</description>
+			<enclosure url="" sparkle:version="2.9.1" type="application/octet-stream" />
+		</item>
+  </channel>
+</rss>

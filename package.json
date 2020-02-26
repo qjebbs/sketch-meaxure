@@ -1,18 +1,19 @@
 {
   "name": "sketch-meaxure",
-  "description": "",
-  "version": "0.1.0",
+  "description": "Make it a fun to create spec for developers and teammates",
+  "version": "2.9.1",
   "engines": {
     "sketch": ">=49.0"
   },
   "skpm": {
-    "name": "Sketch Meaxure",
+    "name": "Sketch MeaXure",
     "manifest": "src/manifest.json",
-    "main": "Sketch-Meaxure.sketchplugin",
+    "homepage": "https://github.com/qjebbs",
+    "appcast": "https://raw.githubusercontent.com/qjebbs/sketch-meaxure/master/appcast.xml",
+    "main": "sketch-meaxure.sketchplugin",
     "assets": [
-      "assets/**/*"
-    ],
-    "sketch-assets-file": "sketch-assets/icons.sketch"
+      "resources/**/*"
+    ]
   },
   "scripts": {
     "build": "skpm-build",
@@ -27,7 +28,7 @@
     "tslint": "^5.20.1",
     "typescript": "^3.7.4"
   },
-  "author": "jebbs <qjebbs@gmail.com>",
+  "author": "utom & jebbs <qjebbs@gmail.com>",
   "dependencies": {
     "@skpm/path": "^0.1.4"
   }
