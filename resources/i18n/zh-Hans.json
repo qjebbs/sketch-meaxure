@@ -25,7 +25,7 @@
     "Ubuntu Grid": "Ubuntu 网格",
     "Web View": "网页",
     "Scale": "倍率",
-    "Unit": "单位",
+    "Units": "单位",
     "Color format": "颜色格式",
     "Color hex": "色值",
     "ARGB hex": "安卓色值",
@@ -73,7 +73,6 @@
     "Select a layer to make marks!": "请选中 1 个图层!",
     "Export spec": "导出规范",
     "Export to:": "导出到:",
-    "Export": "导出",
     "Exporting...": "导出中...",
     "Export complete!": "导出完成!",
     "The slice not in current artboard.": "切图不在当前画板",
@@ -84,7 +83,6 @@
     "Outer Shadow": "外阴影",
     "No artboards!": "没有画板",
     "You need add some artboards.": "您需要添加一些画板",
-    "No slices added!": "没有添加切图",
     "No colors added!": "没有添加颜色",
     "Import": "导入",
     "Choose a &quot;colors.json&quot;": "选择一个 &quot;colors.json&quot;",
@@ -103,4 +101,4 @@
     "Download": "下载",
     "Cancel": "取消",
     "Donate": "捐赠"
-};
+}

@@ -1,7 +1,21 @@
-import { getConfigs, MarkConfig } from "./config";
 import { initLanguage } from "./language";
 import * as path from '@skpm/path';
-import { extend } from "../helper";
+import { extend } from "../api/helper";
+import { ConfigsMaster } from "../api/config";
+import { logger } from "../api/logger";
+
+interface RunningConfig {
+    order: string;
+    exportInfluenceRect: boolean;
+    exportOption: boolean;
+    colors: any;
+    sizes: any;
+    spacings: any;
+    properties: any;
+    isHidden: boolean;
+    isLocked: boolean;
+    placement: string;
+}
 
 interface markContext {
     // sketch
@@ -19,9 +33,11 @@ interface markContext {
     artboard: any;
     current: any;
     selection: any;
-    configs: MarkConfig;
+    configs: ConfigsMaster;
+    runningConfig: RunningConfig;
     languageData: string;
 
+    // TODO: move to runningConfig
     selectionArtboards: any;
     artboardsData: any[];
     allCount: number; // exporting layers count
@@ -37,37 +53,44 @@ interface markContext {
 }
 
 export let context: markContext = undefined;
-function initContext(ctx) {
-    context = extend(ctx, {});
-    context.prefs = NSUserDefaults.standardUserDefaults();
-    // context.version = context.plugin.version() + "";
-    // context.language = lang;
-    context.SMVersion = context.prefs.stringForKey("SMVersion") + "" || "0";
-    context.SMLanguage = context.prefs.stringForKey("SMLanguage") + "" || "0";
-    // context.pluginRoot = context.scriptPath;
-    context.resourcesRoot = path.resourcePath("");
 
-    // context.extend(context);
-    // coscript.setShouldKeepAround(true);
-    context.documentData = context.document.documentData();
-    context.UIMetadata = context.document.mutableUIMetadata();
-    context.window = context.document.window();
+export function updateContext(ctx?) {
+    if (!ctx && !context) throw new Error("Context not initialized");
+    let notInitilized = context === undefined;
+    // initialized the context
+    if (!context && ctx) {
+        logger.debug("initContextRunOnce");
+        context = <markContext>{};
+        initContextRunOnce(ctx)
+    }
+    logger.debug("Update context");
+    if (ctx) extend(ctx, context);
+    // current document either from ctx or NSDocumentController
+    let document = (ctx ? ctx.document : undefined) || NSDocumentController.sharedDocumentController().currentDocument();
+    if (notInitilized || document != context.document) {
+        // properties updates only when document change
+        logger.debug("Update target document");
+        context.document = document
+        context.configs = new ConfigsMaster(document);
+        context.documentData = context.document.documentData();
+        context.UIMetadata = context.document.mutableUIMetadata();
+        context.window = context.document.window();
+    }
+    // properties always need to update
     context.pages = context.document.pages();
     context.page = context.document.currentPage();
     context.artboard = context.page.currentArtboard();
     context.current = context.artboard || context.page;
-    context.configs = getConfigs();
-     context.languageData = initLanguage();
-
+    context.selection = context.document.selectedLayers().layers();
     return context;
 }
 
-export function initOrUpdateContext(ctx?) {
-    if (!ctx && !context) throw new Error("Context not initialized");
-    // initialized the context
-    if (ctx) return initContext(ctx);
-    // update the context
-    context.document = NSDocumentController.sharedDocumentController().currentDocument();
-    context.selection = context.document.selectedLayers().layers();
-    return context;
+function initContextRunOnce(ctx) {
+    context.prefs = NSUserDefaults.standardUserDefaults();
+    // context.version = context.plugin.version() + "";
+    context.SMVersion = context.prefs.stringForKey("SMVersion") + "" || "0";
+    context.SMLanguage = context.prefs.stringForKey("SMLanguage") + "" || "0";
+    context.resourcesRoot = path.resourcePath("");
+    context.languageData = initLanguage();
+    context.runningConfig = <RunningConfig>{};
 }

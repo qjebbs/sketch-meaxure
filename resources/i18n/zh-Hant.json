@@ -11,7 +11,7 @@
     "EXPORTABLE": "匯出",
     "Gradient": "漸層",
     "Color": "色彩",
-	"Key-Name": "Key-Name",
+    "Layer Name": "圖層名稱",
     "Weight": "粗細",
     "Style name": "樣式名稱",
     "Custom": "自定",
@@ -25,7 +25,7 @@
     "Ubuntu Grid": "Ubuntu 網格",
     "Web View": "網頁",
     "Scale": "縮放倍率",
-    "Unit": "單位",
+    "Units": "單位",
     "Color format": "色碼格式",
     "Color hex": "十六進位色碼",
     "ARGB hex": "ARGB 十六進位色碼",
@@ -73,7 +73,6 @@
     "Select a layer to make marks!": "標記前，請先選擇圖層",
     "Export spec": "匯出規範",
     "Export to:": "匯出到:",
-    "Export": "匯出",
     "Exporting...": "正在匯出...",
     "Export complete!": "匯出完畢",
     "The slice not in current artboard.": "此切圖位於其他畫布裡",
@@ -84,7 +83,6 @@
     "Outer Shadow": "外陰影",
     "No artboards!": "沒有畫布",
     "You need add some artboards.": "您需要先新增畫布",
-    "No slices added!": "尚無切圖",
     "No colors added!": "尚無色彩",
     "Import": "匯入",
     "Choose a &quot;colors.json&quot;": "請選擇 &quot;colors.json&quot; 檔案",
@@ -98,4 +96,4 @@
     "Import Colors": "匯入色彩",
     "Export Colors": "匯出色彩",
     "You can select shape layer to add colors or import colors": "您可以選擇圖層添加或匯入色彩"
-};
+}

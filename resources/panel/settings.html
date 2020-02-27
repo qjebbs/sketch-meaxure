@@ -11,29 +11,29 @@
     <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="assets/js/common.js"></script>
     <script type="text/javascript">
-    var getDesignResolutionID = function(scale, unit){
+    var getDesignResolutionID = function(scale, units){
             var scale = scale || 1,
-                unit = unit || 'px';
+                units = units || 'px';
 
             scale = scale.toString().replace('.', '_');
-            unit = unit.replace('/', '_');
+            units = units.replace('/', '_');
 
-            id = unit + '-' + scale;
+            id = units + '-' + scale;
 
             if($('#' + id).length <= 0) return 'custom';
 
             return id;
 
         },
-        getScaleWidthUnit = function( id ){
+        getScaleWidthunits = function( id ){
             if (id == 'custom') return false;
             var id = id.split('-'),
-                unit = id[0],
+                units = id[0],
                 scale = id[1];
 
             return {
                 scale: Number(scale.replace('_', '.')),
-                unit: unit.replace('_', '/')
+                units: units.replace('_', '/')
             }
         },
         checkResolution = function(DRID){
@@ -42,7 +42,7 @@
         submit = function(){
             SMAction('submit', {
                 scale: $('input[name=scale]').val(),
-                unit: $('input[name=unit]').val(),
+                units: $('input[name=units]').val(),
                 colorFormat: $('input[name=format]:checked').val(),
                 artboardOrder: $('input[name=artboardOrder]:checked').val()
             });
@@ -84,8 +84,8 @@
                             '<label for="top">' + _('Scale') + '</label>',
                         '</div>',
                         '<div class="input-text mrb24">',
-                            '<input type="text" name="unit" value="dp/sp">',
-                            '<label for="top">' + _('Unit') + '</label>',
+                            '<input type="text" name="units" value="dp/sp">',
+                            '<label for="top">' + _('Units') + '</label>',
                         '</div>',
                         '<h3 class="title">' + _('Color format') + '</h3>',
                         '<div class="color-format selectbox" tabindex="0">',
@@ -120,19 +120,19 @@
                 ].join(''));
             var data = $.extend({
                             scale: 1,
-                            unit: 'px',
+                            units: 'px',
                             colorFormat: 'color-hex',
                             artboardOrder: 'artboard-rows'
                         }, data),
-                id = getDesignResolutionID(data.scale, data.unit);
+                id = getDesignResolutionID(data.scale, data.units);
              $('.resolution input').change(function(){
                 var $this = $(this),
                     id = $this.val(),
-                    scaleWidthUnit = getScaleWidthUnit(id);
+                    scaleWidthunits = getScaleWidthunits(id);
 
-                if(!scaleWidthUnit) return false;
-                $('input[name=scale]').val(scaleWidthUnit.scale);
-                $('input[name=unit]').val(scaleWidthUnit.unit);
+                if(!scaleWidthunits) return false;
+                $('input[name=scale]').val(scaleWidthunits.scale);
+                $('input[name=units]').val(scaleWidthunits.units);
             });
 
             checkResolution(id);
@@ -141,7 +141,7 @@
 
             if(id == 'custom'){
                 $('input[name=scale]').val(data.scale);
-                $('input[name=unit]').val(data.unit);
+                $('input[name=units]').val(data.units);
             }
 
             $('.selectbox').each(function(index){
@@ -177,7 +177,7 @@
                     return false;
             });
 
-            $('input[name=unit]').keypress(function(event){
+            $('input[name=units]').keypress(function(event){
                 var eventObj = event || e,
                     keyCode = eventObj.keyCode || eventObj.which;
 
@@ -189,10 +189,10 @@
 
             $('input[type=text]').keyup(function(){
                 var scale = $('input[name=scale]').val(),
-                    unit = $('input[name=unit]').val();
+                    units = $('input[name=units]').val();
 
-                if(scale && unit){
-                    checkResolution(getDesignResolutionID(scale, unit));
+                if(scale && units){
+                    checkResolution(getDesignResolutionID(scale, units));
                     $('.resolution ul').scrollTop(0);
                     var scrollTop = $('.resolution input:checked').parent().parent().position().top;
                     $('.resolution ul').scrollTop(scrollTop);
@@ -203,13 +203,13 @@
             })
             .blur(function(){
                 var scale = $('input[name=scale]').val(),
-                    unit = $('input[name=unit]').val();
+                    units = $('input[name=units]').val();
                 if(!scale){
                     $('input[name=scale]').val(1);
                 }
 
-                if(!unit){
-                    $('input[name=unit]').val('px');
+                if(!units){
+                    $('input[name=units]').val('px');
                 }
             });
 

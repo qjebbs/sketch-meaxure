@@ -1,10 +1,10 @@
 import { _ } from "../state/language";
-import { logger } from "../logger";
+import { logger } from "../api/logger";
 import { exportPanel } from "../panels/exportPanel";
 import { context } from "../state/context";
 import { SMPanel } from "../panels/panel";
 import { toHTMLEncode, getRect, toSlug, emojiToEntities, toJSString } from "../api/api";
-import { message, getSavePath } from "../helper";
+import { message, getSavePath } from "../api/helper";
 import { getLayer, exportImage, writeFile, buildTemplate } from "./utilities";
 
 export function exportSpecification() {
@@ -33,8 +33,8 @@ export function exportSpecification() {
                 exporting = false,
                 data = {
                     scale: /*self.*/context.configs.scale,
-                    unit: /*self.*/context.configs.unit,
-                    colorFormat: /*self.*/context.configs.colorFormat,
+                    unit: /*self.*/context.configs.units,
+                    colorFormat: /*self.*/context.configs.format,
                     artboards: [],
                     slices: [],
                     colors: []
@@ -98,7 +98,7 @@ export function exportSpecification() {
                         data.artboards[artboardIndex].width = artboardRect.width;
                         data.artboards[artboardIndex].height = artboardRect.height;
 
-                        if (!/*self.*/context.configs.exportOption) {
+                        if (!/*self.*/context.runningConfig.exportOption) {
                             var imageURL = NSURL.fileURLWithPath(/*self.*/exportImage({
                                 layer: artboard,
                                 scale: 2,
@@ -147,12 +147,12 @@ export function exportSpecification() {
                             data.slices = /*self.*/context.slices;
                         }
 
-                        if (/*self.*/context.configs.colors && /*self.*/context.configs.colors.length > 0) {
-                            data.colors = /*self.*/context.configs.colors;
+                        if (/*self.*/context.runningConfig.colors && /*self.*/context.runningConfig.colors.length > 0) {
+                            data.colors = /*self.*/context.runningConfig.colors;
                         }
 
                         var selectingPath = savePath;
-                        if (/*self.*/context.configs.exportOption) {
+                        if (/*self.*/context.runningConfig.exportOption) {
                             /*self.*/writeFile({
                             content: /*self.*/buildTemplate(template, {
                                 lang: context.languageData,

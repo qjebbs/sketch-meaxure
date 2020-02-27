@@ -4,12 +4,12 @@ export interface Rect {
     y: number;
     width: number;
     height: number;
-    maxX: number;
-    maxY: number;
-    setX: (value: number) => void;
-    setY: (value: number) => void;
-    setWidth: (value: number) => void;
-    setHeight: (value: number) => void;
+    maxX?: number;
+    maxY?: number;
+    setX?: (value: number) => void;
+    setY?: (value: number) => void;
+    setWidth?: (value: number) => void;
+    setHeight?: (value: number) => void;
 }
 
 export interface Color {

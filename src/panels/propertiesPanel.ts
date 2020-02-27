@@ -1,20 +1,20 @@
-import { setConfigs } from '../state/config';
 import { context } from '../state/context';
 import { SMPanel } from './panel';
+import { logger } from '../api/logger';
 export function propertiesPanel() {
-    var self = this, data = ( /*this.*/context.configs.properties) ? /*this.*/ context.configs.properties : {
-        placement: "top",
-        properties: ["color", "border"]
+    var data = {
+        placement: context.runningConfig.placement ? context.runningConfig.placement : "top",
+        properties: context.configs.properties && context.configs.properties.length ? context.configs.properties : ["color", "border"],
     };
-    return /*this.*/ SMPanel({
-        url: /*this.*/ context.resourcesRoot + "/panel/properties.html",
+    return SMPanel({
+        url: context.resourcesRoot + "/panel/properties.html",
         width: 280,
         height: 356,
         data: data,
         callback: function (data) {
-            /*self.*/ context.configs = /*self.*/ setConfigs({
-            properties: data
-        });
+            logger.debug("properties panel returned", data);
+            context.configs.properties = data.properties;
+            context.runningConfig.placement = data.placement;
         }
     });
 }

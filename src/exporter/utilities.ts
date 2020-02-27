@@ -1,4 +1,4 @@
-import { extend, getDistance, find, hexToRgb } from "../helper";
+import { extend, getDistance, find, hexToRgb } from "../api/helper";
 import { toJSString, is, rectToJSON, toHTMLEncode, emojiToEntities, getRadius, getBorders, getFills, getShadows, getOpacity, getStyleName, colorToJSON, toJSNumber, getRect, removeLayer, addText } from "../api/api";
 import { TextAligns, regexNames } from "../state/common";
 import { context } from "../state/context";
@@ -102,7 +102,7 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
     } // fixed for v40
 
     var exportLayerRect;
-    if (context.configs.exportInfluenceRect == true && layerType != "text") {
+    if (context.runningConfig.exportInfluenceRect == true && layerType != "text") {
         // export the influence rect.(include the area of shadows and outside borders...)
         var influenceCGRect = layer.absoluteInfluenceRect();
         exportLayerRect = {
@@ -338,7 +338,7 @@ export function getExportable(layer, savePath?) {
         fileFormat = /*this.*/toJSString(sizes[0].fileFormat()),
         matchFormat = /png|jpg|tiff|webp/.exec(fileFormat);
     var exportFormats =
-        (/*self.*/context.configs.unit == "dp/sp" && matchFormat) ? [{
+        (/*self.*/context.configs.units == "dp/sp" && matchFormat) ? [{
             scale: 1 / /*self.*/context.configs.scale,
             prefix: "drawable-mdpi/",
             format: fileFormat
@@ -364,7 +364,7 @@ export function getExportable(layer, savePath?) {
             format: fileFormat
         }
         ] :
-            (context.configs.unit == "pt" && matchFormat) ? [{
+            (context.configs.units == "pt" && matchFormat) ? [{
                 scale: 1 / /*self.*/context.configs.scale,
                 suffix: "",
                 format: fileFormat

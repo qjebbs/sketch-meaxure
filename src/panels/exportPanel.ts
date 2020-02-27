@@ -1,12 +1,10 @@
 import { context } from "../state/context";
-import { calcArtboardsRow, calcArtboardsColumn, find } from "../helper";
+import { calcArtboardsRow, calcArtboardsColumn, find } from "../api/helper";
 import { toJSString } from "../api/api";
 import { SMPanel } from "./panel";
-import { setConfigs } from "../state/config";
 
 export function exportPanel() {
     // if (ga) ga.sendEvent('spec', 'export to spec viewer');
-    // var self = this;
     /*this.*/context.artboardsData = [];
     /*this.*/context.selectionArtboards = {};
     var data: any = {};
@@ -14,18 +12,18 @@ export function exportPanel() {
     data.current = [];
     data.pages = [];
 
-    data.exportOption = /*self.*/context.configs.exportOption;
+    data.exportOption = /*self.*/context.runningConfig.exportOption;
     if (data.exportOption == undefined) {
         data.exportOption = true;
     }
 
-    data.exportInfluenceRect = /*self.*/context.configs.exportInfluenceRect;
+    data.exportInfluenceRect = /*self.*/context.runningConfig.exportInfluenceRect;
     if (data.exportInfluenceRect == undefined) {
         data.exportInfluenceRect = false;
     }
 
-    /*self.*/context.configs.order = (/*self.*/context.configs.order) ? /*self.*/context.configs.order : "positive";
-    data.order = /*self.*/context.configs.order;
+    /*self.*/context.runningConfig.order = (/*self.*/context.runningConfig.order) ? /*self.*/context.runningConfig.order : "positive";
+    data.order = /*self.*/context.runningConfig.order;
 
     if (/*this.*/context.selection.count() > 0) {
         var selectionArtboards = /*this.*/find({
@@ -130,12 +128,9 @@ export function exportPanel() {
                     }
                 }
             }
-
-            /*self.*/context.configs = /*self.*/setConfigs({
-                exportOption: data.exportOption,
-                exportInfluenceRect: data.exportInfluenceRect,
-                order: data.order
-            });
+            context.runningConfig.exportOption = data.exportOption;
+            context.runningConfig.exportInfluenceRect = data.exportInfluenceRect;
+            context.runningConfig.order = data.order;
         }
     });
 }

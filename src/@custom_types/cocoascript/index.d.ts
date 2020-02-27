@@ -14,6 +14,8 @@ declare function NSSelectorFromString(string);
 declare function NSMakePoint(x: number, y: number);
 declare function NSMakeSize(width: number, height: number);
 declare function NSMakeRect(x: number, y: number, width: number, height: number);
+declare function NSMakeRange(len: number, cap: number);
+declare function CGRectMake(x: number, y: number, width: number, height: number);
 declare function NSTemporaryDirectory();
 declare namespace NSString {
     function stringWithContentsOfFile_encoding_error(...args);
@@ -32,7 +34,6 @@ declare namespace NSThread {
 declare namespace NSEvent {
     function modifierFlags();
 }
-
 declare namespace NSPanel {
     function alloc();
 }
@@ -46,6 +47,9 @@ declare const NSTitledWindowMask;
 declare const NSFullSizeContentViewWindowMask;
 declare const NSAlternateKeyMask;
 declare const NSOKButton;
+declare const NSForegroundColorAttributeName;
+declare const NSFontAttributeName;
+declare const NSSwitchButton;
 
 declare namespace WebView {
     function alloc();
@@ -57,6 +61,10 @@ declare namespace NSImageView {
     function alloc();
 }
 declare namespace NSButton {
+    function alloc();
+}
+
+declare namespace NSMutableAttributedString {
     function alloc();
 }
 
@@ -80,6 +88,9 @@ declare namespace NSApp {
 
 declare namespace NSScreen {
     function mainScreen();
+}
+declare namespace NSFont {
+    function systemFontOfSize(size: number);
 }
 
 declare namespace NSWorkspace {

@@ -1,6 +1,6 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
 import { _ } from '../state/language';
-import { message, extend } from '../helper';
+import { message, extend } from '../api/helper';
 import { context } from '../state/context';
 
 export function SMPanel(options) {

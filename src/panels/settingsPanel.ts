@@ -1,14 +1,13 @@
-import { MarkConfig, setConfigs } from '../state/config';
 import { context } from '../state/context';
-import { logger } from '../logger';
+import { logger } from '../api/logger';
 import { SMPanel } from './panel';
 
 export function settingsPanel() {
-    let data = <MarkConfig>{};
+    let data: any = {};
     if ( /*this.*/context.configs) {
         data.scale = /*this.*/ context.configs.scale;
-        data.unit = /*this.*/ context.configs.unit;
-        data.colorFormat = /*this.*/ context.configs.colorFormat;
+        data.units = /*this.*/ context.configs.units;
+        data.colorFormat = /*this.*/ context.configs.format;
         data.artboardOrder = /*this.*/ context.configs.artboardOrder;
     }
     return /*this.*/ SMPanel({
@@ -17,7 +16,10 @@ export function settingsPanel() {
         data: data,
         callback: function (data) {
             logger.debug("setting panel returned:", data);
-            /*self.*/ context.configs = /*self.*/ setConfigs(data);
+            context.configs.scale = data.scale;
+            context.configs.units = data.units;
+            context.configs.format = data.colorFormat;
+            context.configs.artboardOrder = data.artboardOrder;
         }
     });
 }

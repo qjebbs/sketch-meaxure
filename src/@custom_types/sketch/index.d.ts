@@ -1,38 +1,49 @@
 declare const MSSharedStyleContainer;
 declare const MSSharedTextStyleContainer;
-declare const MSLayerGroup: {
-    "new": (() => any);
+
+
+declare class MSLayerClass {
+    new: () => any;
+    alloc: () => any;
+    shapeWithRect: (rect) => any;
 }
-declare const MSTextLayer: {
-    "new": (() => any);
+declare const MSLayerGroup: MSLayerClass;
+declare const MSTextLayer: MSLayerClass;
+declare const MSSliceLayer: MSLayerClass;
+declare const MSShapeGroup: MSLayerClass;
+declare const MSBitmapLayer: MSLayerClass;
+declare const MSArtboardGroup: MSLayerClass;
+declare const MSRectangleShape: MSLayerClass;
+declare const MSOvalShape: MSLayerClass;
+declare const MSShapePathLayer: MSLayerClass;
+declare const MSTriangleShape: MSLayerClass;
+declare const MSStarShape: MSLayerClass;
+declare const MSPolygonShape: MSLayerClass;
+declare const MSPage: MSLayerClass;
+declare const MSSymbolInstance: MSLayerClass;
+declare const MSSymbolMaster: MSLayerClass;
+
+declare namespace MSLayerMovement {
+    function moveToFront(layers: any[]);
 }
 
-declare namespace MSShapeGroup {
-    function shapeWithRect(rect);
-}
-declare class MSStyleShadow {
-}
-declare class MSRectangleShape {
-}
-declare class MSArtboardGroup {
-}
+declare class MSStyleShadow { }
 declare class MSExportRequest {
     static exportRequestsFromExportableLayer(layer: any)
 }
-declare class MSSymbolInstance {
+declare class MSSharedStyle {
+    static alloc();
 }
-declare class MSSliceLayer {
+declare class MSStyle {
+    static alloc();
 }
-declare class MSOvalShape { }
-declare class MSShapePathLayer { }
-declare class MSTriangleShape { }
-declare class MSStarShape { }
-declare class MSPolygonShape { }
-declare class MSBitmapLayer { }
-declare class MSSymbolMaster { }
 declare class SketchSVGExporter {
-    static new()
+    static new();
 }
 declare class MSColor {
-    static colorWithRed_green_blue_alpha(r,g,b,a)
+    static colorWithRed_green_blue_alpha(r, g, b, a)
+}
+
+declare class MSJSONDataArchiver {
+    static archiveStringWithRootObject_error(...args);
 }
