@@ -476,9 +476,6 @@ export function getSymbol(artboard, layer, layerData, data) {
                             break;
                     }
                 }
-                // if(layer) console.log(tempSymbolLayer.name());
-                // if(symbolLayer) console.log(symbolLayer.name());
-                // console.log("====");
                 if (/*self.*/is(tempSymbolLayer, MSSymbolInstance)) {
                     var symbolMasterObjectID = /*self.*/toJSString(symbolLayer.objectID());
                     if (

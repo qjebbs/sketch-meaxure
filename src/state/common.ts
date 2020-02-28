@@ -24,11 +24,11 @@ export const prefix = "SMConfigs2",
             }
         },
         overlay: {
-            layer: {
+            shape: {
                 r: 1,
-                g: 0.333333,
+                g: .333333,
                 b: 0,
-                a: 0.3
+                a: .3
             },
             text: {
                 r: 1,
@@ -38,9 +38,9 @@ export const prefix = "SMConfigs2",
             }
         },
         size: {
-            layer: {
+            shape: {
                 r: 1,
-                g: 0.333333,
+                g: .333333,
                 b: 0,
                 a: 1
             },
@@ -52,10 +52,10 @@ export const prefix = "SMConfigs2",
             }
         },
         spacing: {
-            layer: {
-                r: 0.313725,
-                g: 0.890196,
-                b: 0.760784,
+            shape: {
+                r: .313725,
+                g: .890196,
+                b: .760784,
                 a: 1
             },
             text: {
@@ -66,10 +66,10 @@ export const prefix = "SMConfigs2",
             }
         },
         property: {
-            layer: {
-                r: 0.960784,
-                g: 0.650980,
-                b: 0.137255,
+            shape: {
+                r: .960784,
+                g: .65098,
+                b: .137255,
                 a: 1
             },
             text: {
@@ -80,10 +80,10 @@ export const prefix = "SMConfigs2",
             }
         },
         lite: {
-            layer: {
-                r: 0.564706,
-                g: 0.074510,
-                b: 0.996078,
+            shape: {
+                r: .564706,
+                g: .07451,
+                b: .996078,
                 a: 1
             },
             text: {
@@ -94,22 +94,22 @@ export const prefix = "SMConfigs2",
             }
         },
         note: {
-            layer: {
+            shape: {
                 r: 1,
-                g: 0.988235,
-                b: 0.862745,
+                g: .988235,
+                b: .862745,
                 a: 1
             },
             border: {
-                r: 0.8,
-                g: 0.8,
-                b: 0.8,
+                r: .8,
+                g: .8,
+                b: .8,
                 a: 1
             },
             text: {
-                r: 0.333333,
-                g: 0.333333,
-                b: 0.333333,
+                r: .333333,
+                g: .333333,
+                b: .333333,
                 a: 1
             }
         }

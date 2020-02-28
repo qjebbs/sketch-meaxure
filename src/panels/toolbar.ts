@@ -1,7 +1,7 @@
 import { context } from "../state/context";
 import { message } from "../api/helper";
 import { logger } from "../api/logger";
-import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandExportable } from "..";
+import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandExportable, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight } from "..";
 
 function getImage(name: string, state?: string) {
     var highDPI = NSScreen.mainScreen().backingScaleFactor() > 1,
@@ -103,49 +103,37 @@ export function markToolbar() {
     controls.push(
         addButton(
             NSMakeRect(20, 420, 32, 32), "Top Width", "width-top", "normal",
-            function () {
-                message('Mark.sizes("top")')
-            }
+            () => commandSizeTop()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(60, 420, 32, 32), "Middle Width", "width-middle", "normal",
-            function () {
-                message('Mark.sizes("middle")')
-            }
+            () => commandSizeMiddle()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(100, 420, 32, 32), "Bottom Width", "width-bottom", "normal",
-            function () {
-                message('Mark.sizes("bottom")')
-            }
+            () => commandSizeBottom()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(20, 380, 32, 32), "Left Height", "height-left", "normal",
-            function () {
-                message('Mark.sizes("left")')
-            }
+            () => commandSizeLeft()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(60, 380, 32, 32), "Center Height", "height-center", "normal",
-            function () {
-                message('Mark.sizes("center")')
-            }
+            () => commandSizeCenter()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(100, 380, 32, 32), "Right Height", "height-right", "normal",
-            function () {
-                message('Mark.sizes("right")')
-            }
+            () => commandSizeRight()
         )
     );
     controls.push(

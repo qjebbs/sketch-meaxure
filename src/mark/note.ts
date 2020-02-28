@@ -30,7 +30,7 @@ function note(target) {
     var targetRect = /*this.*/getRect(target),
         objectID = target.objectID(),
         noteStyle = {
-            layer: /*this.*/sharedLayerStyle("Sketch Measure / Note", /*this.*/colors.note.layer, /*this.*/colors.note.border),
+            layer: /*this.*/sharedLayerStyle("Sketch Measure / Note", /*this.*/colors.note.shape, /*this.*/colors.note.border),
             text: /*this.*/sharedTextStyle("Sketch Measure / Note", /*this.*/colors.note.text)
         }
     let container = /*this.*/addGroup();

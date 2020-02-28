@@ -1,4 +1,4 @@
-import { sharedLayerStyle, sharedTextStyle } from "./base";
+import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle } from "./base";
 
 import { colors } from "../state/common";
 import { context } from "../state/context";
@@ -65,24 +65,3 @@ function coordinateLayer(layer: Layer) {
     group.adjustToFit();
 }
 
-function lengthUnit(value: number, t?, flag?: boolean) {
-    if (t && !flag) return Math.round(value / t * 1e3) / 10 + "%";
-    var value = Math.round(value / context.configs.scale * 10) / 10,
-        units = context.configs.units.split("/"),
-        unit = units[0];
-    if (flag && units.length > 1) unit = units[1];
-    return "" + value + unit;
-}
-
-function Rectangle(x: number, y: number, width: number, height: number) {
-    return {
-        x: x,
-        y: y,
-        width: width,
-        height: height
-    }
-}
-
-function setStyle(layer: Layer, style) {
-    layer.sketchObject.setSharedStyle(style);
-}

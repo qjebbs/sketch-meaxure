@@ -1,175 +1,8 @@
 import { extend, find, convertUnit, getDistance, mathHalf } from "../api/helper";
 import { getRect, removeLayer, addGroup, addText, is, addShape } from "../api/api";
 import { context } from "../state/context";
+import { Layer } from "../api/layer";
 
-export function sizes(options) {
-    var options = /*this.*/extend(options, {}),
-        name = options.name,
-        type = options.type,
-        placement = options.placement,
-        byPercentage = options.byPercentage,
-        styles = options.styles,
-        target = options.target,
-        targetRect = /*this.*/getRect(target),
-        container = /*this.*/find({
-            key: "(name != NULL) && (name == %@)",
-            match: name
-        });
-
-    if (container) /*this.*/removeLayer(container);
-    container = /*this.*/addGroup();
-    /*this.*/context.current.addLayers([container]);
-    container.setName(name);
-
-    var length = (type == "height") ? targetRect.height : targetRect.width,
-        percentageType = (byPercentage && type == "width") ? "width" :
-            (byPercentage && type == "height") ? "height" :
-                undefined,
-        text = /*this.*/convertUnit(length, false, percentageType),
-        temp = /*this.*/addText();
-
-    temp.setStringValue(text);
-    temp.setTextBehaviour(1);
-    temp.setTextBehaviour(0);
-    temp.setSharedStyle(styles.text);
-
-    var tempRect = /*this.*/getRect(temp),
-        ruler = /*this.*/setRuler({
-            type: type,
-            placement: placement,
-            styles: styles,
-            target: target,
-            container: container
-        }),
-        distance = /*this.*/getDistance(ruler.rect),
-        markPlacement = (type == "height") ? (
-            (ruler.rect.height > (tempRect.height + 28)) ? "center" :
-                (placement == "right") ? "right" :
-                    (placement == "left") ? "left" :
-                        (distance.right >= distance.left) ? "right" :
-                            "left"
-        ) :
-            (
-                (ruler.rect.width > (tempRect.width + 28)) ? "middle" :
-                    (placement == "bottom") ? "bottom" :
-                        (placement == "top") ? "top" :
-                            (distance.top >= distance.bottom) ? "top" :
-                                "bottom"
-            );
-
-    var label = /*this.*/setLabel({
-        container: container,
-        target: ruler.element,
-        styles: styles,
-        text: text,
-        placement: markPlacement
-    });
-
-    /*this.*/removeLayer(temp);
-    container.fixGeometryWithOptions(0);
-}
-export function spacings(options) {
-    var options = /*this.*/extend(options, {}),
-        placement = options.placement,
-        styles = options.styles,
-        target = options.target,
-        layer = options.layer,
-        byPercentage = options.byPercentage,
-        targetObjectID = target.objectID(),
-        layerObjectID = layer.objectID(),
-        objectID = targetObjectID + "#" + layerObjectID,
-        prefix = placement.toUpperCase() + "#",
-        sizeType = (placement == "top" || placement == "bottom") ? "height" : "width",
-        targetRect = /*this.*/getRect(target),
-        layerRect = /*this.*/getRect(layer),
-        distance = /*this.*/getDistance(targetRect, layerRect),
-        isIntersect = /*this.*/isIntersect(targetRect, layerRect),
-        tempX = targetRect.x,
-        tempY = targetRect.y,
-        tempWidth = targetRect.width,
-        tempHeight = targetRect.height,
-        render = true;
-
-    if (/*this.*/is(layer, MSPage)) return false;
-
-    if (isIntersect) {
-        switch (placement) {
-            case "top":
-                tempY = targetRect.y - distance.top;
-                tempHeight = distance.top;
-                break;
-            case "right":
-                tempX = targetRect.x + targetRect.width;
-                tempWidth = distance.right;
-                break;
-            case "bottom":
-                tempY = targetRect.y + targetRect.height;
-                tempHeight = distance.bottom;
-                break;
-            case "left":
-                tempX = targetRect.x - distance.left;
-                tempWidth = distance.left;
-                break;
-            default:
-                render = false;
-                break;
-        }
-        if (!tempWidth || !tempHeight) {
-            render = false;
-        }
-    } else {
-        switch (placement) {
-            case "left" || "right":
-                prefix = "HORIZONTAL#";
-                if (targetRect.maxX < layerRect.x) {
-                    tempX = targetRect.maxX;
-                    tempWidth = layerRect.x - targetRect.maxX;
-                } else if (targetRect.x > layerRect.maxX) {
-                    tempX = layerRect.maxX;
-                    tempWidth = targetRect.x - layerRect.maxX;
-                } else {
-                    render = false;
-                }
-                break;
-            case "top" || "bottom":
-                prefix = "VERTICAL#";
-                if (targetRect.maxY < layerRect.y) {
-                    tempY = targetRect.maxY;
-                    tempHeight = layerRect.y - targetRect.maxY;
-                } else if (targetRect.y > layerRect.maxY) {
-                    tempY = layerRect.maxY;
-                    tempHeight = targetRect.y - layerRect.maxY;
-                } else {
-                    render = false;
-                }
-                break;
-            default:
-                render = false;
-                break;
-        }
-    }
-
-    if (render) {
-        var temp = /*this.*/addShape(),
-            tempRect = /*this.*/getRect(temp);
-        /*this.*/context.current.addLayers([temp]);
-
-        tempRect.setX(tempX);
-        tempRect.setY(tempY);
-        tempRect.setWidth(tempWidth);
-        tempRect.setHeight(tempHeight);
-
-        /*this.*/sizes({
-            name: prefix + objectID,
-            type: sizeType,
-            target: temp,
-            styles: styles,
-            byPercentage: byPercentage
-        });
-
-        /*this.*/removeLayer(temp);
-    }
-}
 export function sharedLayerStyle(name, color, borderColor?) {
     var sharedStyles = /*this.*/context.documentData.layerStyles(),
         style = /*this.*/find({
@@ -454,4 +287,24 @@ function setRuler(options) {
         element: line,
         rect: lineRect
     };
+}
+
+export function lengthUnit(value: number, t?, flag?: boolean) {
+    if (t && !flag) return Math.round(value / t * 1e3) / 10 + "%";
+    var value = Math.round(value / context.configs.scale * 10) / 10,
+        units = context.configs.units.split("/"),
+        unit = units[0];
+    if (flag && units.length > 1) unit = units[1];
+    return "" + value + unit;
+}
+export function Rectangle(x: number, y: number, width: number, height: number) {
+    return {
+        x: x,
+        y: y,
+        width: width,
+        height: height
+    }
+}
+export function setStyle(layer: Layer, style) {
+    layer.sketchObject.setSharedStyle(style);
 }

@@ -23,7 +23,7 @@ function overlay(target) {
             key: "(name != NULL) && (name == %@)",
             match: name
         }),
-        overlayStyle = /*this.*/sharedLayerStyle("Sketch Measure / Overlay", /*this.*/colors.overlay.layer);
+        overlayStyle = /*this.*/sharedLayerStyle("Sketch Measure / Overlay", /*this.*/colors.overlay.shape);
 
     if (container) /*this.*/removeLayer(container);
     container = /*this.*/addGroup();

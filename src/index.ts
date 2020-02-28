@@ -8,6 +8,7 @@ import { markNote } from "./mark/note";
 import { liteProperties, markProperties } from "./mark/properties";
 import { markOverlays } from "./mark/overlay";
 import { drawCoordinate } from "./mark/coordinate";
+import { drawSizes } from "./mark/size";
 
 function runAndCatch(fn: Function, context, ...args) {
     try {
@@ -19,25 +20,17 @@ function runAndCatch(fn: Function, context, ...args) {
     }
 }
 
-export function commandInit(context) {
-    return false;
-}
-
-export function commandSettings(context?) {
-    runAndCatch(settingsPanel, context);
-}
-
-export function commandToolbar(context) {
-    runAndCatch(markToolbar, context);
-}
-
-export function commandOverlays(context?) {
-    runAndCatch(markOverlays, context);
-}
-export function commandSizes(context?) {
-    // runAndCatch(fn, context);
-    message('markSizes()');
-}
+export function commandInit(context) { return false; }
+export function commandSettings(context?) { runAndCatch(settingsPanel, context); }
+export function commandToolbar(context) { runAndCatch(markToolbar, context); }
+export function commandOverlays(context?) { runAndCatch(markOverlays, context); }
+export function commandSizes(context?) { commandSizeTop(context); commandSizeRight(context); }
+export function commandSizeTop(context?) { runAndCatch(drawSizes, context, "top"); }
+export function commandSizeMiddle(context?) { runAndCatch(drawSizes, context, "middle"); }
+export function commandSizeBottom(context?) { runAndCatch(drawSizes, context, "bottom"); }
+export function commandSizeLeft(context?) { runAndCatch(drawSizes, context, "left"); }
+export function commandSizeCenter(context?) { runAndCatch(drawSizes, context, "center"); }
+export function commandSizeRight(context?) { runAndCatch(drawSizes, context, "right"); }
 export function commandSpacings(context?) {
     // runAndCatch(fn, context);
     message('markSpacings()');
@@ -53,12 +46,8 @@ export function commandProperties(context?) {
     }, context);
 
 }
-export function commandNote(context?) {
-    runAndCatch(markNote, context);
-}
-export function commandCoordinate(context?) {
-    runAndCatch(drawCoordinate, context);
-}
+export function commandNote(context?) { runAndCatch(markNote, context); }
+export function commandCoordinate(context?) { runAndCatch(drawCoordinate, context); }
 export function commandHidden(context?) {
     // runAndCatch(fn, context);
     //TODO: hidden command to be implemented
@@ -89,6 +78,4 @@ export function commandExportable(context?) {
         message("exportable command to be implemented");
     }
 }
-export function commandExport(context?) {
-    runAndCatch(exportSpecification, context);
-}
+export function commandExport(context?) { runAndCatch(exportSpecification, context); }

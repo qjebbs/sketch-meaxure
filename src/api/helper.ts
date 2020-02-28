@@ -2,6 +2,7 @@ import { context } from "../state/context";
 import { _ } from "../state/language";
 import { getRect, is, removeLayer } from "./api";
 import { regexNames } from "../state/common";
+import { logger } from "./logger";
 
 let sketch = require('sketch');
 
@@ -173,7 +174,7 @@ export function calcArtboardsRow(artboardDatas) {
                 topMost = item;
             }
         }
-        // console.log("top most: " + topMost.name);
+        logger.debug("top most: " + topMost.name);
         rowTop = topMost.y1;
         rowBottom = topMost.y2;
         // Find intersecting artboards
@@ -218,7 +219,7 @@ export function calcArtboardsColumn(artboardDatas) {
                 leftMost = item;
             }
         }
-        // console.log("left most: " + leftMost.name);
+        logger.debug("left most: " + leftMost.name);
         colLeft = leftMost.x1;
         colRight = leftMost.x2;
         // Find intersecting artboards

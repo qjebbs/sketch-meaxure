@@ -90,7 +90,6 @@ export function exportPanel() {
     }
 
     /*self.*/context.allData = data;
-    console.log(data);
     return /*this.*/SMPanel({
         url: /*this.*/context.resourcesRoot + "/panel/export.html",
         width: 320,

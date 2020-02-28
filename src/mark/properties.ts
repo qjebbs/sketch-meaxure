@@ -67,7 +67,7 @@ function properties(options) {
         properties = options.properties,
         placement = options.placement,
         styles = {
-            layer: /*this.*/sharedLayerStyle("Sketch Measure / Property", /*this.*/colors.property.layer),
+            layer: /*this.*/sharedLayerStyle("Sketch Measure / Property", /*this.*/colors.property.shape),
             text: /*this.*/sharedTextStyle("Sketch Measure / Property", /*this.*/colors.property.text)
         },
         target = options.target,
