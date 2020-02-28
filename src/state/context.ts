@@ -10,11 +10,7 @@ interface RunningConfig {
     exportOption: boolean;
     colors: any;
     sizes: any;
-    spacings: any;
-    properties: any;
-    isHidden: boolean;
-    isLocked: boolean;
-    placement: string;
+    placement: string; //property placement
 }
 
 interface markContext {

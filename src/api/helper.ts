@@ -129,43 +129,6 @@ export function find(format, container?, returnArray?) {
         return false;
     }
 }
-export function clearAllMarks() {
-    var targets = /*this.*/context.selection.length ? /*this.*/context.selection : [/*this.*/context.page];
-    for (let i = 0; i < targets.length; i++) {
-        var current = targets[i];
-        var layers = current.children().objectEnumerator();
-        let layer;
-        while (layer = layers.nextObject()) {
-            if (/*this.*/is(layer, MSLayerGroup) && /*this.*/regexNames.exec(layer.name())) {
-                /*this.*/removeLayer(layer)
-            }
-        }
-    }
-}
-export function toggleHidden() {
-    var isHidden = (/*this.*/context.runningConfig.isHidden) ? false : !Boolean(/*this.*/context.runningConfig.isHidden);
-    /*this.*/context.runningConfig.isHidden = isHidden;
-
-    var layers = /*this.*/context.page.children().objectEnumerator();
-    let layer;
-    while (layer = layers.nextObject()) {
-        if (/*this.*/is(layer, MSLayerGroup) && /*this.*/regexNames.exec(layer.name())) {
-            layer.setIsVisible(!isHidden);
-        }
-    }
-}
-export function toggleLocked() {
-    var isLocked = (/*this.*/context.runningConfig.isLocked) ? false : !Boolean(/*this.*/context.runningConfig.isLocked);
-    context.runningConfig.isLocked = isLocked;
-
-    var layers = /*this.*/context.page.children().objectEnumerator();
-    let layer;
-    while (layer = layers.nextObject()) {
-        if (/*this.*/is(layer, MSLayerGroup) && /*this.*/regexNames.exec(layer.name())) {
-            layer.setIsLocked(isLocked);
-        }
-    }
-}
 export function calcArtboardsRow(artboardDatas) {
     let curRow = 0;
     let unCalcData = artboardDatas;

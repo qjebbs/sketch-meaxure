@@ -10,6 +10,7 @@ import { markOverlays } from "./mark/overlay";
 import { drawCoordinate } from "./mark/coordinate";
 import { drawSizes } from "./mark/size";
 import { drawSpacings } from "./mark/spacings";
+import { toggleHidden, toggleLocked, clearAllMarks } from "./mark/manage";
 
 function runAndCatch(fn: Function, context, ...args) {
     try {
@@ -52,21 +53,9 @@ export function commandProperties(context?) {
 }
 export function commandNote(context?) { runAndCatch(markNote, context); }
 export function commandCoordinate(context?) { runAndCatch(drawCoordinate, context); }
-export function commandHidden(context?) {
-    // runAndCatch(fn, context);
-    //TODO: hidden command to be implemented
-    message("hidden command to be implemented");
-}
-export function commandLocked(context?) {
-    // runAndCatch(fn, context);
-    //TODO: locked command to be implemented
-    message("locked command to be implemented");
-}
-export function commandClear(context?) {
-    // runAndCatch(fn, context);
-    //TODO: clear command to be implemented
-    message("clear command to be implemented");
-}
+export function commandHidden(context?) { runAndCatch(toggleHidden, context); }
+export function commandLocked(context?) { runAndCatch(toggleLocked, context); }
+export function commandClear(context?) { runAndCatch(clearAllMarks, context); }
 export function commandColor(context?) {
     // runAndCatch(fn, context);
     //TODO: color command to be implemented

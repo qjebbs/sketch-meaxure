@@ -45,7 +45,7 @@
       "script": "mark_bundle.js"
     },
     {
-      "name": "Mark Note",
+      "name": "Mark Coordinate",
       "identifier": "commandCoordinate",
       "shortcut": "ctrl shift 6",
       "handler": "commandCoordinate",
