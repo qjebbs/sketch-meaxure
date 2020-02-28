@@ -1,7 +1,7 @@
 import { context } from "../state/context";
 import { message } from "../api/helper";
 import { logger } from "../api/logger";
-import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandExportable, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight } from "..";
+import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandExportable, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight } from "..";
 
 function getImage(name: string, state?: string) {
     var highDPI = NSScreen.mainScreen().backingScaleFactor() > 1,
@@ -139,49 +139,37 @@ export function markToolbar() {
     controls.push(
         addButton(
             NSMakeRect(20, 306, 32, 32), "Verticaly Distance", "vertical-distance", "normal",
-            function () {
-                message('Mark.spacings("vertical")')
-            }
+            () => commandSpacingVertical()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(20, 266, 32, 32), "Horizontaly Distance", "horizontal-distance", "normal",
-            function () {
-                message('Mark.spacings("horizontal")')
-            }
+            () => commandSpacingHorizontal()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(68, 306, 32, 32), "Top Spacing", "spacing-top", "normal",
-            function () {
-                message('Mark.spacings("top")')
-            }
+            () => commandSpacingTop()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(108, 306, 32, 32), "Bottom Spacing", "spacing-bottom", "normal",
-            function () {
-                message('Mark.spacings("bottom")')
-            }
+            () => commandSpacingBottom()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(68, 266, 32, 32), "Left Spacing", "spacing-left", "normal",
-            function () {
-                message('Mark.spacings("left")')
-            }
+            () => commandSpacingLeft()
         )
     );
     controls.push(
         addButton(
             NSMakeRect(108, 266, 32, 32), "Right Spacing", "spacing-right", "normal",
-            function () {
-                message('Mark.spacings("right")')
-            }
+            () => commandSpacingRight()
         )
     );
     controls.push(

@@ -3,6 +3,7 @@ import { _ } from "../state/language";
 import { getRect, is, removeLayer } from "./api";
 import { regexNames } from "../state/common";
 import { logger } from "./logger";
+import { Rect } from "./interfaces";
 
 let sketch = require('sketch');
 
@@ -75,13 +76,18 @@ export function hexToRgb(hex) {
         b: /*this.*/parseInt(result[3], 16)
     } : null;
 }
-export function isIntersect(targetRect, layerRect) {
-    return !(
-        targetRect.maxX <= layerRect.x ||
-        targetRect.x >= layerRect.maxX ||
-        targetRect.y >= layerRect.maxY ||
-        targetRect.maxY <= layerRect.y
-    );
+export function isIntersect(a: Rect, b: Rect) {
+    return isIntersectX(a, b) && isIntersectY(a, b);
+}
+export function isIntersectX(a: Rect, b: Rect) {
+    return (a.x >= b.x && a.x <= b.x + b.width) || //left board of a in x range of b
+        (a.x + a.width >= b.x && a.x + a.width <= b.x + b.width) || //right board of a in x range of b
+        (a.x < b.x && a.x + a.width > b.x + b.width)  // x range of a includes b's
+}
+export function isIntersectY(a: Rect, b: Rect) {
+    return (a.y >= b.y && a.y <= b.y + b.height) || //top board of a in y range of b
+        (a.y + a.height >= b.y && a.y + a.height <= b.y + b.height) || //bottom board of a in y range of b
+        (a.y < b.y && a.y + a.height > b.y + b.height); // y range of a includes b's
 }
 export function getDistance(targetRect, containerRect?) {
     var containerRect = containerRect || /*this.*/getRect(/*this.*/context.current);

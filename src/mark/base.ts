@@ -308,3 +308,14 @@ export function Rectangle(x: number, y: number, width: number, height: number) {
 export function setStyle(layer: Layer, style) {
     layer.sketchObject.setSharedStyle(style);
 }
+export function getDistances(from: Layer, to?: Layer) {
+    var to = to || from.current,
+        rectFrom = from.rect,
+        rectTo = to.rect;
+    return {
+        top: rectFrom.y - rectTo.y,
+        right: rectTo.x + rectTo.width - (rectFrom.x + rectFrom.width),
+        bottom: rectTo.y + rectTo.height - (rectFrom.y + rectFrom.height),
+        left: rectFrom.x - rectTo.x
+    }
+}

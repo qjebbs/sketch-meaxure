@@ -1,7 +1,7 @@
 import { Layer } from "../api/layer";
 import { context } from "../state/context";
 import { message } from "../api/helper";
-import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle } from "./base";
+import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle, getDistances } from "./base";
 import { colors } from "../state/common";
 import { Rect } from "../api/interfaces";
 
@@ -15,11 +15,11 @@ export function drawSizes(position) {
     let layer;
     let enmu = context.selection.objectEnumerator();
     while (layer = enmu.nextObject()) {
-        size(new Layer(layer), position);
+        drawSize(new Layer(layer), position);
     }
 }
 
-function size(layer: Layer, position: string, name?, style?) {
+export function drawSize(layer: Layer, position: string, name?, style?) {
     var sizeType = /top|middle|bottom/.exec(position) ? "width" : "height",
         id = new String(layer.ID).toString(),
         name = name || "#" + sizeType + "-" + position + "-" + id,
@@ -218,14 +218,3 @@ function createLine(sizeType: string, group: Layer, position: string, style: any
     return lineShape
 }
 
-function getDistances(from: Layer, to?: Layer) {
-    var to = to || from.current,
-        rectFrom = from.rect,
-        rectTo = to.rect;
-    return {
-        top: rectFrom.y - rectTo.y,
-        right: rectTo.x + rectTo.width - (rectFrom.x + rectFrom.width),
-        bottom: rectTo.y + rectTo.height - (rectFrom.y + rectFrom.height),
-        left: rectFrom.x - rectTo.x
-    }
-}

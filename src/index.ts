@@ -9,6 +9,7 @@ import { liteProperties, markProperties } from "./mark/properties";
 import { markOverlays } from "./mark/overlay";
 import { drawCoordinate } from "./mark/coordinate";
 import { drawSizes } from "./mark/size";
+import { drawSpacings } from "./mark/spacings";
 
 function runAndCatch(fn: Function, context, ...args) {
     try {
@@ -20,7 +21,7 @@ function runAndCatch(fn: Function, context, ...args) {
     }
 }
 
-export function commandInit(context) { return false; }
+export function commandInit(context) { updateContext(context); return false; }
 export function commandSettings(context?) { runAndCatch(settingsPanel, context); }
 export function commandToolbar(context) { runAndCatch(markToolbar, context); }
 export function commandOverlays(context?) { runAndCatch(markOverlays, context); }
@@ -31,10 +32,13 @@ export function commandSizeBottom(context?) { runAndCatch(drawSizes, context, "b
 export function commandSizeLeft(context?) { runAndCatch(drawSizes, context, "left"); }
 export function commandSizeCenter(context?) { runAndCatch(drawSizes, context, "center"); }
 export function commandSizeRight(context?) { runAndCatch(drawSizes, context, "right"); }
-export function commandSpacings(context?) {
-    // runAndCatch(fn, context);
-    message('markSpacings()');
-}
+export function commandSpacings(context?) { runAndCatch(drawSpacings, context); }
+export function commandSpacingVertical(context?) { runAndCatch(drawSpacings, context, "vertical"); }
+export function commandSpacingHorizontal(context?) { runAndCatch(drawSpacings, context, "horizontal"); }
+export function commandSpacingTop(context?) { runAndCatch(drawSpacings, context, "top"); }
+export function commandSpacingBottom(context?) { runAndCatch(drawSpacings, context, "bottom"); }
+export function commandSpacingLeft(context?) { runAndCatch(drawSpacings, context, "left"); }
+export function commandSpacingRight(context?) { runAndCatch(drawSpacings, context, "right"); }
 export function commandProperties(context?) {
     runAndCatch(() => {
         // call from UI, or alt key pressed

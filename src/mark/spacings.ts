@@ -1,156 +1,220 @@
-// import { _ } from "../state/language";
-// import { colors } from "../state/common";
-// import { context } from "../state/context";
-// import { sharedLayerStyle, sharedTextStyle } from "./base";
-// import { message, extend, getDistance } from "../api/helper";
-// import { getRect, is, addShape, removeLayer } from "../api/api";
-// // export function markSpacings() {
-// //     var selection = /*this.*/ context.selection;
-// //     if (!(selection.count() > 0 && selection.count() < 3)) {
-// //         /*this.*/ message(_("Select 1 or 2 layers to make marks!"));
-// //         return false;
-// //     }
-// //     if ( /*this.*/spacingsPanel()) {
-// //         var target = (selection.count() == 1) ? selection[0] : selection[1], layer = (selection.count() == 1) ? /*this.*/ context.current : selection[0], placements = ["top", "right", "bottom", "left"], spacingStyles = {
-// //             layer: /*this.*/ sharedLayerStyle("Sketch Measure / Spacing", /*this.*/ colors.spacing.layer),
-// //             text: /*this.*/ sharedTextStyle("Sketch Measure / Spacing", /*this.*/ colors.spacing.text, 2)
-// //         };
-// //         if ( /*this.*/isIntersect(/*this.*/ getRect(target), /*this.*/ getRect(layer))) {
-// //             placements = /*this.*/ context.runningConfig.spacings.placements;
-// //         }
-// //         placements.forEach(function (placement) {
-// //             /*self.*/ spacings({
-// //             target: target,
-// //             layer: layer,
-// //             placement: placement,
-// //             styles: spacingStyles,
-// //             byPercentage: /*this.*/ context.runningConfig.spacings.byPercentage
-// //         });
-// //         });
-// //     }
-// // }
-// export function liteSpacings() {
-//     var selection = /*this.*/ context.selection;
-//     if (!(selection.count() > 0 && selection.count() < 3)) {
-//         /*this.*/ message(_("Select 1 or 2 layers to make marks!"));
-//         return false;
-//     }
-//     var target = (selection.count() == 1) ? selection[0] : selection[1], layer = (selection.count() == 1) ? /*this.*/ context.current : selection[0], spacingStyles = {
-//         layer: /*this.*/ sharedLayerStyle("Sketch Measure / Spacing", /*this.*/ colors.spacing.shape),
-//         text: /*this.*/ sharedTextStyle("Sketch Measure / Spacing", /*this.*/ colors.spacing.text, 2)
-//     };
-//     let placements = ["top", "right", "bottom", "left"];
-//     placements.forEach(function (placement) {
-//         /*self.*/ spacings({
-//         target: target,
-//         layer: layer,
-//         placement: placement,
-//         styles: spacingStyles,
-//         byPercentage: false
-//     });
-//     });
-// }
+import { context } from "../state/context";
+import { message, isIntersect, find, isIntersectX, isIntersectY } from "../api/helper";
+import { getDistances, sharedLayerStyle, sharedTextStyle } from "./base";
+import { colors } from "../state/common";
+import { Rect } from "../api/interfaces";
+import { drawSize } from "./size";
+import { Layer } from "../api/layer";
+import { logger } from "../api/logger";
+import { removeLayer } from "../api/api";
 
+export function drawSpacings(position?: string) {
+    if (context.selection.length <= 0) {
+        message("Selcet any layer to mark!");
+        return false;
+    }
+    if (context.selection.length > 2) {
+        message("Selcet 2 layers to mark!");
+        return false;
+    }
 
-// export function spacings(options) {
-//     var options = /*this.*/extend(options, {}),
-//         placement = options.placement,
-//         styles = options.styles,
-//         target = options.target,
-//         layer = options.layer,
-//         byPercentage = options.byPercentage,
-//         targetObjectID = target.objectID(),
-//         layerObjectID = layer.objectID(),
-//         objectID = targetObjectID + "#" + layerObjectID,
-//         prefix = placement.toUpperCase() + "#",
-//         sizeType = (placement == "top" || placement == "bottom") ? "height" : "width",
-//         targetRect = /*this.*/getRect(target),
-//         layerRect = /*this.*/getRect(layer),
-//         distance = /*this.*/getDistance(targetRect, layerRect),
-//         isIntersect = /*this.*/isIntersect(targetRect, layerRect),
-//         tempX = targetRect.x,
-//         tempY = targetRect.y,
-//         tempWidth = targetRect.width,
-//         tempHeight = targetRect.height,
-//         render = true;
+    position = position || "";
+    let layer: Layer, layers: Layer[] = [];
+    let enmu = context.selection.objectEnumerator();
+    while (layer = enmu.nextObject()) {
+        layers.push(new Layer(layer));
+    }
+    distance(layers, position);
+}
 
-//     if (/*this.*/is(layer, MSPage)) return false;
+function distance(layers: Layer[], position: string) {
+    let layerA = layers[0];
+    let layerB = layers.length == 1 ? layerA.current : layers[1];
+    if (layerB.isPage) {
+        message('Layer not in artboard, skipping...');
+        return;
+    }
 
-//     if (isIntersect) {
-//         switch (placement) {
-//             case "top":
-//                 tempY = targetRect.y - distance.top;
-//                 tempHeight = distance.top;
-//                 break;
-//             case "right":
-//                 tempX = targetRect.x + targetRect.width;
-//                 tempWidth = distance.right;
-//                 break;
-//             case "bottom":
-//                 tempY = targetRect.y + targetRect.height;
-//                 tempHeight = distance.bottom;
-//                 break;
-//             case "left":
-//                 tempX = targetRect.x - distance.left;
-//                 tempWidth = distance.left;
-//                 break;
-//             default:
-//                 render = false;
-//                 break;
-//         }
-//         if (!tempWidth || !tempHeight) {
-//             render = false;
-//         }
-//     } else {
-//         switch (placement) {
-//             case "left" || "right":
-//                 prefix = "HORIZONTAL#";
-//                 if (targetRect.maxX < layerRect.x) {
-//                     tempX = targetRect.maxX;
-//                     tempWidth = layerRect.x - targetRect.maxX;
-//                 } else if (targetRect.x > layerRect.maxX) {
-//                     tempX = layerRect.maxX;
-//                     tempWidth = targetRect.x - layerRect.maxX;
-//                 } else {
-//                     render = false;
-//                 }
-//                 break;
-//             case "top" || "bottom":
-//                 prefix = "VERTICAL#";
-//                 if (targetRect.maxY < layerRect.y) {
-//                     tempY = targetRect.maxY;
-//                     tempHeight = layerRect.y - targetRect.maxY;
-//                 } else if (targetRect.y > layerRect.maxY) {
-//                     tempY = layerRect.maxY;
-//                     tempHeight = targetRect.y - layerRect.maxY;
-//                 } else {
-//                     render = false;
-//                 }
-//                 break;
-//             default:
-//                 render = false;
-//                 break;
-//         }
-//     }
+    let artboard = layerA.current;
+    let fromID = new String(layerA.ID).toString();
+    let toID = new String(layerB.ID).toString();
+    let from = context.configs.byInfluence ? layerA.influenceRect : layerA.rect;
+    let to = context.configs.byInfluence ? layerB.influenceRect : layerB.rect;
 
-//     if (render) {
-//         var temp = /*this.*/addShape(),
-//             tempRect = /*this.*/getRect(temp);
-//         /*this.*/context.current.addLayers([temp]);
+    switch (position) {
+        case "":
+        case "horizontal":
+            drawHorizontal(artboard, "#spacing-horizontal-" + fromID + "-" + toID, from, to);
+            if (position) return;
+        case "":
+        case "vertical":
+            drawVertical(artboard, "#spacing-vertical-" + fromID + "-" + toID, from, to);
+            if (position) return;
+        case "":
+        case "top":
+            drawTop(artboard, "#spacing-top-" + fromID + "-" + toID, from, to);
+            if (position) return;
+        case "":
+        case "bottom":
+            drawBottom(artboard, "#spacing-bottom-" + fromID + "-" + toID, from, to);
+            if (position) return;
+        case "":
+        case "left":
+            drawLeft(artboard, "#spacing-left-" + fromID + "-" + toID, from, to);
+            if (position) return;
+        case "":
+        case "right":
+            drawRight(artboard, "#spacing-right-" + fromID + "-" + toID, from, to);
+            if (position) return;
+        default:
+            break;
+    }
+}
 
-//         tempRect.setX(tempX);
-//         tempRect.setY(tempY);
-//         tempRect.setWidth(tempWidth);
-//         tempRect.setHeight(tempHeight);
+function drawHorizontal(artboard: Layer, layerName: string, from: Rect, to: Rect) {
+    let tmp = <Rect>{};
+    if (isIntersectX(from, to)) {
+        logger.debug('No horizontal space for selected layers, skipping...');
+        return;
+    }
 
-//         /*this.*/sizes({
-//             name: prefix + objectID,
-//             type: sizeType,
-//             target: temp,
-//             styles: styles,
-//             byPercentage: byPercentage
-//         });
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
 
-//         /*this.*/removeLayer(temp);
-//     }
-// }
+    // make sure from left shape to right
+    if (from.x > to.x) [from, to] = swap(from, to);
+    tmp.x = from.x + from.width;
+    tmp.y = from.y;
+    tmp.width = to.x - tmp.x;
+    tmp.height = from.height;
+    drawSpacingShape(artboard, tmp, "middle", layerName);
+}
+
+function drawVertical(artboard: Layer, layerName: string, from: Rect, to: Rect) {
+    let tmp = <Rect>{};
+    if (isIntersectY(from, to)) {
+        logger.debug('No vertical space for selected layers, skipping...');
+        return;
+    }
+
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
+
+    // make sure from higher shape to lower
+    if (from.y > to.y) [from, to] = swap(from, to);
+    tmp.x = from.x;
+    tmp.y = from.y + from.height;
+    tmp.width = from.width;
+    tmp.height = to.y - tmp.y;
+    drawSpacingShape(artboard, tmp, "center", layerName);
+}
+
+function drawTop(artboard: Layer, layerName: string, from: Rect, to: Rect) {
+    let tmp = <Rect>{};
+    if (!isIntersect(from, to)) {
+        logger.debug('No intersection for selected layers, skipping...');
+        return;
+    }
+
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
+
+    // make sure from lower shape to higher
+    if (from.y < to.y) [from, to] = swap(from, to);
+    tmp.x = from.x;
+    tmp.y = to.y;
+    tmp.width = from.width;
+    tmp.height = from.y - to.y;
+    drawSpacingShape(artboard, tmp, "center", layerName);
+}
+
+function drawBottom(artboard: Layer, layerName: string, from: Rect, to: Rect) {
+    let tmp = <Rect>{};
+    if (!isIntersect(from, to)) {
+        logger.debug('No intersection for selected layers, skipping...');
+        return;
+    }
+
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
+
+    // make sure from higher bottom shape to lower
+    if (from.y + from.height > to.y + to.height) [from, to] = swap(from, to);
+    tmp.x = from.x;
+    tmp.y = from.y + from.height;
+    tmp.width = from.width;
+    tmp.height = to.y + to.height - from.y - from.height;
+    drawSpacingShape(artboard, tmp, "center", layerName);
+}
+
+function drawLeft(artboard: Layer, layerName: string, from: Rect, to: Rect) {
+    let tmp = <Rect>{};
+    if (!isIntersect(from, to)) {
+        logger.debug('No intersection for selected layers, skipping...');
+        return;
+    }
+
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
+
+    // make sure from right shape to left
+    if (from.x < to.x) [from, to] = swap(from, to);
+    tmp.x = to.x;
+    tmp.y = from.y;
+    tmp.width = from.x - to.x;
+    tmp.height = from.height;
+    drawSpacingShape(artboard, tmp, "middle", layerName);
+}
+
+function drawRight(artboard: Layer, layerName: string, from: Rect, to: Rect) {
+    let tmp = <Rect>{};
+    if (!isIntersect(from, to)) {
+        logger.debug('No intersection for selected layers, skipping...');
+        return;
+    }
+
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
+
+    // make sure from left shape (by right border) to right
+    if (from.x + from.width > to.x + to.width) [from, to] = swap(from, to);
+    tmp.x = from.x + from.width;
+    tmp.y = from.y;
+    tmp.width = to.x + to.width - from.x - from.width;
+    tmp.height = from.height;
+    drawSpacingShape(artboard, tmp, "middle", layerName);
+}
+
+function drawSpacingShape(container: Layer, frame: Rect, drawSizePosition: string, layerName: string) {
+    var tempShape = container.newShape({
+        layerName: "temp"
+    });
+    tempShape.rect = frame;
+    drawSize(tempShape, drawSizePosition, layerName, {
+        shape: sharedLayerStyle("Sketch Measure / Spacing", colors.spacing.shape),
+        text: sharedTextStyle("Sketch Measure / Spacing", colors.spacing.text)
+    });
+    tempShape.remove();
+}
+
+function swap<T>(a: T, b: T): [T, T] {
+    return [b, a];
+}
