@@ -1,5 +1,5 @@
 import { context } from "../state/context";
-import { _ } from "../state/language";
+import { localize } from "../state/language";
 import { getRect, is, removeLayer } from "./api";
 import { regexNames } from "../state/common";
 import { logger } from "./logger";
@@ -225,9 +225,9 @@ export function getSavePath() {
     var fileName = /*this.*/context.document.displayName().stringByDeletingPathExtension();
     var savePanel = NSSavePanel.savePanel();
 
-    savePanel.setTitle(_("Export spec"));
-    savePanel.setNameFieldLabel(_("Export to:"));
-    savePanel.setPrompt(_("Export"));
+    savePanel.setTitle(localize("Export spec"));
+    savePanel.setNameFieldLabel(localize("Export to:"));
+    savePanel.setPrompt(localize("Export"));
     savePanel.setCanCreateDirectories(true);
     savePanel.setNameFieldStringValue(fileName);
 
@@ -258,4 +258,8 @@ export function deepEqual(x, y) {
         }
     }
     return true;
+}
+export function openURL(url) {
+    var nsurl = NSURL.URLWithString(url);
+    NSWorkspace.sharedWorkspace().openURL(nsurl);
 }

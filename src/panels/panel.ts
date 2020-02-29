@@ -1,5 +1,5 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
-import { _ } from '../state/language';
+import { localize } from '../state/language';
 import { message, extend } from '../api/helper';
 import { context } from '../state/context';
 
@@ -90,15 +90,15 @@ export function SMPanel(options) {
                     // windowObject.evaluateWebScript("window.location.hash = 'close';");
                 } else if (request == "import") {
                     if (options.importCallback(windowObject)) {
-                        /*self.*/message(_("Import complete!"));
+                        /*self.*/message(localize("Import complete!"));
                     }
                 } else if (request == "export") {
                     if (options.exportCallback(windowObject)) {
-                        /*self.*/message(_("Export complete!"));
+                        /*self.*/message(localize("Export complete!"));
                     }
                 } else if (request == "export-xml") {
                     if (options.exportXMLCallback(windowObject)) {
-                        /*self.*/message(_("Export complete!"));
+                        /*self.*/message(localize("Export complete!"));
                     }
                 } else if (request == "add") {
                     options.addCallback(windowObject);

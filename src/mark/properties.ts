@@ -1,4 +1,4 @@
-import { _ } from "../state/language";
+import { localize } from "../state/language";
 import { message, getDistance, convertUnit, extend, find, mathHalf } from "../api/helper";
 import { propertiesPanel } from "../panels/propertiesPanel";
 import { context } from "../state/context";
@@ -10,7 +10,7 @@ import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
 export function markProperties() {
     var selection = /*this.*/ context.selection;
     if (selection.count() <= 0) {
-        /*this.*/ message(_("Select a layer to make marks!"));
+        /*this.*/ message(localize("Select a layer to mark!"));
         return false;
     }
     var target = selection[0];
@@ -30,7 +30,7 @@ export function liteProperties() {
     var selection = /*this.*/context.selection;
 
     if (selection.count() <= 0) {
-        /*this.*/message(_("Select a layer to make marks!"));
+        /*this.*/message(localize("Select a layer to mark!"));
         return false;
     }
 

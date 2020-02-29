@@ -6,6 +6,7 @@ declare class MSLayerClass {
     new: () => any;
     alloc: () => any;
     shapeWithRect: (rect) => any;
+    sliceLayerFromLayer: (layer) => any;
 }
 declare const MSLayerGroup: MSLayerClass;
 declare const MSTextLayer: MSLayerClass;
@@ -41,7 +42,11 @@ declare class SketchSVGExporter {
     static new();
 }
 declare class MSColor {
-    static colorWithRed_green_blue_alpha(r, g, b, a)
+    static colorWithRed_green_blue_alpha(r, g, b, a);
+}
+declare class MSRect {
+    static rectWithUnionOfRects(...args);
+    static alloc()
 }
 
 declare class MSJSONDataArchiver {

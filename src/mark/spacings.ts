@@ -7,14 +7,11 @@ import { drawSize } from "./size";
 import { Layer } from "../api/layer";
 import { logger } from "../api/logger";
 import { removeLayer } from "../api/api";
+import { localize } from "../state/language";
 
 export function drawSpacings(position?: string) {
-    if (context.selection.length <= 0) {
-        message("Selcet any layer to mark!");
-        return false;
-    }
-    if (context.selection.length > 2) {
-        message("Selcet 2 layers to mark!");
+    if (context.selection.length != 1 && context.selection.length != 2) {
+        message(localize("Select 1 or 2 layers to mark!"));
         return false;
     }
 

@@ -1,4 +1,4 @@
-import { _ } from "../state/language";
+import { localize } from "../state/language";
 import { message, find, mathHalf } from "../api/helper";
 import { colors } from "../state/common";
 import { getRect, is, addGroup, addShape, addText, removeLayer } from "../api/api";
@@ -9,7 +9,7 @@ export function markNote() {
     var selection = /*this.*/context.selection;
 
     if (selection.count() <= 0) {
-        /*this.*/message(_("Select a text layer to make marks!"));
+        /*this.*/message(localize("Select a text layer to mark!"));
         return false;
     }
 

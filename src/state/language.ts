@@ -20,7 +20,7 @@ export function initLanguage(): string {
     return `I18N['${webI18N[lang]}'] = ${language}`;
 }
 
-export function _(str, data?) {
+export function localize(str, data?) {
     var str = (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str,
         idx = -1;
     return str.replace(/\%\@/gi, function () {

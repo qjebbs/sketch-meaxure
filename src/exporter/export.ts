@@ -1,4 +1,4 @@
-import { _ } from "../state/language";
+import { localize } from "../state/language";
 import { logger } from "../api/logger";
 import { exportPanel } from "../panels/exportPanel";
 import { context } from "../state/context";
@@ -47,7 +47,7 @@ export function exportSpecification() {
 
             coscript.scheduleWithRepeatingInterval_jsFunction(0, function (interval) {
                 // /*self.*/message('Processing layer ' + idx + ' of ' + context.allCount);
-                processing.evaluateWebScript("processing('" + Math.round(idx / context.allCount * 100) + "%', '" + _("Processing layer %@ of %@", [idx, context.allCount]) + "')");
+                processing.evaluateWebScript("processing('" + Math.round(idx / context.allCount * 100) + "%', '" + localize("Processing layer %@ of %@", [idx, context.allCount]) + "')");
                 idx++;
 
                 if (!data.artboards[artboardIndex]) {
@@ -165,7 +165,7 @@ export function exportSpecification() {
                         }
                         NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
 
-                        /*self.*/message(_("Export complete!"));
+                        /*self.*/message(localize("Export complete!"));
                         /*self.*/context.wantsStop = true;
                     }
 

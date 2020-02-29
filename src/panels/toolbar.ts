@@ -1,7 +1,7 @@
 import { context } from "../state/context";
-import { message } from "../api/helper";
 import { logger } from "../api/logger";
-import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandExportable, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight } from "..";
+import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "..";
+import { localize } from "../state/language";
 
 function getImage(name: string, state?: string) {
     var highDPI = NSScreen.mainScreen().backingScaleFactor() > 1,
@@ -34,14 +34,14 @@ function addButton(rect, tooltip, iconName, iconState, callAction: Function) {
 
     button.setCOSJSTargetFunction(callback);
     button.setAction("callAction:");
-    if (tooltip) button.setToolTip(tooltip);
+    if (tooltip) button.setToolTip(localize(tooltip));
     return button;
 }
 function addCheckbox(rect: any, name: string, checked: boolean, callAction: Function) {
     let checkbox = NSButton.alloc().initWithFrame(rect);
     let attr = NSMutableAttributedString.alloc().init();
     checked = checked || false;
-    attr.appendString_attributes(name, {});
+    attr.appendString_attributes(localize(name), {});
     let range = NSMakeRange(0, attr.length());
     attr.addAttribute_value_range(NSForegroundColorAttributeName, NSColor.colorWithRed_green_blue_alpha(.29, .29, .29, 1), range);
     attr.addAttribute_value_range(NSFontAttributeName, NSFont.systemFontOfSize(14), range);
@@ -53,6 +53,7 @@ function addCheckbox(rect: any, name: string, checked: boolean, callAction: Func
     return checkbox
 }
 export function markToolbar() {
+    const WIN_WIDTH = 136, WIN_HEIGHT = 524;
     var identifier = "co.jebbs.measure",
         threadDictionary = NSThread.mainThread().threadDictionary(),
         Toolbar = threadDictionary[identifier];
@@ -65,16 +66,17 @@ export function markToolbar() {
     Toolbar.setTitleVisibility(NSWindowTitleHidden);
     Toolbar.setTitlebarAppearsTransparent(true);
 
-    Toolbar.setFrame_display(NSMakeRect(0, 0, 160, 582), false);
+    Toolbar.setFrame_display(NSMakeRect(0, 0, WIN_WIDTH, WIN_HEIGHT), false);
     Toolbar.setMovableByWindowBackground(true);
     Toolbar.becomeKeyWindow();
     Toolbar.setLevel(NSFloatingWindowLevel);
     let controls: any[] = [];
     var contentView = Toolbar.contentView();
 
+    // close button
     controls.push(
         addButton(
-            NSMakeRect(12, 558, 12, 12), null, "close", "normal",
+            NSMakeRect(12, WIN_HEIGHT - 24, 12, 12), null, "close", "normal",
             function (sender) {
                 coscript.setShouldKeepAround(false);
                 threadDictionary.removeObjectForKey(identifier);
@@ -82,163 +84,218 @@ export function markToolbar() {
             }
         )
     );
+
+    let [makeRect, newLine, newSection] = getUIHelpers(WIN_WIDTH, WIN_HEIGHT, 60);
+
     controls.push(
         addButton(
-            NSMakeRect(20, 494, 32, 32), "Coordinate", "coordinate", "normal",
+            makeRect(), "Coordinate", "coordinate", "normal",
             () => commandCoordinate()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(60, 494, 32, 32), "Overlay", "overlay", "normal",
+            makeRect(), "Overlay", "overlay", "normal",
             () => commandOverlays()
         )
     );
+    newSection();
     controls.push(
         addButton(
-            NSMakeRect(100, 494, 32, 32), "Make Exportable", "create-slice", "normal",
-            () => commandExportable()
-        )
-    );
-    controls.push(
-        addButton(
-            NSMakeRect(20, 420, 32, 32), "Top Width", "width-top", "normal",
+            makeRect(), "Top Width", "width-top", "normal",
             () => commandSizeTop()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(60, 420, 32, 32), "Middle Width", "width-middle", "normal",
+            makeRect(), "Middle Width", "width-middle", "normal",
             () => commandSizeMiddle()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(100, 420, 32, 32), "Bottom Width", "width-bottom", "normal",
+            makeRect(), "Bottom Width", "width-bottom", "normal",
             () => commandSizeBottom()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(20, 380, 32, 32), "Left Height", "height-left", "normal",
+            makeRect(), "Left Height", "height-left", "normal",
             () => commandSizeLeft()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(60, 380, 32, 32), "Center Height", "height-center", "normal",
+            makeRect(), "Center Height", "height-center", "normal",
             () => commandSizeCenter()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(100, 380, 32, 32), "Right Height", "height-right", "normal",
+            makeRect(), "Right Height", "height-right", "normal",
             () => commandSizeRight()
         )
     );
+    newSection();
     controls.push(
         addButton(
-            NSMakeRect(20, 306, 32, 32), "Verticaly Distance", "vertical-distance", "normal",
+            makeRect(), "Verticaly Distance", "vertical-distance", "normal",
             () => commandSpacingVertical()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(20, 266, 32, 32), "Horizontaly Distance", "horizontal-distance", "normal",
-            () => commandSpacingHorizontal()
-        )
-    );
-    controls.push(
-        addButton(
-            NSMakeRect(68, 306, 32, 32), "Top Spacing", "spacing-top", "normal",
+            makeRect(), "Top Spacing", "spacing-top", "normal",
             () => commandSpacingTop()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(108, 306, 32, 32), "Bottom Spacing", "spacing-bottom", "normal",
+            makeRect(), "Bottom Spacing", "spacing-bottom", "normal",
             () => commandSpacingBottom()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(68, 266, 32, 32), "Left Spacing", "spacing-left", "normal",
+            makeRect(), "Horizontaly Distance", "horizontal-distance", "normal",
+            () => commandSpacingHorizontal()
+        )
+    );
+    controls.push(
+        addButton(
+            makeRect(), "Left Spacing", "spacing-left", "normal",
             () => commandSpacingLeft()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(108, 266, 32, 32), "Right Spacing", "spacing-right", "normal",
+            makeRect(), "Right Spacing", "spacing-right", "normal",
             () => commandSpacingRight()
         )
     );
+    newSection();
     controls.push(
         addButton(
-            NSMakeRect(20, 192, 32, 32), "Label on top", "properties-top", "normal",
+            makeRect(), "Label on top", "properties-top", "normal",
             () => (context.runningConfig.placement = "top") && commandProperties(null)
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(60, 192, 32, 32), "Label on right", "properties-right", "normal",
+            makeRect(), "Label on right", "properties-right", "normal",
             () => (context.runningConfig.placement = "right") && commandProperties(null)
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(20, 152, 32, 32), "Label on bottom", "properties-bottom", "normal",
+            makeRect(), "Make Note", "create-note", "normal",
+            () => commandNote()
+        )
+    );
+    controls.push(
+        addButton(
+            makeRect(), "Label on bottom", "properties-bottom", "normal",
             () => (context.runningConfig.placement = "bottom") && commandProperties(null)
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(60, 152, 32, 32), "Label on left", "properties-left", "normal",
+            makeRect(), "Label on left", "properties-left", "normal",
             () => (context.runningConfig.placement = "left") && commandProperties(null)
         )
     );
+    newLine();
     controls.push(
         addCheckbox(
-            NSMakeRect(20, 102, 140, 16), "Influence", context.configs.byInfluence,
+            makeRect(140, 16), "Influence", context.configs.byInfluence,
             e => context.configs.byInfluence = e.state()
         )
     );
     controls.push(
         addCheckbox(
-            NSMakeRect(20, 77, 140, 16), "Percentage", context.configs.byPercentage,
+            makeRect(140, 16), "Percentage", context.configs.byPercentage,
             e => context.configs.byPercentage = e.state()
         )
     );
+    newSection();
     controls.push(
         addButton(
-            NSMakeRect(20, 20, 24, 24), "Toggle Hidden", "hidden", "normal",
+            makeRect(24, 24), "Toggle Hidden", "hidden", "normal",
             () => commandHidden()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(52, 20, 24, 24), "Toggle Locked", "locked", "normal",
+            makeRect(24, 24), "Toggle Locked", "locked", "normal",
             () => commandLocked()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(84, 20, 24, 24), "Clean Marks", "clear", "normal",
+            makeRect(24, 24), "Clean Marks", "clear", "normal",
             () => commandClear()
         )
     );
     controls.push(
         addButton(
-            NSMakeRect(116, 20, 24, 24), "Settings", "settings", "normal",
+            makeRect(24, 24), "Export", "export", "normal",
+            () => commandExport()
+        )
+    );
+    controls.push(
+        addButton(
+            makeRect(24, 24), "Settings", "settings", "normal",
             () => commandSettings()
         )
     );
-    //     divider1 = addImage(NSMakeRect(48, 8, 2, 32), "divider"),
-    //     divider2 = addImage(NSMakeRect(242, 8, 2, 32), "divider"),
-    //     divider3 = addImage(NSMakeRect(436, 8, 2, 32), "divider");
+    //     divider = addImage(NSMakeRect(48, 8, 2, 32), "divider"),
     controls.forEach(c => contentView.addSubview(c));
     threadDictionary[identifier] = Toolbar;
 
     Toolbar.center();
     Toolbar.makeKeyAndOrderFront(nil);
 
+}
+
+function getUIHelpers(
+    winWidth: number, winHeight: number, titleHeight: number,
+    margin: number = 8, padding: number = 12, space: number = 24
+) {
+    let posY = winHeight - titleHeight - padding;
+    let posX = padding;
+    let lastHeight = 0;
+    return [makeRect, newLine, newSection];
+    function makeRect(width: number = 32, height: number = 32) {
+        let rect = NSMakeRect(posX, posY, width, height);
+        // calculate next btn postion
+        if (height > lastHeight) lastHeight = height;
+        posX += width + margin;
+        if (posX + width > winWidth - padding) {
+            // new row
+            posX = padding;
+            posY -= (lastHeight + margin);
+            lastHeight = 0;
+        }
+        return rect;
+    }
+    function newSection() {
+        if (posX == padding) {
+            // now in new row
+            posY += margin;
+            posY -= space;
+            return;
+        }
+        posX = padding;
+        posY -= lastHeight;
+        posY -= space;
+        lastHeight = 0;
+    }
+    function newLine() {
+        if (posX == padding) {
+            return;
+        }
+        posX = padding;
+        posY -= (lastHeight + margin);
+        lastHeight = 0;
+    }
 }

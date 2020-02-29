@@ -4,12 +4,12 @@ import { message } from "../api/helper";
 import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle, getDistances } from "./base";
 import { colors } from "../state/common";
 import { Rect } from "../api/interfaces";
+import { localize } from "../state/language";
 
 export function drawSizes(position) {
-    var t = this
     position = position || "top";
     if (context.selection.length <= 0) {
-        message("Selcet any layer to mark!");
+        message(localize("Select any layer to mark!"));
         return false;
     }
     let layer;

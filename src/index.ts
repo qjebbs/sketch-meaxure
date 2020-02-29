@@ -2,7 +2,7 @@ import { settingsPanel } from "./panels/settingsPanel";
 import { updateContext } from "./state/context";
 import { logger } from "./api/logger";
 import { markToolbar } from "./panels/toolbar";
-import { message } from "./api/helper";
+import { message, openURL } from "./api/helper";
 import { exportSpecification } from "./exporter/export";
 import { markNote } from "./mark/note";
 import { liteProperties, markProperties } from "./mark/properties";
@@ -56,19 +56,6 @@ export function commandCoordinate(context?) { runAndCatch(drawCoordinate, contex
 export function commandHidden(context?) { runAndCatch(toggleHidden, context); }
 export function commandLocked(context?) { runAndCatch(toggleLocked, context); }
 export function commandClear(context?) { runAndCatch(clearAllMarks, context); }
-export function commandColor(context?) {
-    // runAndCatch(fn, context);
-    //TODO: color command to be implemented
-    message("color command to be implemented");
-}
-export function commandExportable(context?) {
-    // runAndCatch(fn, context);
-    if (NSEvent.modifierFlags() == NSAlternateKeyMask) {
-        //TODO: slice command to be implemented
-        message("slice command to be implemented");
-    } else {
-        //TODO: exportable command to be implemented
-        message("exportable command to be implemented");
-    }
-}
 export function commandExport(context?) { runAndCatch(exportSpecification, context); }
+export function linkFeedback(context?) { runAndCatch(openURL, context, "https://github.com/qjebbs/sketch-meaxure/issues"); }
+export function linkHome(context?) { runAndCatch(openURL, context, "https://github.com/qjebbs/sketch-meaxure"); }

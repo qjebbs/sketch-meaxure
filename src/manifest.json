@@ -87,47 +87,15 @@
       "script": "mark_bundle.js"
     },
     {
-      "name": "Color Names",
-      "identifier": "commandColor",
-      "shortcut": "ctrl shift c",
-      "handler": "commandColor",
-      "script": "mark_bundle.js"
-    },
-    {
-      "name": "Make Exportable",
-      "identifier": "commandExportable",
-      "shortcut": "ctrl shift s",
-      "handler": "commandExportable",
-      "script": "mark_bundle.js"
-    },
-    {
-      "name": "Documention",
-      "identifier": "linkHelp",
-      "handler": "linkHelp",
-      "script": "mark_bundle.js"
-    },
-    {
       "name": "Feedback",
       "identifier": "linkFeedback",
       "handler": "linkFeedback",
       "script": "mark_bundle.js"
     },
     {
-      "name": "Donate",
-      "identifier": "linkDonate",
-      "handler": "linkDonate",
-      "script": "mark_bundle.js"
-    },
-    {
-      "name": "Design Sites",
-      "identifier": "linkNiudana",
-      "handler": "linkNiudana",
-      "script": "mark_bundle.js"
-    },
-    {
-      "name": "Sketch.im",
-      "identifier": "linkSketchim",
-      "handler": "linkSketchim",
+      "name": "Home",
+      "identifier": "linkHome",
+      "handler": "linkHome",
       "script": "mark_bundle.js"
     },
     {
@@ -153,8 +121,6 @@
       "commandNote",
       "commandCoordinate",
       "-",
-      "commandExportable",
-      "commandColor",
       "commandExport",
       "-",
       "commandHidden",
@@ -162,13 +128,11 @@
       "commandClear",
       "-",
       "commandSettings",
-      "linkDonate",
       {
         "title": "Help",
         "items": [
-          "linkHelp",
-          "linkFeedback",
-          "linkDonate"
+          "linkHome",
+          "linkFeedback"
         ]
       }
     ],

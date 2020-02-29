@@ -1,4 +1,4 @@
-import { _ } from "../state/language";
+import { localize } from "../state/language";
 import { message, find } from "../api/helper";
 import { getRect, removeLayer, addGroup, addShape } from "../api/api";
 import { sharedLayerStyle } from "./base";
@@ -7,7 +7,7 @@ import { context } from "../state/context";
 export function markOverlays() {
     var selection = /*this.*/ context.selection;
     if (selection.count() <= 0) {
-        /*this.*/ message(_("Select a layer to make marks!"));
+        /*this.*/ message(localize("Select a layer to mark!"));
         return false;
     }
     for (var i = 0; i < selection.count(); i++) {

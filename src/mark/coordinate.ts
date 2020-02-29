@@ -4,10 +4,11 @@ import { colors } from "../state/common";
 import { context } from "../state/context";
 import { message } from "../api/helper";
 import { Layer } from "../api/layer";
+import { localize } from "../state/language";
 
 export function drawCoordinate() {
     if (context.selection.length <= 0) {
-        message("Selcet any layer to mark!");
+        message(localize("Select any layer to mark!"));
         return false;
     }
     let layer;
