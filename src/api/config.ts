@@ -4,7 +4,7 @@ import { deepEqual } from "./helper";
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order';
 
 export class ConfigsMaster {
-    private _prefix = "SM3Configs";
+    private _prefix = "SMX3Configs";
     private _configCache = undefined;
     private _document;
     constructor(document) {
