@@ -1,5 +1,5 @@
-import { extend, getDistance, find, hexToRgb } from "../api/helper";
-import { toJSString, is, rectToJSON, toHTMLEncode, emojiToEntities, getRadius, getBorders, getFills, getShadows, getOpacity, getStyleName, colorToJSON, toJSNumber, getRect, removeLayer, addText } from "../api/api";
+import { extend, getDistance, find, hexToRgb, toHTMLEncode } from "../api/helper";
+import { toJSString, is, rectToJSON, emojiToEntities, getRadius, getBorders, getFills, getShadows, getOpacity, getStyleName, colorToJSON, toJSNumber, getRect, removeLayer, addText } from "../api/api";
 import { TextAligns, regexNames } from "../state/common";
 import { context } from "../state/context";
 
@@ -62,7 +62,7 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
         group = layer.parentGroup(),
         layerStates = /*this.*/getStates(layer);
 
-    if (layer && /*this.*/is(layer, MSLayerGroup) && /NOTE\#/.exec(layer.name())) {
+    if (layer && /*this.*/is(layer, MSLayerGroup) && /#note-/.exec(layer.name())) {
         var textLayer;
         var children = layer.children();
         for (let i = 0; i < children.length; i++) {

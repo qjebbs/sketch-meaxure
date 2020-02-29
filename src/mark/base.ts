@@ -1,4 +1,4 @@
-import { extend, find, convertUnit, getDistance, mathHalf } from "../api/helper";
+import { extend, find, mathHalf } from "../api/helper";
 import { getRect, removeLayer, addGroup, addText, is, addShape } from "../api/api";
 import { context } from "../state/context";
 import { Layer } from "../api/layer";

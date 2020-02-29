@@ -18,7 +18,7 @@ export function markOverlays() {
 function overlay(target) {
     //Crashing on exception: -[MSImmutableSharedStyle hasMarkers]: unrecognized selector sent to instance 0x608002a4f510
     var targetRect = /*this.*/getRect(target),
-        name = "OVERLAY#" + target.objectID(),
+        name = "#overlay-" + target.objectID(),
         container = /*this.*/find({
             key: "(name != NULL) && (name == %@)",
             match: name

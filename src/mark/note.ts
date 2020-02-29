@@ -15,7 +15,7 @@ export function markNote() {
 
     var target = selection[0];
 
-    if (/NOTE\#/.exec(target.parentGroup().name()) && /*this.*/is(target, MSTextLayer)) {
+    if (/#note-/.exec(target.parentGroup().name()) && /*this.*/is(target, MSTextLayer)) {
         /*this.*/resizeNote(target.parentGroup());
     } else {
         for (var i = 0; i < selection.count(); i++) {
@@ -36,7 +36,7 @@ function note(target) {
     let container = /*this.*/addGroup();
 
     /*this.*/context.current.addLayers([container]);
-    container.setName("NOTE#" + new Date().getTime());
+    container.setName("#note-" + new Date().getTime());
 
     var note = /*this.*/addShape(),
         text = /*this.*/addText();

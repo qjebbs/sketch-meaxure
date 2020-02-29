@@ -1,6 +1,6 @@
 import { context } from "../state/context";
 import { message, isIntersect, find, isIntersectX, isIntersectY } from "../api/helper";
-import { getDistances, sharedLayerStyle, sharedTextStyle } from "./base";
+import { sharedLayerStyle, sharedTextStyle } from "./base";
 import { colors } from "../state/common";
 import { Rect } from "../api/interfaces";
 import { drawSize } from "./size";

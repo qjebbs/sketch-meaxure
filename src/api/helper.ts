@@ -1,7 +1,6 @@
 import { context } from "../state/context";
 import { localize } from "../state/language";
-import { getRect, is, removeLayer } from "./api";
-import { regexNames } from "../state/common";
+import { getRect, is, toJSString, removeLayer } from "./api";
 import { logger } from "./logger";
 import { Rect } from "./interfaces";
 
@@ -128,6 +127,17 @@ export function find(format, container?, returnArray?) {
     } else {
         return false;
     }
+}
+export function toHTMLEncode(str) {
+    return /*this.*/toJSString(str)
+        .replace(/\</g, "&lt;")
+        .replace(/\>/g, '&gt;')
+        .replace(/\'/g, "&#39;")
+        .replace(/\"/g, "&quot;")
+        .replace(/\u2028/g, "\\u2028")
+        .replace(/\u2029/g, "\\u2029")
+        .replace(/\ud83c|\ud83d/g, "");
+    // return str.replace(/\&/g, "&amp;").replace(/\"/g, "&quot;").replace(/\'/g, "&#39;").replace(/\</g, "&lt;").replace(/\>/g, '&gt;');
 }
 export function calcArtboardsRow(artboardDatas) {
     let curRow = 0;

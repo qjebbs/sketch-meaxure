@@ -3,8 +3,8 @@ import { logger } from "../api/logger";
 import { exportPanel } from "../panels/exportPanel";
 import { context } from "../state/context";
 import { SMPanel } from "../panels/panel";
-import { toHTMLEncode, getRect, toSlug, emojiToEntities, toJSString } from "../api/api";
-import { message, getSavePath } from "../api/helper";
+import { getRect, toSlug, emojiToEntities, toJSString } from "../api/api";
+import { message, getSavePath, toHTMLEncode } from "../api/helper";
 import { getLayer, exportImage, writeFile, buildTemplate } from "./utilities";
 
 export function exportSpecification() {

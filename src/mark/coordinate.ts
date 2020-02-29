@@ -2,9 +2,10 @@ import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle } fr
 
 import { colors } from "../state/common";
 import { context } from "../state/context";
-import { message } from "../api/helper";
+import { message, find } from "../api/helper";
 import { Layer } from "../api/layer";
 import { localize } from "../state/language";
+import { removeLayer } from "../api/api";
 
 export function drawCoordinate() {
     if (context.selection.length <= 0) {
@@ -18,11 +19,17 @@ export function drawCoordinate() {
     }
 }
 function coordinateLayer(layer: Layer) {
-    var layerRect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
+    let layerID = new String(layer.ID).toString();
+    let layerName = "#coordinate-" + layerID;
+    let container = find({
+        key: "(name != NULL) && (name == %@)",
+        match: layerName
+    });
+    if (container) removeLayer(container);
+
+    let layerRect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
         artboard = layer.current,
         artboardRect = context.configs.byInfluence ? artboard.influenceRect : artboard.rect,
-        layerID = new String(layer.ID).toString(),
-        layerName = "#coordinate-" + layerID,
         layerStyle = /*self.*/sharedLayerStyle("Sketch Measure / Coordinate", /*self.*/colors.coordinate.shape),
         textStyle = /*self.*/sharedTextStyle("Sketch Measure / Coordinate", /*self.*/colors.coordinate.text),
         group = artboard.newGroup({

@@ -2,7 +2,7 @@ import { localize } from "../state/language";
 import { message, getDistance, convertUnit, extend, find, mathHalf } from "../api/helper";
 import { propertiesPanel } from "../panels/propertiesPanel";
 import { context } from "../state/context";
-import { getRect, is, colorToJSON, getFills, getBorders, getRadius, getStyleName, removeLayer, addGroup, shadowToJSON, addShape, addText } from "../api/api";
+import { getRect, is, colorToJSON, getFills, getBorders, getRadius, getStyleName, removeLayer, addGroup, shadowToJSON } from "../api/api";
 import { Color } from "../api/interfaces";
 import { colorNames, colors } from "../state/common";
 import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
@@ -36,7 +36,7 @@ export function liteProperties() {
 
     var target = selection[0];
 
-    if (/PROPERTY\#/.exec(target.parentGroup().name())) {
+    if (/#properties-/.exec(target.parentGroup().name())) {
         /*this.*/resizeProperties(target.parentGroup());
     } else {
         for (var i = 0; i < selection.count(); i++) {
@@ -150,7 +150,7 @@ function properties(options) {
     });
 
     var objectID = target.objectID(),
-        name = "PROPERTY#" + objectID,
+        name = "#properties-" + objectID,
         container = /*this.*/find({
             key: "(name != NULL) && (name == %@)",
             match: name

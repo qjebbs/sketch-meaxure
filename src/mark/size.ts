@@ -1,10 +1,11 @@
 import { Layer } from "../api/layer";
 import { context } from "../state/context";
-import { message } from "../api/helper";
+import { message, find } from "../api/helper";
 import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle, getDistances } from "./base";
 import { colors } from "../state/common";
 import { Rect } from "../api/interfaces";
 import { localize } from "../state/language";
+import { removeLayer } from "../api/api";
 
 export function drawSizes(position) {
     position = position || "top";
@@ -20,17 +21,23 @@ export function drawSizes(position) {
 }
 
 export function drawSize(layer: Layer, position: string, name?, style?) {
-    var sizeType = /top|middle|bottom/.exec(position) ? "width" : "height",
-        id = new String(layer.ID).toString(),
-        name = name || "#" + sizeType + "-" + position + "-" + id,
-        rect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
+    let sizeType = /top|middle|bottom/.exec(position) ? "width" : "height";
+    let id = new String(layer.ID).toString();
+    name = name || "#" + sizeType + "-" + position + "-" + id;
+    let found = find({
+        key: "(name != NULL) && (name == %@)",
+        match: name
+    });
+    if (found) removeLayer(found);
+
+    let rect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
         layerSize = /top|middle|bottom/.exec(position) ? rect.width : rect.height,
-        text = lengthUnit(layerSize),
-        style = style || {
-            shape: sharedLayerStyle("Sketch Measure / Size", colors.size.shape),
-            text: sharedTextStyle("Sketch Measure / Size", colors.size.text)
-        },
-        container = layer.current;
+        text = lengthUnit(layerSize);
+    style = style || {
+        shape: sharedLayerStyle("Sketch Measure / Size", colors.size.shape),
+        text: sharedTextStyle("Sketch Measure / Size", colors.size.text)
+    };
+    let container = layer.current;
     if (context.configs.byPercentage && !container.isPage) {
         var containerRect = context.configs.byInfluence ? container.influenceRect : container.rect,
             containerSize = /top|middle|bottom/.exec(position) ? containerRect.width : containerRect.height;
