@@ -6,6 +6,9 @@
         "sourceMap": true,
         "rootDir": "src",
         "noEmitOnError": true,
+        "lib": [
+            "es6"
+        ],
         "typeRoots": [
             "node_modules/@types",
             "src/@custom_types"
