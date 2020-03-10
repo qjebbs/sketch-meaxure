@@ -7,7 +7,7 @@ export function exportPanel() {
     // if (ga) ga.sendEvent('spec', 'export to spec viewer');
     /*this.*/context.artboardsData = [];
     /*this.*/context.selectionArtboards = {};
-    var data: any = {};
+    let data: any = {};
     data.selection = [];
     data.current = [];
     data.pages = [];
@@ -26,7 +26,7 @@ export function exportPanel() {
     data.order = /*self.*/context.runningConfig.order;
 
     if (/*this.*/context.selection.count() > 0) {
-        var selectionArtboards = /*this.*/find({
+        let selectionArtboards = /*this.*/find({
             key: "(class != NULL) && (class == %@)",
             match: MSArtboardGroup
         }, /*this.*/context.selection, true);
@@ -40,10 +40,10 @@ export function exportPanel() {
     }
     if (/*this.*/context.artboard) data.current.push(/*this.*/toJSString(/*this.*/context.artboard.objectID()));
 
-    var pages = /*this.*/context.document.pages().objectEnumerator();
+    let pages = /*this.*/context.document.pages().objectEnumerator();
     let page;
     while (page = pages.nextObject()) {
-        var pageData: any = {},
+        let pageData: any = {},
             artboards = page.artboards().objectEnumerator();
         pageData.name = /*this.*/toJSString(page.name());
         pageData.objectID = /*this.*/toJSString(page.objectID());
@@ -51,7 +51,7 @@ export function exportPanel() {
         let artboard;
         while (artboard = artboards.nextObject()) {
             // if(!/*this.*/is(artboard, MSSymbolMaster)){
-            var artboardData: any = {};
+            let artboardData: any = {};
             artboardData.name = /*this.*/toJSString(artboard.name());
             artboardData.objectID = /*this.*/toJSString(artboard.objectID());
             artboardData.MSArtboardGroup = artboard;
@@ -96,17 +96,17 @@ export function exportPanel() {
         height: 597,
         data: data,
         callback: function (data) {
-            var allData = /*self.*/context.allData;
+            let allData = /*self.*/context.allData;
             /*self.*/context.selectionArtboards = [];
             /*self.*/context.allCount = 0;
 
-            for (var p = 0; p < allData.pages.length; p++) {
-                var artboards = allData.pages[p].artboards;
+            for (let p = 0; p < allData.pages.length; p++) {
+                let artboards = allData.pages[p].artboards;
                 if (data.order == 'reverse') {
                     artboards = artboards.reverse();
                 } else if (data.order == 'alphabet') {
                     artboards = artboards.sort(function (a, b) {
-                        var nameA = a.name.toUpperCase(),
+                        let nameA = a.name.toUpperCase(),
                             nameB = b.name.toUpperCase();
                         if (nameA < nameB) {
                             return -1;
@@ -118,8 +118,8 @@ export function exportPanel() {
                     });
                 }
 
-                for (var a = 0; a < artboards.length; a++) {
-                    var artboard = artboards[a].MSArtboardGroup,
+                for (let a = 0; a < artboards.length; a++) {
+                    let artboard = artboards[a].MSArtboardGroup,
                         objectID = /*self.*/toJSString(artboard.objectID());
                     if (data[objectID]) {
                         /*self.*/context.allCount += artboard.children().count();

@@ -4,15 +4,15 @@ import { commandCoordinate, commandOverlays, commandProperties, commandSettings,
 import { localize } from "../state/language";
 
 function getImage(name: string, state?: string) {
-    var highDPI = NSScreen.mainScreen().backingScaleFactor() > 1,
-        state = state || "normal",
-        size = highDPI ? "@2x" : "",
-        iconPath = context.resourcesRoot + "/panel/icons/",
-        img = NSURL.fileURLWithPath("" + iconPath + name + "-" + state + size + ".png");
+    let highDPI = NSScreen.mainScreen().backingScaleFactor() > 1;
+    state = state || "normal";
+    let size = highDPI ? "@2x" : "";
+    let iconPath = context.resourcesRoot + "/panel/icons/";
+    let img = NSURL.fileURLWithPath("" + iconPath + name + "-" + state + size + ".png");
     return NSImage.alloc().initWithContentsOfURL(img)
 }
 function addImage(rect, name) {
-    var view = NSImageView.alloc().initWithFrame(rect),
+    let view = NSImageView.alloc().initWithFrame(rect),
         image = getImage(rect.size, name);
     view.setImage(image);
     return view;
@@ -54,7 +54,7 @@ function addCheckbox(rect: any, name: string, checked: boolean, callAction: Func
 }
 export function markToolbar() {
     const WIN_WIDTH = 136, WIN_HEIGHT = 524;
-    var identifier = "co.jebbs.measure",
+    let identifier = "co.jebbs.measure",
         threadDictionary = NSThread.mainThread().threadDictionary(),
         Toolbar = threadDictionary[identifier];
     if (Toolbar) return;
@@ -71,7 +71,7 @@ export function markToolbar() {
     Toolbar.becomeKeyWindow();
     Toolbar.setLevel(NSFloatingWindowLevel);
     let controls: any[] = [];
-    var contentView = Toolbar.contentView();
+    let contentView = Toolbar.contentView();
 
     // close button
     controls.push(

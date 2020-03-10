@@ -4,12 +4,12 @@ import { TextAligns, regexNames } from "../state/common";
 import { context } from "../state/context";
 
 export function writeFile(options) {
-    var options = /*this.*/extend(options, {
+    options = /*this.*/extend(options, {
         content: "Type something!",
         path: /*this.*/toJSString(NSTemporaryDirectory()),
         fileName: "temp.txt"
-    }),
-        content = NSString.stringWithString(options.content),
+    })
+    let content = NSString.stringWithString(options.content),
         savePathName = [];
 
     NSFileManager
@@ -26,7 +26,7 @@ export function writeFile(options) {
     content.writeToFile_atomically_encoding_error(savePath, false, 4, null);
 }
 export function exportImage(options) {
-    var options = /*this.*/extend(options, {
+    options = /*this.*/extend(options, {
         layer: /*this.*/context.artboard,
         path: /*this.*/toJSString(NSTemporaryDirectory()),
         scale: 1,
@@ -34,8 +34,8 @@ export function exportImage(options) {
         prefix: "",
         suffix: "",
         format: "png"
-    }),
-        document = /*this.*/context.document,
+    });
+    let document = /*this.*/context.document,
         slice = MSExportRequest.exportRequestsFromExportableLayer(options.layer).firstObject(),
         savePathName = [];
 
@@ -58,13 +58,13 @@ export function exportImage(options) {
     return savePath;
 }
 export function getLayer(artboard, layer, data, symbolLayer?) {
-    var artboardRect = artboard.absoluteRect(),
+    let artboardRect = artboard.absoluteRect(),
         group = layer.parentGroup(),
         layerStates = /*this.*/getStates(layer);
 
     if (layer && /*this.*/is(layer, MSLayerGroup) && /#note-/.exec(layer.name())) {
-        var textLayer;
-        var children = layer.children();
+        let textLayer;
+        let children = layer.children();
         for (let i = 0; i < children.length; i++) {
             if (children[i].stringValue) {
                 textLayer = children[i];
@@ -91,7 +91,7 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
         return this;
     }
 
-    var layerType = /*this.*/is(layer, MSTextLayer) ? "text" :
+    let layerType = /*this.*/is(layer, MSTextLayer) ? "text" :
         /*this.*/is(layer, MSSymbolInstance) ? "symbol" :
             /*this.*/is(layer, MSSliceLayer) || /*this.*/hasExportSizes(layer) ? "slice" :
                 "shape";
@@ -101,10 +101,10 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
         layer.setTextBehaviour(0); // fixed for v40
     } // fixed for v40
 
-    var exportLayerRect;
+    let exportLayerRect;
     if (context.runningConfig.exportInfluenceRect == true && layerType != "text") {
         // export the influence rect.(include the area of shadows and outside borders...)
-        var influenceCGRect = layer.absoluteInfluenceRect();
+        let influenceCGRect = layer.absoluteInfluenceRect();
         exportLayerRect = {
             x: function () {
                 return influenceCGRect.origin.x;
@@ -124,7 +124,7 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
         exportLayerRect = layer.absoluteRect();
     }
 
-    var layerData: any = {
+    let layerData: any = {
         objectID: /*this.*/toJSString(layer.objectID()),
         type: layerType,
         name: /*this.*/toHTMLEncode(/*this.*/emojiToEntities(layer.name())),
@@ -135,7 +135,7 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
 
 
     if (layerType != "slice") {
-        var layerStyle = layer.style();
+        let layerStyle = layer.style();
         layerData.rotation = layer.rotation();
         layerData.radius = /*this.*/getRadius(layer);
         layerData.borders = /*this.*/getBorders(layerStyle);
@@ -155,11 +155,11 @@ export function getLayer(artboard, layer, data, symbolLayer?) {
         layerData.lineHeight = layer.lineHeight() || layer.font().defaultLineHeightForFont();
     }
 
-    var layerCSSAttributes = layer.CSSAttributes(),
+    let layerCSSAttributes = layer.CSSAttributes(),
         css = [];
 
-    for (var i = 0; i < layerCSSAttributes.count(); i++) {
-        var c = layerCSSAttributes[i]
+    for (let i = 0; i < layerCSSAttributes.count(); i++) {
+        let c = layerCSSAttributes[i]
         if (!/\/\*/.exec(c)) css.push(/*this.*/toJSString(c));
     }
     if (css.length > 0) {
@@ -180,7 +180,7 @@ export function hasExportSizes(layer) {
     return layer.exportOptions().exportFormats().count() > 0;
 }
 export function hasEmoji(layer) {
-    var fonts = layer.attributedString().fontNames().allObjects();
+    let fonts = layer.attributedString().fontNames().allObjects();
     return !!/AppleColorEmoji/.exec(fonts);
 }
 export function isSliceGroup(layer) {
@@ -201,7 +201,7 @@ export function isExportable(layer) {
         /*this.*/isSliceGroup(layer)
 }
 export function getStates(layer) {
-    var isVisible = true,
+    let isVisible = true,
         isLocked = false,
         hasSlice = false,
         isEmpty = false,
@@ -210,7 +210,7 @@ export function getStates(layer) {
         isShapeGroup = false;
 
     while (!(/*this.*/is(layer, MSArtboardGroup) || /*this.*/is(layer, MSSymbolMaster))) {
-        var group = layer.parentGroup();
+        let group = layer.parentGroup();
 
         if (/*this.*/regexNames.exec(group.name())) {
             isMeasure = true;
@@ -264,31 +264,31 @@ export function getMask(group, layer, layerData, layerStates) {
         if (layerStates.isMaskChildLayer) {
             /*this.*/context.maskCache.push({
             objectID: /*this.*/context.maskObjectID,
-            rect: /*this.*/maskRect
+            rect: /*this.*/context.maskRect
         });
         }
         /*this.*/context.maskObjectID = group.objectID();
-        /*this.*/maskRect = layerData.rect;
+        /*this.*/context.maskRect = layerData.rect;
     } else if (!layerStates.isMaskChildLayer && /*this.*/context.maskCache.length > 0) {
-        var mask = /*this.*/context.maskCache.pop();
+        let mask = /*this.*/context.maskCache.pop();
         /*this.*/context.maskObjectID = mask.objectID;
-        /*this.*/maskRect = mask.rect;
+        /*this.*/context.maskRect = mask.rect;
         layerStates.isMaskChildLayer = true;
     } else if (!layerStates.isMaskChildLayer) {
         /*this.*/context.maskObjectID = undefined;
-        /*this.*/maskRect = undefined;
+        /*this.*/context.maskRect = undefined;
     }
 
     if (layerStates.isMaskChildLayer) {
-        var layerRect = layerData.rect,
-            maskRect = /*this.*/maskRect;
+        let layerRect = layerData.rect;
+        let maskRect = /*this.*/context.maskRect;
 
         layerRect.maxX = layerRect.x + layerRect.width;
         layerRect.maxY = layerRect.y + layerRect.height;
         maskRect.maxX = maskRect.x + maskRect.width;
         maskRect.maxY = maskRect.y + maskRect.height;
 
-        var distance = /*this.*/getDistance(layerRect, maskRect),
+        let distance = /*this.*/getDistance(layerRect, maskRect),
             width = layerRect.width,
             height = layerRect.height;
 
@@ -307,9 +307,9 @@ export function getMask(group, layer, layerData, layerStates) {
     }
 }
 export function getFormats(exportFormats) {
-    var formats = [];
-    for (var i = 0; i < exportFormats.length; i++) {
-        var format = exportFormats[i],
+    let formats = [];
+    for (let i = 0; i < exportFormats.length; i++) {
+        let format = exportFormats[i],
             prefix = "",
             suffix = "";
 
@@ -333,11 +333,11 @@ export function getFormats(exportFormats) {
     return formats;
 }
 export function getExportable(layer, savePath?) {
-    var exportable = [],
+    let exportable = [],
         size, sizes = layer.exportOptions().exportFormats(),
         fileFormat = /*this.*/toJSString(sizes[0].fileFormat()),
         matchFormat = /png|jpg|tiff|webp/.exec(fileFormat);
-    var exportFormats =
+    let exportFormats =
         (/*self.*/context.configs.units == "dp/sp" && matchFormat) ? [{
             scale: 1 / /*self.*/context.configs.scale,
             prefix: "drawable-mdpi/",
@@ -383,7 +383,7 @@ export function getExportable(layer, savePath?) {
         /*self.*/getFormats(sizes);
 
     for (let exportFormat of exportFormats) {
-        var prefix = exportFormat.prefix || "",
+        let prefix = exportFormat.prefix || "",
             suffix = exportFormat.suffix || "";
         /*self.*/exportImage({
                 layer: layer,
@@ -405,7 +405,7 @@ export function getExportable(layer, savePath?) {
     return exportable;
 }
 export function getSlice(layer, layerData, symbolLayer) {
-    var objectID = (layerData.type == "symbol") ? /*this.*/toJSString(layer.symbolMaster().objectID()) :
+    let objectID = (layerData.type == "symbol") ? /*this.*/toJSString(layer.symbolMaster().objectID()) :
         (symbolLayer) ? /*this.*/toJSString(symbolLayer.objectID()) :
             layerData.objectID;
     if (
@@ -418,7 +418,7 @@ export function getSlice(layer, layerData, symbolLayer) {
         ) &&
         !/*this.*/context.sliceCache[objectID]
     ) {
-        var sliceLayer = (layerData.type == "symbol") ? layer.symbolMaster() : layer;
+        let sliceLayer = (layerData.type == "symbol") ? layer.symbolMaster() : layer;
         if (symbolLayer && /*this.*/is(symbolLayer.parentGroup(), MSSymbolMaster)) {
             layer.exportOptions().setLayerOptions(2);
         }
@@ -441,26 +441,26 @@ export function getSlice(layer, layerData, symbolLayer) {
 }
 export function getSymbol(artboard, layer, layerData, data) {
     if (layerData.type == "symbol") {
-        var symbolObjectID = /*this.*/toJSString(layer.symbolMaster().objectID());
+        let symbolObjectID = /*this.*/toJSString(layer.symbolMaster().objectID());
 
         layerData.objectID = symbolObjectID;
 
         if (!/*self.*/hasExportSizes(layer.symbolMaster()) && layer.symbolMaster().children().count() > 1) {
-            var symbolRect = /*this.*/getRect(layer),
+            let symbolRect = /*this.*/getRect(layer),
                 symbolChildren = layer.symbolMaster().children(),
                 tempSymbol = layer.duplicate(),
                 tempGroup = tempSymbol.detachStylesAndReplaceWithGroupRecursively(false);
 
-            var tempSymbolLayers = tempGroup.children().objectEnumerator(),
+            let tempSymbolLayers = tempGroup.children().objectEnumerator(),
                 overrides = layer.overrides(),
                 idx = 0;
 
             overrides = (overrides) ? overrides.objectForKey(0) : undefined;
-            var hasSymbolBackgroud = symbolChildren.length < tempGroup.children().length;
+            let hasSymbolBackgroud = symbolChildren.length < tempGroup.children().length;
 
             let tempSymbolLayer;
             while (tempSymbolLayer = tempSymbolLayers.nextObject()) {
-                var symbolLayer = undefined;
+                let symbolLayer = undefined;
                 if (!hasSymbolBackgroud) {
                     symbolLayer = symbolChildren[idx]
                 } else {
@@ -477,13 +477,13 @@ export function getSymbol(artboard, layer, layerData, data) {
                     }
                 }
                 if (/*self.*/is(tempSymbolLayer, MSSymbolInstance)) {
-                    var symbolMasterObjectID = /*self.*/toJSString(symbolLayer.objectID());
+                    let symbolMasterObjectID = /*self.*/toJSString(symbolLayer.objectID());
                     if (
                         overrides &&
                         overrides[symbolMasterObjectID] &&
                         !!overrides[symbolMasterObjectID].symbolID
                     ) {
-                        var changeSymbol = /*self.*/find({
+                        let changeSymbol = /*self.*/find({
                             key: "(symbolID != NULL) && (symbolID == %@)",
                             match: /*self.*/toJSString(overrides[symbolMasterObjectID].symbolID)
                         }, /*self.*/context.document.documentData().allSymbols());
@@ -509,12 +509,12 @@ export function getSymbol(artboard, layer, layerData, data) {
     }
 }
 export function getTextAttrs(str): any {
-    var data = {},
+    let data = {},
         regExpAttr = new RegExp('([a-z\-]+)\=\"([^\"]+)\"', 'g'),
         regExpAttr1 = new RegExp('([a-z\-]+)\=\"([^\"]+)\"'),
         attrs = str.match(regExpAttr);
-    for (var a = 0; a < attrs.length; a++) {
-        var attrData = regExpAttr1.exec(attrs[a]),
+    for (let a = 0; a < attrs.length; a++) {
+        let attrData = regExpAttr1.exec(attrs[a]),
             key = attrData[1],
             value = attrData[2];
 
@@ -528,7 +528,7 @@ export function getText(artboard, layer, layerData, data) {
         if (/*this.*/hasEmoji(layer)) {
             return false;
         }
-        var svgExporter = SketchSVGExporter.new().exportLayers([layer.immutableModelObject()]),
+        let svgExporter = SketchSVGExporter.new().exportLayers([layer.immutableModelObject()]),
             svgStrong = /*this.*/toJSString(NSString.alloc().initWithData_encoding(svgExporter, 4)),
             regExpTspan = new RegExp('<tspan([^>]+)>([^<]*)</tspan>', 'g'),
             regExpContent = new RegExp('>([^<]*)<'),
@@ -536,8 +536,8 @@ export function getText(artboard, layer, layerData, data) {
             layerRect = /*this.*/getRect(layer),
             svgSpans = svgStrong.match(regExpTspan);
 
-        for (var a = 0; a < svgSpans.length; a++) {
-            var attrsData = /*this.*/getTextAttrs(svgSpans[a]);
+        for (let a = 0; a < svgSpans.length; a++) {
+            let attrsData = /*this.*/getTextAttrs(svgSpans[a]);
             attrsData.content = svgSpans[a].match(regExpContent)[1];
             offsetX = (
                 !offsetX ||
@@ -554,7 +554,7 @@ export function getText(artboard, layer, layerData, data) {
             textData.push(attrsData);
         }
 
-        var parentGroup = layer.parentGroup(),
+        let parentGroup = layer.parentGroup(),
             parentRect = /*self.*/getRect(parentGroup),
             colorHex = layerData.color["color-hex"].split(" ")[0];
 
@@ -567,7 +567,7 @@ export function getText(artboard, layer, layerData, data) {
                     Object.getOwnPropertyNames(tData).length > 4
                 )
             ) {
-                var textLayer = /*self.*/addText(),
+                let textLayer = /*self.*/addText(),
                     colorRGB = /*self.*/hexToRgb(tData.fill || colorHex),
                     color = MSColor.colorWithRed_green_blue_alpha(colorRGB.r / 255, colorRGB.g / 255, colorRGB.b / 255, (tData["fill-opacity"] || 1));
 
@@ -576,7 +576,7 @@ export function getText(artboard, layer, layerData, data) {
                 textLayer.setTextColor(color);
                 textLayer.setFontSize(tData["font-size"] || layerData.fontSize);
 
-                var defaultLineHeight = layer.font().defaultLineHeightForFont();
+                let defaultLineHeight = layer.font().defaultLineHeightForFont();
 
                 textLayer.setLineHeight(layer.lineHeight() || defaultLineHeight);
 
@@ -591,7 +591,7 @@ export function getText(artboard, layer, layerData, data) {
 
                 parentGroup.addLayers([textLayer]);
 
-                var textLayerRect = /*self.*/getRect(textLayer);
+                let textLayerRect = /*self.*/getRect(textLayer);
 
                 textLayerRect.setX(layerRect.x + (/*self.*/toJSNumber(tData.x) - offsetX));
                 textLayerRect.setY(layerRect.y + (/*self.*/toJSNumber(tData.y) - offsetY));
@@ -609,7 +609,7 @@ export function getText(artboard, layer, layerData, data) {
     }
 }
 export function buildTemplate(content, data) {
-    var content = content.replace(new RegExp("\\<\\!\\-\\-\\s([^\\s\\-\\-\\>]+)\\s\\-\\-\\>", "gi"), function ($0, $1) {
+    content = content.replace(new RegExp("\\<\\!\\-\\-\\s([^\\s\\-\\-\\>]+)\\s\\-\\-\\>", "gi"), function ($0, $1) {
         if ($1 in data) {
             return data[$1];
         } else {

@@ -6,20 +6,20 @@ import { context } from "../state/context";
 import { sharedLayerStyle, sharedTextStyle } from "./base";
 
 export function markNote() {
-    var selection = /*this.*/context.selection;
+    let selection = /*this.*/context.selection;
 
     if (selection.count() <= 0) {
         /*this.*/message(localize("Select a text layer to mark!"));
         return false;
     }
 
-    var target = selection[0];
+    let target = selection[0];
 
     if (/#note-/.exec(target.parentGroup().name()) && /*this.*/is(target, MSTextLayer)) {
         /*this.*/resizeNote(target.parentGroup());
     } else {
-        for (var i = 0; i < selection.count(); i++) {
-            var target = selection[i];
+        for (let i = 0; i < selection.count(); i++) {
+            let target = selection[i];
             if (/*this.*/is(target, MSTextLayer)) {
                 /*this.*/note(target);
             }
@@ -27,7 +27,7 @@ export function markNote() {
     }
 }
 function note(target) {
-    var targetRect = /*this.*/getRect(target),
+    let targetRect = /*this.*/getRect(target),
         objectID = target.objectID(),
         noteStyle = {
             layer: /*this.*/sharedLayerStyle("Sketch Measure / Note", /*this.*/colors.note.shape, /*this.*/colors.note.border),
@@ -38,7 +38,7 @@ function note(target) {
     /*this.*/context.current.addLayers([container]);
     container.setName("#note-" + new Date().getTime());
 
-    var note = /*this.*/addShape(),
+    let note = /*this.*/addShape(),
         text = /*this.*/addText();
 
     container.addLayers([note, text]);
@@ -52,7 +52,7 @@ function note(target) {
     note.setSharedStyle(noteStyle.layer);
     text.setSharedStyle(noteStyle.text);
 
-    var noteRect = /*this.*/getRect(note),
+    let noteRect = /*this.*/getRect(note),
         textRect = /*this.*/getRect(text),
         fontSize = text.fontSize(),
         scale = fontSize / 12;
@@ -76,7 +76,7 @@ function note(target) {
 }
 
 function resizeNote(container) {
-    var text = /*this.*/find({
+    let text = /*this.*/find({
         key: "(class != NULL) && (class == %@)",
         match: MSTextLayer
     }),

@@ -4,25 +4,25 @@ import { context } from "../state/context";
 import { Layer } from "../api/layer";
 
 export function sharedLayerStyle(name, color, borderColor?) {
-    var sharedStyles = /*this.*/context.documentData.layerStyles(),
-        style = /*this.*/find({
-            key: "(name != NULL) && (name == %@)",
-            match: name
-        }, sharedStyles);
+    let sharedStyles = /*this.*/context.documentData.layerStyles();
+    let style = /*this.*/find({
+        key: "(name != NULL) && (name == %@)",
+        match: name
+    }, sharedStyles);
 
     style = (!style || /*this.*/is(style, MSSharedStyle)) ? style : style[0];
 
     if (style == false) {
         style = MSStyle.alloc().init();
 
-        var color = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a),
-            fill = style.addStylePartOfType(0);
+        let msColor = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a);
+        let fill = style.addStylePartOfType(0);
 
-        fill.color = color;
+        fill.color = msColor;
 
         if (borderColor) {
-            var border = style.addStylePartOfType(1),
-                borderColor = MSColor.colorWithRed_green_blue_alpha(borderColor.r, borderColor.g, borderColor.b, borderColor.a);
+            let border = style.addStylePartOfType(1);
+            borderColor = MSColor.colorWithRed_green_blue_alpha(borderColor.r, borderColor.g, borderColor.b, borderColor.a);
 
             border.color = borderColor;
             border.thickness = 1;
@@ -33,14 +33,14 @@ export function sharedLayerStyle(name, color, borderColor?) {
         sharedStyles.addSharedObject(s);
     }
 
-    var style = /*this.*/find({
+    style = /*this.*/find({
         key: "(name != NULL) && (name == %@)",
         match: name
     }, sharedStyles);
     return style;
 }
 export function sharedTextStyle(name, color, alignment?) {
-    var sharedStyles = /*this.*/context.document.documentData().layerTextStyles(),
+    let sharedStyles = /*this.*/context.document.documentData().layerTextStyles(),
         style = /*this.*/find({
             key: "(name != NULL) && (name == %@)",
             match: name
@@ -49,11 +49,11 @@ export function sharedTextStyle(name, color, alignment?) {
     style = (!style || /*this.*/is(style, MSSharedStyle)) ? style : style[0];
 
     if (style == false) {
-        var color = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a),
-            alignment = alignment || 0, //[left, right, center, justify]
-            text = /*this.*/addText();
+        let nsColor = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a);
+        let text = /*this.*/addText();
+        alignment = alignment || 0; //[left, right, center, justify]
 
-        text.changeTextColorTo(color.NSColorWithColorSpace(nil));
+        text.changeTextColorTo(nsColor.NSColorWithColorSpace(nil));
 
         text.setFontSize(12);
         text.setFontPostscriptName("HelveticaNeue");
@@ -67,7 +67,7 @@ export function sharedTextStyle(name, color, alignment?) {
         /*this.*/removeLayer(text);
     }
 
-    var style = /*this.*/find({
+    style = /*this.*/find({
         key: "(name != NULL) && (name == %@)",
         match: name
     }, sharedStyles);
@@ -75,12 +75,12 @@ export function sharedTextStyle(name, color, alignment?) {
 
 }
 export function setLabel(options) {
-    var options = /*this.*/extend(options, {
+    options = /*this.*/extend(options, {
         text: "Label",
         container: /*this.*/context.current,
         target: /*this.*/context.current
-    }),
-        container = options.container,
+    });
+    let container = options.container,
         styles = options.styles,
         target = options.target,
         placement = options.placement,
@@ -94,7 +94,7 @@ export function setLabel(options) {
         shapeTemp.style().addStylePartOfType(0);
     }
 
-    var arrow = shapeTemp.duplicate(),
+    let arrow = shapeTemp.duplicate(),
         box = shapeTemp.duplicate(),
         text = textTemp.duplicate();
 
@@ -117,13 +117,13 @@ export function setLabel(options) {
     text.setTextBehaviour(0); // fixed for v40
 
     // get rect
-    var targetRect = /*this.*/getRect(target),
+    let targetRect = /*this.*/getRect(target),
         arrowRect = /*this.*/getRect(arrow),
         boxRect = /*this.*/getRect(box),
         textRect = /*this.*/getRect(text);
 
     // rect function
-    var x = targetRect.x + /*this.*/mathHalf(targetRect.width) - /*this.*/mathHalf(textRect.width),
+    let x = targetRect.x + /*this.*/mathHalf(targetRect.width) - /*this.*/mathHalf(textRect.width),
         y = targetRect.y + /*this.*/mathHalf(targetRect.height) - /*this.*/mathHalf(textRect.height),
         arrowX = x - 3 + /*this.*/mathHalf(textRect.width + 6) - 3,
         arrowY = y - 3 + /*this.*/mathHalf(textRect.height + 6) - 3;
@@ -150,7 +150,7 @@ export function setLabel(options) {
     }
 
     if (/*this.*/is(/*this.*/context.current, MSArtboardGroup)) {
-        var artboardRect = /*this.*/getRect(/*this.*/context.current);
+        let artboardRect = /*this.*/getRect(/*this.*/context.current);
 
         if (x - 4 < artboardRect.x) {
             x = artboardRect.x + 4;
@@ -183,13 +183,13 @@ export function setLabel(options) {
     };
 }
 function setRuler(options) {
-    var options = /*this.*/extend(options, {
+    options = /*this.*/extend(options, {
         container: /*this.*/context.current,
         target: /*this.*/context.current,
         type: "width",
         placement: "center",
-    }),
-        container = options.container,
+    });
+    let container = options.container,
         type = options.type,
         styles = options.styles,
         target = options.target,
@@ -202,7 +202,7 @@ function setRuler(options) {
         shapeTemp.style().addStylePartOfType(0);
     }
 
-    var start = shapeTemp.duplicate(),
+    let start = shapeTemp.duplicate(),
         end = shapeTemp.duplicate(),
         line = shapeTemp.duplicate(),
         targetRect = /*this.*/getRect(target),
@@ -215,7 +215,8 @@ function setRuler(options) {
     start.setName("ruler-start");
     end.setName("ruler-end");
     line.setName("ruler-line");
-
+    let x: number, y: number;
+    let startX: number, startY: number, endX: number, endY: number;
     // height
     if (type == "height") {
         // set sizes
@@ -227,7 +228,7 @@ function setRuler(options) {
         endRect.setHeight(1);
 
         // get positions
-        var x = targetRect.x + /*this.*/mathHalf(targetRect.width) - 1,
+        let x = targetRect.x + /*this.*/mathHalf(targetRect.width) - 1,
             y = targetRect.y;
 
         if (!/*this.*/is(target, MSPage) && !/*this.*/is(target, MSArtboardGroup)) {
@@ -241,7 +242,7 @@ function setRuler(options) {
             }
         }
 
-        var startX = x - 2,
+        let startX = x - 2,
             startY = y,
             endX = startX,
             endY = targetRect.maxY - 1;
@@ -255,8 +256,8 @@ function setRuler(options) {
         endRect.setHeight(5);
 
         // get positions
-        var x = targetRect.x,
-            y = targetRect.y + /*this.*/mathHalf(targetRect.height) - 1;
+        x = targetRect.x;
+        y = targetRect.y + /*this.*/mathHalf(targetRect.height) - 1;
 
         if (!/*this.*/is(target, MSPage) && !/*this.*/is(target, MSArtboardGroup)) {
             switch (placement) {
@@ -269,10 +270,10 @@ function setRuler(options) {
             }
         }
 
-        var startX = x,
-            startY = y - 2,
-            endX = targetRect.maxX - 1,
-            endY = startY;
+        startX = x;
+        startY = y - 2;
+        endX = targetRect.maxX - 1;
+        endY = startY;
     }
 
     // set positions
@@ -291,8 +292,8 @@ function setRuler(options) {
 
 export function lengthUnit(value: number, t?, flag?: boolean) {
     if (t && !flag) return Math.round(value / t * 1e3) / 10 + "%";
-    var value = Math.round(value / context.configs.scale * 10) / 10,
-        units = context.configs.units.split("/"),
+    value = Math.round(value / context.configs.scale * 10) / 10;
+    let units = context.configs.units.split("/"),
         unit = units[0];
     if (flag && units.length > 1) unit = units[1];
     return "" + value + unit;
@@ -309,8 +310,8 @@ export function setStyle(layer: Layer, style) {
     layer.sketchObject.setSharedStyle(style);
 }
 export function getDistances(from: Layer, to?: Layer) {
-    var to = to || from.current,
-        rectFrom = from.rect,
+    to = to || from.current;
+    let rectFrom = from.rect,
         rectTo = to.rect;
     return {
         top: rectFrom.y - rectTo.y,

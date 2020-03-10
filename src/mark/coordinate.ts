@@ -51,9 +51,9 @@ function coordinateLayer(layer: Layer) {
             text: text
         });
     setStyle(textShape, textStyle);
-    var bgRect = /*self.*/Rectangle(15, 15, textShape.frame.width, textShape.frame.height);
+    let bgRect = /*self.*/Rectangle(15, 15, textShape.frame.width, textShape.frame.height);
     textShape.frame = bgRect;
-    var bgShape = group.newShape({
+    let bgShape = group.newShape({
         frame: /*self.*/Rectangle(11, 11, textShape.frame.width + 8, textShape.frame.height + 8),
         name: "box"
     });

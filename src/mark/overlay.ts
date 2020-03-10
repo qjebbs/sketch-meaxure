@@ -5,19 +5,19 @@ import { sharedLayerStyle } from "./base";
 import { colors } from "../state/common";
 import { context } from "../state/context";
 export function markOverlays() {
-    var selection = /*this.*/ context.selection;
+    let selection = /*this.*/ context.selection;
     if (selection.count() <= 0) {
         /*this.*/ message(localize("Select a layer to mark!"));
         return false;
     }
-    for (var i = 0; i < selection.count(); i++) {
+    for (let i = 0; i < selection.count(); i++) {
         /*this.*/ overlay(selection[i]);
     }
 }
 
 function overlay(target) {
     //Crashing on exception: -[MSImmutableSharedStyle hasMarkers]: unrecognized selector sent to instance 0x608002a4f510
-    var targetRect = /*this.*/getRect(target),
+    let targetRect = /*this.*/getRect(target),
         name = "#overlay-" + target.objectID(),
         container = /*this.*/find({
             key: "(name != NULL) && (name == %@)",
@@ -30,7 +30,7 @@ function overlay(target) {
     /*this.*/context.current.addLayers([container]);
     container.setName(name);
 
-    var overlay = /*this.*/addShape(),
+    let overlay = /*this.*/addShape(),
         overlayRect = /*this.*/getRect(overlay);
 
     container.addLayers([overlay]);

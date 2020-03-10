@@ -11,9 +11,9 @@ export function message(message) {
 }
 
 export function extend(options, target) {
-    var target = target || this;
+    target = target || this;
 
-    for (var key in options) {
+    for (let key in options) {
         target[key] = options[key];
     }
     return target;
@@ -24,15 +24,15 @@ export function mathHalf(number) {
 }
 export function convertUnit(value, isText?, percentageType?) {
     if (value instanceof Array) {
-        var units = /*this.*/context.configs.units.split("/"),
+        let units = /*this.*/context.configs.units.split("/"),
             unit = units[0];
 
         if (units.length > 1 && isText) {
             unit = units[1];
         }
 
-        var scale = /*this.*/context.configs.scale;
-        var tempValues = [];
+        let scale = /*this.*/context.configs.scale;
+        let tempValues = [];
 
         value.forEach(function (element) {
             tempValues.push(Math.round(element / scale * 10) / 10);
@@ -43,7 +43,7 @@ export function convertUnit(value, isText?, percentageType?) {
     } else {
 
         if (percentageType && /*this.*/context.artboard) {
-            var artboardRect = /*this.*/getRect(/*this.*/context.artboard);
+            let artboardRect = /*this.*/getRect(/*this.*/context.artboard);
             if (percentageType == "width") {
                 return Math.round((value / artboardRect.width) * 1000) / 10 + "%";
             } else if (percentageType == "height") {
@@ -64,11 +64,11 @@ export function convertUnit(value, isText?, percentageType?) {
 
 }
 export function toHex(c) {
-    var hex = Math.round(c).toString(16).toUpperCase();
+    let hex = Math.round(c).toString(16).toUpperCase();
     return hex.length == 1 ? "0" + hex : hex;
 }
 export function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
         r: /*this.*/ parseInt(result[1], 16),
         g: /*this.*/parseInt(result[2], 16),
@@ -89,7 +89,7 @@ export function isIntersectY(a: Rect, b: Rect) {
         (a.y < b.y && a.y + a.height > b.y + b.height); // y range of a includes b's
 }
 export function getDistance(targetRect, containerRect?) {
-    var containerRect = containerRect || /*this.*/getRect(/*this.*/context.current);
+    containerRect = containerRect || /*this.*/getRect(/*this.*/context.current);
 
     return {
         top: (targetRect.y - containerRect.y),
@@ -102,8 +102,8 @@ export function find(format, container?, returnArray?) {
     if (!format || !format.key || !format.match) {
         return false;
     }
-    var predicate = NSPredicate.predicateWithFormat(format.key, format.match),
-        container = container || /*this.*/context.current,
+    container = container || /*this.*/context.current;
+    let predicate = NSPredicate.predicateWithFormat(format.key, format.match),
         items;
 
     if (container.pages) {
@@ -116,7 +116,7 @@ export function find(format, container?, returnArray?) {
         items = container;
     }
 
-    var queryResult = items.filteredArrayUsingPredicate(predicate);
+    let queryResult = items.filteredArrayUsingPredicate(predicate);
 
     if (returnArray) return queryResult;
 
@@ -231,9 +231,9 @@ export function calcArtboardsColumn(artboardDatas) {
 }
 
 export function getSavePath() {
-    var filePath = /*this.*/context.document.fileURL() ? /*this.*/context.document.fileURL().path().stringByDeletingLastPathComponent() : "~";
-    var fileName = /*this.*/context.document.displayName().stringByDeletingPathExtension();
-    var savePanel = NSSavePanel.savePanel();
+    let filePath = /*this.*/context.document.fileURL() ? /*this.*/context.document.fileURL().path().stringByDeletingLastPathComponent() : "~";
+    let fileName = /*this.*/context.document.displayName().stringByDeletingPathExtension();
+    let savePanel = NSSavePanel.savePanel();
 
     savePanel.setTitle(localize("Export spec"));
     savePanel.setNameFieldLabel(localize("Export to:"));
@@ -258,7 +258,7 @@ export function deepEqual(x, y) {
     if (Object.keys(x).length != Object.keys(y).length) {
         return false;
     }
-    for (var prop in x) {
+    for (let prop in x) {
         if (y.hasOwnProperty(prop)) {
             if (!deepEqual(x[prop], y[prop])) {
                 return false;
@@ -270,6 +270,6 @@ export function deepEqual(x, y) {
     return true;
 }
 export function openURL(url) {
-    var nsurl = NSURL.URLWithString(url);
+    let nsurl = NSURL.URLWithString(url);
     NSWorkspace.sharedWorkspace().openURL(nsurl);
 }

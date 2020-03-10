@@ -4,6 +4,7 @@ import { message, extend } from '../api/helper';
 import { context } from '../state/context';
 
 export function SMPanel(options) {
+    let threadDictionary: any;
     coscript.setShouldKeepAround(true);
     options = /*this.*/extend(options, {
         url: /*this.*/context.resourcesRoot + "/panel/settings.html",
@@ -24,18 +25,18 @@ export function SMPanel(options) {
     let result = false;
     options.url = encodeURI("file://" + options.url);
 
-    var frame = NSMakeRect(0, 0, options.width, (options.height + 32)),
+    let frame = NSMakeRect(0, 0, options.width, (options.height + 32)),
         titleBgColor = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1),
         contentBgColor = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
 
     if (options.identifier) {
-        var threadDictionary = NSThread.mainThread().threadDictionary();
+        threadDictionary = NSThread.mainThread().threadDictionary();
         if (threadDictionary[options.identifier]) {
             return false;
         }
     }
 
-    var Panel = NSPanel.alloc().init();
+    let Panel = NSPanel.alloc().init();
     Panel.setTitleVisibility(NSWindowTitleHidden);
     Panel.setTitlebarAppearsTransparent(true);
     Panel.standardWindowButton(NSWindowCloseButton).setHidden(options.hiddenClose);
@@ -43,12 +44,12 @@ export function SMPanel(options) {
     Panel.standardWindowButton(NSWindowZoomButton).setHidden(true);
     Panel.setFrame_display(frame, false);
     Panel.setBackgroundColor(contentBgColor);
-    var contentView = Panel.contentView(),
+    let contentView = Panel.contentView(),
         webView = WebView.alloc().initWithFrame(NSMakeRect(0, 0, options.width, options.height)),
         windowObject = webView.windowScriptObject(),
         delegate = new MochaJSDelegate({
             "webView:didFinishLoadForFrame:": (function (webView, webFrame) {
-                var SMAction = [
+                let SMAction = [
                     "function SMAction(hash, data){",
                     "if(data){",
                     "window.SMData = encodeURI(JSON.stringify(data));",
@@ -69,10 +70,10 @@ export function SMPanel(options) {
                 windowObject.evaluateWebScript(DOMReady);
             }),
             "webView:didChangeLocationWithinPageForFrame:": (function (webView, webFrame) {
-                var request = NSURL.URLWithString(webView.mainFrameURL()).fragment();
+                let request = NSURL.URLWithString(webView.mainFrameURL()).fragment();
 
                 if (request == "submit") {
-                    var data = JSON.parse(decodeURI(windowObject.valueForKey("SMData")));
+                    let data = JSON.parse(decodeURI(windowObject.valueForKey("SMData")));
                     options.callback(data);
                     result = true;
                     if (!options.floatWindow) {
@@ -103,7 +104,7 @@ export function SMPanel(options) {
                 } else if (request == "add") {
                     options.addCallback(windowObject);
                 } else if (request == "focus") {
-                    var point = Panel.currentEvent().locationInWindow(),
+                    let point = Panel.currentEvent().locationInWindow(),
                         y = NSHeight(Panel.frame()) - point.y - 32;
                     windowObject.evaluateWebScript("lookupItemInput(" + point.x + ", " + y + ")");
                 }
@@ -122,9 +123,9 @@ export function SMPanel(options) {
 
     contentView.addSubview(webView);
 
-    var closeButton = Panel.standardWindowButton(NSWindowCloseButton);
+    let closeButton = Panel.standardWindowButton(NSWindowCloseButton);
     closeButton.setCOSJSTargetFunction(function (sender) {
-        var request = NSURL.URLWithString(webView.mainFrameURL()).fragment();
+        let request = NSURL.URLWithString(webView.mainFrameURL()).fragment();
 
         if (options.floatWindow && request == "submit") {
             let data = JSON.parse(decodeURI(windowObject.valueForKey("SMData")));
@@ -146,7 +147,7 @@ export function SMPanel(options) {
     });
     closeButton.setAction("callAction:");
 
-    var titlebarView = contentView.superview().titlebarViewController().view(),
+    let titlebarView = contentView.superview().titlebarViewController().view(),
         titlebarContainerView = titlebarView.superview();
     closeButton.setFrameOrigin(NSMakePoint(8, 8));
     titlebarContainerView.setFrame(NSMakeRect(0, options.height, options.width, 32));

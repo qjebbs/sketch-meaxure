@@ -2,7 +2,7 @@ import { context } from '../state/context';
 import { SMPanel } from './panel';
 import { logger } from '../api/logger';
 export function propertiesPanel() {
-    var data = {
+    let data = {
         placement: context.runningConfig.placement ? context.runningConfig.placement : "top",
         properties: context.configs.properties && context.configs.properties.length ? context.configs.properties : ["color", "border"],
     };

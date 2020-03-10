@@ -8,16 +8,16 @@ import { colorNames, colors } from "../state/common";
 import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
 
 export function markProperties() {
-    var selection = /*this.*/ context.selection;
+    let selection = /*this.*/ context.selection;
     if (selection.count() <= 0) {
         /*this.*/ message(localize("Select a layer to mark!"));
         return false;
     }
-    var target = selection[0];
+    let target = selection[0];
     if (!propertiesPanel())
         return false;
-    for (var i = 0; i < selection.count(); i++) {
-        var target = selection[i];
+    for (let i = 0; i < selection.count(); i++) {
+        let target = selection[i];
         properties({
             target: target,
             placement: context.runningConfig.placement,
@@ -27,20 +27,20 @@ export function markProperties() {
 }
 
 export function liteProperties() {
-    var selection = /*this.*/context.selection;
+    let selection = /*this.*/context.selection;
 
     if (selection.count() <= 0) {
         /*this.*/message(localize("Select a layer to mark!"));
         return false;
     }
 
-    var target = selection[0];
+    let target = selection[0];
 
     if (/#properties-/.exec(target.parentGroup().name())) {
         /*this.*/resizeProperties(target.parentGroup());
     } else {
-        for (var i = 0; i < selection.count(); i++) {
-            var target = selection[i],
+        for (let i = 0; i < selection.count(); i++) {
+            let target = selection[i],
                 targetRect = /*this.*/getRect(target),
                 distance = /*this.*/getDistance(targetRect),
                 placement = {};
@@ -60,11 +60,11 @@ export function liteProperties() {
 }
 
 function properties(options) {
-    var options = /*this.*/extend(options, {
+    options = /*this.*/extend(options, {
         placement: "top",
         properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph"]
-    }),
-        properties = options.properties,
+    });
+    let properties = options.properties,
         placement = options.placement,
         styles = {
             layer: /*this.*/sharedLayerStyle("Sketch Measure / Property", /*this.*/colors.property.shape),
@@ -77,24 +77,24 @@ function properties(options) {
     properties.forEach(function (property) {
         switch (property) {
             case "color":
-                var fill, color: Color;
+                let fill, color: Color;
                 if (/*self.*/is(target, MSTextLayer)) {
-                    var color = /*self.*/colorToJSON(target.textColor()),
+                    let color = /*self.*/colorToJSON(target.textColor()),
                         colorID = color["argb-hex"];
                     color = (/*self.*/colorNames && /*self.*/colorNames[colorID]) ? /*self.*/colorNames[colorID] : color[/*self.*/context.configs.format];
                     content.push("color: " + color);
                 } else if (/*self.*/is(target, MSShapeGroup)) {
-                    var fillsJSON = /*self.*/getFills(targetStyle);
+                    let fillsJSON = /*self.*/getFills(targetStyle);
                     if (fillsJSON.length <= 0) return false;
-                    var fillJSON = fillsJSON.pop();
+                    let fillJSON = fillsJSON.pop();
                     content.push("fill: " + /*self.*/fillTypeContent(fillJSON))
                 }
 
                 break;
             case "border":
-                var bordersJSON = /*self.*/getBorders(targetStyle);
+                let bordersJSON = /*self.*/getBorders(targetStyle);
                 if (bordersJSON.length <= 0) return false;
-                var borderJSON = bordersJSON.pop();
+                let borderJSON = bordersJSON.pop();
                 content.push("border: " + /*self.*/convertUnit(borderJSON.thickness) + " " + borderJSON.position + "\r\n * " + /*self.*/fillTypeContent(borderJSON));
                 break;
             case "opacity":
@@ -119,7 +119,7 @@ function properties(options) {
                 break;
             case "line-height":
                 if (!/*self.*/is(target, MSTextLayer)) return false;
-                var defaultLineHeight = target.font().defaultLineHeightForFont(),
+                let defaultLineHeight = target.font().defaultLineHeightForFont(),
                     lineHeight = target.lineHeight() || defaultLineHeight;
                 content.push("line: " + /*self.*/convertUnit(lineHeight, true) + " (" + Math.round(lineHeight / target.fontSize() * 10) / 10 + ")");
                 break;
@@ -136,7 +136,7 @@ function properties(options) {
                 content.push("paragraph: " + /*self.*/convertUnit(target.paragraphStyle().paragraphSpacing(), true));
                 break;
             case "style-name":
-                var styleName = /*self.*/getStyleName(target);
+                let styleName = /*self.*/getStyleName(target);
                 if (styleName) {
                     content.push("style-name: " + styleName);
                 }
@@ -149,7 +149,7 @@ function properties(options) {
         }
     });
 
-    var objectID = target.objectID(),
+    let objectID = target.objectID(),
         name = "#properties-" + objectID,
         container = /*this.*/find({
             key: "(name != NULL) && (name == %@)",
@@ -161,7 +161,7 @@ function properties(options) {
     /*this.*/context.current.addLayers([container]);
     container.setName(name);
 
-    var label = /*this.*/setLabel({
+    let label = /*this.*/setLabel({
         container: container,
         target: target,
         styles: styles,
@@ -173,7 +173,7 @@ function properties(options) {
 }
 
 function resizeProperties(container) {
-    var placement = context.runningConfig.placement,
+    let placement = context.runningConfig.placement,
         text = /*this.*/find({
             key: "(class != NULL) && (class == %@)",
             match: MSTextLayer
@@ -249,18 +249,16 @@ function resizeProperties(container) {
 }
 
 function fillTypeContent(fillJSON) {
-    var fillJSON = fillJSON;
-
     if (fillJSON.fillType == "color") {
-        var colorID = fillJSON.color["argb-hex"];
+        let colorID = fillJSON.color["argb-hex"];
         return (colorNames && colorNames[colorID]) ? colorNames[colorID] : fillJSON.color[context.configs.format];
     }
 
     if (fillJSON.fillType == "gradient") {
-        var fc = [];
+        let fc = [];
         fc.push(fillJSON.gradient.type)
         fillJSON.gradient.colorStops.forEach(function (gradient) {
-            var colorID = gradient.color["argb-hex"],
+            let colorID = gradient.color["argb-hex"],
                 color = (colorNames && colorNames[colorID]) ? colorNames[colorID] : gradient.color[context.configs.format];
             fc.push(" * " + color);
         });
@@ -269,7 +267,7 @@ function fillTypeContent(fillJSON) {
 }
 
 function shadowContent(shadow) {
-    var shadowJSON = /*this.*/shadowToJSON(shadow),
+    let shadowJSON = /*this.*/shadowToJSON(shadow),
         sc = [];
     // FIXME: unknown code
     // if (shadowJSON <= 0) return false;

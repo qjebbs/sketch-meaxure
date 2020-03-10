@@ -101,7 +101,7 @@ export class Layer {
                     return layer;
                 }
             }
-            // for (var t = new Layer(this._layer); t;) {
+            // for (let t = new Layer(this._layer); t;) {
             //     if (t.container.isPage || t.container.isArtboard)
             //         return t.container;
             //     t = t.container
@@ -151,7 +151,7 @@ export class Layer {
     }
     get style() {
         if (this._layer.style) {
-            var e = this._getJSONData(this._layer.style());
+            let e = this._getJSONData(this._layer.style());
             return this._optimizeProperties(e), e.opacity = this.opacity, this.radius && (e.radius = this.radius), e
         }
     }
@@ -171,7 +171,7 @@ export class Layer {
     }
     get jsonData() {
         if (this.current && (this.current.isArtboard || this.current.isPage)) {
-            var data: any = {
+            let data: any = {
                 ID: this.ID,
                 containerID: this.container.ID,
                 name: this.name,
@@ -197,7 +197,7 @@ export class Layer {
         }
     }
     getRect(name: "frame" | "absoluteRect"): Rect {
-        var rect = this._layer[name]();
+        let rect = this._layer[name]();
         return {
             x: Number(rect.x()),
             y: Number(rect.y()),
@@ -206,14 +206,14 @@ export class Layer {
         }
     }
     setRect(name: "frame" | "absoluteRect", rect: Rect) {
-        var layerRect = this._layer[name]();
+        let layerRect = this._layer[name]();
         if (rect.x && /\d+/.test(rect.x.toString())) layerRect.setX(rect.x);
         if (rect.y && /\d+/.test(rect.y.toString())) layerRect.setY(rect.y);
         if (rect.width && /\d+/.test(rect.width.toString())) layerRect.setWidth(rect.width);
         if (rect.height && /\d+/.test(rect.height.toString())) layerRect.setHeight(rect.height);
     }
     remove() {
-        var parent = this._layer.parentGroup();
+        let parent = this._layer.parentGroup();
         if (parent) parent.removeLayer(this._layer);
     }
     adjustToFit() {
@@ -223,7 +223,7 @@ export class Layer {
     }
     newLayer(type: MSLayerClass, data: any) {
         if (this._layer.addLayers) {
-            var shape;
+            let shape;
             if (type == MSShapeGroup) {
                 shape = MSShapeGroup.shapeWithRect(NSMakeRect(0, 0, 100, 100))
             } else {
@@ -236,7 +236,7 @@ export class Layer {
                 }
             };
             this._layer.addLayers([shape]);
-            var layer = new Layer(shape);
+            let layer = new Layer(shape);
             for (let field in data) layer[field] = data[field];
             return layer
         }
@@ -272,8 +272,8 @@ export class Layer {
         /\d+/.test(e.fillType) && (e.fillType = FillTypes[e.fillType]), /\d+/.test(e.gradientType) && (e.gradientType = GradientTypes[e.gradientType]), "border" == e._class && /\d+/.test(e.position) && (e.position = BorderPositions[e.position])
     }
     _getJSONData(obj: any) {
-        var obj = obj.immutableModelObject(),
-            t = MSJSONDataArchiver.archiveStringWithRootObject_error(obj, nil);
+        obj = obj.immutableModelObject();
+        let t = MSJSONDataArchiver.archiveStringWithRootObject_error(obj, nil);
         return JSON.parse(t);
     }
     _emojiToEntities(val) {
@@ -286,10 +286,10 @@ export class Layer {
         })
     }
     _optimizeProperties(obj) {
-        var t = this;
+        let t = this;
         Object.keys(obj).map(function (i) {
             if (obj[i] instanceof Object && (t._optimizeProperties(obj[i]), t._typeName(obj[i])), obj[i] instanceof Array)
-                for (var n = 0; n < obj[i].length; n++) t._optimizeProperties(obj[i][n]), 1 != obj[i][n].fillType || obj[i][n].gradient || (obj[i][n].gradient = {
+                for (let n = 0; n < obj[i].length; n++) t._optimizeProperties(obj[i][n]), 1 != obj[i][n].fillType || obj[i][n].gradient || (obj[i][n].gradient = {
                     elipseLength: 0,
                     from: "{0.5, 0}",
                     gradientType: 0,

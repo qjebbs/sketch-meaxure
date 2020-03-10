@@ -39,24 +39,24 @@ export function drawSize(layer: Layer, position: string, name?, style?) {
     };
     let container = layer.current;
     if (context.configs.byPercentage && !container.isPage) {
-        var containerRect = context.configs.byInfluence ? container.influenceRect : container.rect,
+        let containerRect = context.configs.byInfluence ? container.influenceRect : container.rect,
             containerSize = /top|middle|bottom/.exec(position) ? containerRect.width : containerRect.height;
         text = lengthUnit(layerSize, containerSize)
     }
-    var group = createGroup(layer, position, name),
+    let group = createGroup(layer, position, name),
         forSize = createLine(sizeType, group, position, style);
     createLabel(sizeType, group, position, text, style, forSize);
     group.adjustToFit();
 }
 function createGroup(layer: Layer, position: string, name: string) {
     if (layer) {
-        var rect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
+        let rect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
             artboard = layer.current,
             size = /top|middle|bottom/.exec(position) ? rect.width : rect.height,
             sizeX = rect.x,
             sizeY = rect.y;
         /top|middle|bottom/.exec(position) ? sizeY = "middle" == position ? Math.round(sizeY + (rect.height - size) / 2) : "bottom" == position ? Math.round(sizeY + rect.height) : Math.round(sizeY - size) : /left|center|right/.exec(position) && (sizeX = "center" == position ? Math.round(sizeX + (rect.width - size) / 2) : "right" == position ? Math.round(sizeX + rect.width) : Math.round(sizeX - size));
-        var group = artboard.newGroup({
+        let group = artboard.newGroup({
             frame: Rectangle(0, 0, size, size),
             name: name
         });
@@ -71,7 +71,7 @@ function createGroup(layer: Layer, position: string, name: string) {
 }
 function createLabel(sizeType: string, group: Layer, position: string, text: string, style: any, forSize: any) {
 
-    var size = "width" == sizeType ? group.frame.width : group.frame.height,
+    let size = "width" == sizeType ? group.frame.width : group.frame.height,
         offset = forSize ? 4 : 0,
         textLayer = group.newText({
             text: text
@@ -79,7 +79,7 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
         flag = false;
     setStyle(textLayer, style.text);
 
-    var textX = /top|middle|bottom/.exec(position) ?
+    let textX = /top|middle|bottom/.exec(position) ?
         Math.round((size - textLayer.frame.width) / 2) :
         "left" == position ?
             size - textLayer.frame.width - 10 - offset :
@@ -99,7 +99,7 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
                     "top" :
                     "right";
     if (forSize) {
-        var distance = getDistances(forSize);
+        let distance = getDistances(forSize);
         if (/top|middle|bottom/.exec(position) && size > textWidth + 28) {
             textY = "top" == position ?
                 size - textHeight + 3 :
@@ -128,7 +128,7 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
             arrowPosition = distance.left < distance.right ? "left" : "right";
         }
     }
-    var textRect = Rectangle(textX, textY, textWidth, textHeight),
+    let textRect = Rectangle(textX, textY, textWidth, textHeight),
         arrowX = /top|middle|bottom/.exec(position) ?
             Math.round(textX + (textWidth - 6) / 2) :
             "right" == arrowPosition ?
@@ -160,9 +160,9 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
     textLayer.deselect();
     setStyle(arrow, style.shape);
     setStyle(box, style.shape);
-    var artboard = box.current;
+    let artboard = box.current;
     if (artboard.isArtboard) {
-        var artboardRect = artboard.rect,
+        let artboardRect = artboard.rect,
             boxNewRect = <Rect>{},
             textNewRext: any = {};
         boxRect = box.rect;
@@ -192,7 +192,7 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
     if (flag) arrow.remove();
 }
 function createLine(sizeType: string, group: Layer, position: string, style: any) {
-    var size = "width" == sizeType ? group.frame.width : group.frame.height,
+    let size = "width" == sizeType ? group.frame.width : group.frame.height,
         x1 = "width" == sizeType ? 0 : "left" == position ? size - 4 : "center" == position ? Math.round((size - 1) / 2) : 3,
         y1 = "height" == sizeType ? 0 : "top" == position ? size - 4 : "middle" == position ? Math.round((size - 1) / 2) : 3,
         w1 = "width" == sizeType ? size : 1,

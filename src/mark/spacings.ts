@@ -201,7 +201,7 @@ function drawRight(artboard: Layer, layerName: string, from: Rect, to: Rect) {
 }
 
 function drawSpacingShape(container: Layer, frame: Rect, drawSizePosition: string, layerName: string) {
-    var tempShape = container.newShape({
+    let tempShape = container.newShape({
         layerName: "temp"
     });
     tempShape.rect = frame;

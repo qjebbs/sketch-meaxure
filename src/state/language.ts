@@ -21,8 +21,8 @@ export function initLanguage(): string {
 }
 
 export function localize(str, data?) {
-    var str = (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str,
-        idx = -1;
+    str = (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
+    let idx = -1;
     return str.replace(/\%\@/gi, function () {
         idx++;
         return data[idx];

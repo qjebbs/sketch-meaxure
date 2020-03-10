@@ -6,7 +6,7 @@ import { Rect, Point, Color, ColorStop, Gradient } from "./interfaces";
 
 export function is(layer, theClass) {
     if (!layer) return false;
-    var klass = layer.class();
+    let klass = layer.class();
     return klass === theClass;
 }
 export function addGroup() {
@@ -17,16 +17,16 @@ export function addShape() {
 
 }
 export function addText() {
-    var text = MSTextLayer.new();
+    let text = MSTextLayer.new();
     text.setStringValue("text");
     return text;
 }
 export function removeLayer(layer) {
-    var container = layer.parentGroup();
+    let container = layer.parentGroup();
     if (container) container.removeLayer(layer);
 }
 export function getRect(layer): Rect {
-    var rect = layer.absoluteRect();
+    let rect = layer.absoluteRect();
     return {
         x: Math.round(rect.x()),
         y: Math.round(rect.y()),
@@ -57,12 +57,12 @@ export function getRect(layer): Rect {
     };
 }
 export function emojiToEntities(str) {
-    var emojiRegExp = new RegExp("(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])", "g");
+    let emojiRegExp = new RegExp("(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])", "g");
     return str.replace(
         emojiRegExp,
         function (match) {
-            var u = "";
-            for (var i = 0; i < match.length; i++) {
+            let u = "";
+            for (let i = 0; i < match.length; i++) {
                 if (!(i % 2)) {
                     u += "&#" + match.codePointAt(i)
                 }
@@ -137,7 +137,7 @@ export function colorStopToJSON(colorStop): ColorStop {
     };
 }
 export function gradientToJSON(gradient): Gradient {
-    var stopsData = [],
+    let stopsData = [],
         stop, stopIter = gradient.stops().objectEnumerator();
     while (stop = stopIter.nextObject()) {
         stopsData.push(/*this.*/colorStopToJSON(stop));
@@ -170,11 +170,11 @@ export function getRadius(layer) {
     }
 }
 export function getBorders(style) {
-    var bordersData = [],
+    let bordersData = [],
         border, borderIter = style.borders().objectEnumerator();
     while (border = borderIter.nextObject()) {
         if (border.isEnabled()) {
-            var fillType = FillTypes[border.fillType()],
+            let fillType = FillTypes[border.fillType()],
                 borderData = {
                     fillType: fillType,
                     position: BorderPositions[border.position()],
@@ -203,11 +203,11 @@ export function getBorders(style) {
     return bordersData;
 }
 export function getFills(style) {
-    var fillsData = [],
+    let fillsData = [],
         fill, fillIter = style.fills().objectEnumerator();
     while (fill = fillIter.nextObject()) {
         if (fill.isEnabled()) {
-            var fillType = FillTypes[fill.fillType()],
+            let fillType = FillTypes[fill.fillType()],
                 fillData = {
                     fillType: fillType,
                     color: <Color>{},
@@ -234,7 +234,7 @@ export function getFills(style) {
     return fillsData;
 }
 export function getShadows(style) {
-    var shadowsData = [],
+    let shadowsData = [],
         shadow, shadowIter = style.shadows().objectEnumerator();
     while (shadow = shadowIter.nextObject()) {
         if (shadow.isEnabled()) {
@@ -255,7 +255,7 @@ export function getOpacity(style) {
     return style.contextSettings().opacity()
 }
 export function getStyleName(layer) {
-    var styles = (/*this.*/is(layer, MSTextLayer)) ? /*this.*/context.document.documentData().layerTextStyles() : /*this.*/context.document.documentData().layerStyles(),
+    let styles = (/*this.*/is(layer, MSTextLayer)) ? /*this.*/context.document.documentData().layerTextStyles() : /*this.*/context.document.documentData().layerStyles(),
         layerStyle = layer.style(),
         sharedObjectID = layerStyle.objectID(),
         style;

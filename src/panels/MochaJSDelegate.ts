@@ -7,21 +7,21 @@
 //
 
 export function MochaJSDelegate(selectorHandlerDict) {
-	var uniqueClassName = "MochaJSDelegate_DynamicClass_" + NSUUID.UUID().UUIDString();
+	let uniqueClassName = "MochaJSDelegate_DynamicClass_" + NSUUID.UUID().UUIDString();
 
-	var delegateClassDesc = MOClassDescription.allocateDescriptionForClassWithName_superclass_(uniqueClassName, NSObject);
+	let delegateClassDesc = MOClassDescription.allocateDescriptionForClassWithName_superclass_(uniqueClassName, NSObject);
 
 	delegateClassDesc.registerClass();
 
 	//	Handler storage
 
-	var handlers = {};
+	let handlers = {};
 
 	//	Define interface
 
 	this.setHandlerForSelector = function (selectorString, func) {
-		var handlerHasBeenSet = (selectorString in handlers);
-		var selector = NSSelectorFromString(selectorString);
+		let handlerHasBeenSet = (selectorString in handlers);
+		let selector = NSSelectorFromString(selectorString);
 
 		handlers[selectorString] = func;
 
@@ -33,15 +33,15 @@ export function MochaJSDelegate(selectorHandlerDict) {
 				We have to basically create a dynamic handler with a likewise dynamic number of predefined arguments.
 			*/
 
-			var dynamicHandler = function () {
-				var functionToCall = handlers[selectorString];
+			let dynamicHandler = function () {
+				let functionToCall = handlers[selectorString];
 
 				if (!functionToCall) return;
 
 				return functionToCall.apply(delegateClassDesc, arguments);
 			};
 
-			var args = [], regex = /:/g;
+			let args = [], regex = /:/g;
 			let match: RegExpExecArray;
 			while (match = regex.exec(selectorString)) args.push("arg" + args.length);
 
@@ -74,7 +74,7 @@ export function MochaJSDelegate(selectorHandlerDict) {
 	//	Conveience
 
 	if (typeof selectorHandlerDict == "object") {
-		for (var selectorString in selectorHandlerDict) {
+		for (let selectorString in selectorHandlerDict) {
 			this.setHandlerForSelector(selectorString, selectorHandlerDict[selectorString]);
 		}
 	}
