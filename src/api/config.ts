@@ -1,7 +1,6 @@
 import { logger } from "./logger";
 import { deepEqual } from "./helper";
-
-type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order';
+export type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order';
 
 export class ConfigsMaster {
     private _prefix = "SMX3Configs";
