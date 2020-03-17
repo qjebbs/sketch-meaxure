@@ -37,11 +37,9 @@ interface markContext {
     selectionArtboards: any;
     artboardsData: any[];
     allCount: number; // exporting layers count
-    allData: any; //export page data
     slices: any[];
     sliceCache: any;
     maskCache: any[];
-    wantsStop: boolean;
     maskObjectID: any;
     maskRect: any;
     savePath: string;

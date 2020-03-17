@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Choose artboards - Sketch Measure 2.0</title>
+    <title>Choose artboards - Sketch MeaXure</title>
 
     <link href="assets/css/normalize.css" rel="stylesheet">
     <link href="assets/css/app.css" rel="stylesheet">
@@ -15,7 +15,7 @@
     //     exportOption: 1,
     //     order: 'alphabet',
     //     current: [0],
-    //     selection: [1,2,3],
+    //     selection: [4,7],
     //     pages: [
     //         {
     //             name: 'Page 1',
@@ -396,7 +396,7 @@
 
                 data.order = $('input[name=order]:checked').val();
 
-                SMAction('submit', data);
+                meaxure.postMessage(data);
             });
 
             if(!data.selection){
@@ -414,12 +414,27 @@
             checkPCheckbox();
             order(data);
             checkedOption();
-            $('#artboards-list').scrollTop($('input[name=artboards]:checked').parent().parent().position().top);
+            let checkedItems = $('input[name=artboards]:checked');
+            if(checkedItems.length) {
+                $('#artboards-list').scrollTop(checkedItems.first().parent().parent().parent().position().top);
+            }
         }
     // $(function(){
     //     init(data)
     // });
     </script>
   </head>
-  <body></body>
+  <body>
+      <script>
+        meaxure.onDidReceiveMessage(data => {
+            try {
+                // $('body').html(`<p>${JSON.stringify(data)}</p>`)
+                eval(data.language);
+                init(data);
+            } catch (error) {
+                $('body').html(`<p>${error.message}</p>`)
+            }
+        });
+      </script>
+  </body>
 </html>

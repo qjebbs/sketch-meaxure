@@ -2,58 +2,60 @@ import { context } from "../state/context";
 import { calcArtboardsRow, calcArtboardsColumn, find } from "../api/helper";
 import { toJSString } from "../api/api";
 import { SMPanel } from "./panel";
+import { createWebviewPanel } from "../webviewPanel";
+
+interface ExportData {
+    language: string;
+    selection: any[];
+    current: any[];
+    pages: any[];
+    exportOption: boolean;
+    exportInfluenceRect: boolean;
+    order: string;
+}
 
 export function exportPanel() {
-    // if (ga) ga.sendEvent('spec', 'export to spec viewer');
-    /*this.*/context.artboardsData = [];
-    /*this.*/context.selectionArtboards = {};
-    let data: any = {};
-    data.selection = [];
-    data.current = [];
-    data.pages = [];
+    context.artboardsData = [];
+    context.selectionArtboards = {};
+    let data = <ExportData>{
+        language: context.languageData,
+        selection: [],
+        current: [],
+        pages: [],
+        exportOption: context.runningConfig.exportOption === undefined ? true : context.runningConfig.exportOption,
+        exportInfluenceRect: context.runningConfig.exportInfluenceRect,
+        order: context.runningConfig.order ? context.runningConfig.order : "positive",
+    };
 
-    data.exportOption = /*self.*/context.runningConfig.exportOption;
-    if (data.exportOption == undefined) {
-        data.exportOption = true;
-    }
-
-    data.exportInfluenceRect = /*self.*/context.runningConfig.exportInfluenceRect;
-    if (data.exportInfluenceRect == undefined) {
-        data.exportInfluenceRect = false;
-    }
-
-    /*self.*/context.runningConfig.order = (/*self.*/context.runningConfig.order) ? /*self.*/context.runningConfig.order : "positive";
-    data.order = /*self.*/context.runningConfig.order;
-
-    if (/*this.*/context.selection.count() > 0) {
-        let selectionArtboards = /*this.*/find({
+    if (context.selection.count() > 0) {
+        let selectionArtboards = find({
             key: "(class != NULL) && (class == %@)",
             match: MSArtboardGroup
-        }, /*this.*/context.selection, true);
+        }, context.selection, true);
         if (selectionArtboards.count() > 0) {
             let artboard;
             selectionArtboards = selectionArtboards.objectEnumerator();
             while (artboard = selectionArtboards.nextObject()) {
-                data.selection.push(/*this.*/toJSString(artboard.objectID()));
+                data.selection.push(toJSString(artboard.objectID()));
             }
         }
     }
-    if (/*this.*/context.artboard) data.current.push(/*this.*/toJSString(/*this.*/context.artboard.objectID()));
+    if (context.artboard) data.current.push(toJSString(context.artboard.objectID()));
 
-    let pages = /*this.*/context.document.pages().objectEnumerator();
+    let pages = context.document.pages().objectEnumerator();
     let page;
     while (page = pages.nextObject()) {
         let pageData: any = {},
             artboards = page.artboards().objectEnumerator();
-        pageData.name = /*this.*/toJSString(page.name());
-        pageData.objectID = /*this.*/toJSString(page.objectID());
+        pageData.name = toJSString(page.name());
+        pageData.objectID = toJSString(page.objectID());
         pageData.artboards = [];
         let artboard;
         while (artboard = artboards.nextObject()) {
-            // if(!/*this.*/is(artboard, MSSymbolMaster)){
+            // if(!is(artboard, MSSymbolMaster)){
             let artboardData: any = {};
-            artboardData.name = /*this.*/toJSString(artboard.name());
-            artboardData.objectID = /*this.*/toJSString(artboard.objectID());
+            artboardData.name = toJSString(artboard.name());
+            artboardData.objectID = toJSString(artboard.objectID());
             artboardData.MSArtboardGroup = artboard;
             artboardData.x1 = artboard.rect().origin.x;
             artboardData.y1 = artboard.rect().origin.y;
@@ -64,12 +66,12 @@ export function exportPanel() {
             pageData.artboards.push(artboardData);
             // }
         }
-        switch (/*this.*/context.configs.artboardOrder) {
+        switch (context.configs.artboardOrder) {
             case 'layer-order':
                 pageData.artboards.reverse();
                 break;
             case 'artboard-cols':
-                /*this.*/calcArtboardsColumn(pageData.artboards);
+                calcArtboardsColumn(pageData.artboards);
                 pageData.artboards.sort((a, b) => {
                     return a.column > b.column ||
                         (a.column == b.column && a.y1 > b.y1) ||
@@ -78,7 +80,7 @@ export function exportPanel() {
                 break;
             case 'artboard-rows':
             default:
-                /*this.*/calcArtboardsRow(pageData.artboards);
+                calcArtboardsRow(pageData.artboards);
                 pageData.artboards.sort((a, b) => {
                     return a.row > b.row ||
                         (a.row == b.row && a.x1 > b.x1) ||
@@ -89,47 +91,43 @@ export function exportPanel() {
         data.pages.push(pageData);
     }
 
-    /*self.*/context.allData = data;
-    return /*this.*/SMPanel({
-        url: /*this.*/context.resourcesRoot + "/panel/export.html",
+    let exitCode = 1;
+    let panel = createWebviewPanel({
+        url: context.resourcesRoot + "/panel/export.html",
         width: 320,
         height: 597,
-        data: data,
-        callback: function (data) {
-            let allData = /*self.*/context.allData;
-            /*self.*/context.selectionArtboards = [];
-            /*self.*/context.allCount = 0;
+    });
+    panel.onWebviewDOMReady(() => panel.postMessage(data));
+    panel.onDidReceiveMessage<ExportData>((response) => {
+        exitCode = 0;
+        context.selectionArtboards = [];
+        context.allCount = 0;
+        for (let p = 0; p < data.pages.length; p++) {
+            let artboards = data.pages[p].artboards;
+            if (response.order == 'reverse') {
+                artboards = artboards.reverse();
+            } else if (response.order == 'alphabet') {
+                artboards = artboards.sort(function (a, b) {
+                    let nameA = a.name.toUpperCase(),
+                        nameB = b.name.toUpperCase();
+                    return nameA > nameB;
+                });
+            }
 
-            for (let p = 0; p < allData.pages.length; p++) {
-                let artboards = allData.pages[p].artboards;
-                if (data.order == 'reverse') {
-                    artboards = artboards.reverse();
-                } else if (data.order == 'alphabet') {
-                    artboards = artboards.sort(function (a, b) {
-                        let nameA = a.name.toUpperCase(),
-                            nameB = b.name.toUpperCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-                }
-
-                for (let a = 0; a < artboards.length; a++) {
-                    let artboard = artboards[a].MSArtboardGroup,
-                        objectID = /*self.*/toJSString(artboard.objectID());
-                    if (data[objectID]) {
-                        /*self.*/context.allCount += artboard.children().count();
-                        /*self.*/context.selectionArtboards.push(artboard);
-                    }
+            for (let a = 0; a < artboards.length; a++) {
+                let artboard = artboards[a].MSArtboardGroup,
+                    objectID = toJSString(artboard.objectID());
+                if (response[objectID]) {
+                    context.allCount += artboard.children().count();
+                    context.selectionArtboards.push(artboard);
                 }
             }
-            context.runningConfig.exportOption = data.exportOption;
-            context.runningConfig.exportInfluenceRect = data.exportInfluenceRect;
-            context.runningConfig.order = data.order;
         }
+        context.runningConfig.exportOption = response.exportOption;
+        context.runningConfig.exportInfluenceRect = response.exportInfluenceRect;
+        context.runningConfig.order = response.order;
+        panel.close();
     });
+    panel.showModal();
+    return exitCode;
 }

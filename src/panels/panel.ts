@@ -136,7 +136,6 @@ export function SMPanel(options) {
             threadDictionary.removeObjectForKey(options.identifier);
         }
 
-        context.wantsStop = true;
         if (options.floatWindow) {
             Panel.close();
         } else {

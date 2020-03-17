@@ -2,24 +2,22 @@ import { localize } from "../state/language";
 import { logger } from "../api/logger";
 import { exportPanel } from "../panels/exportPanel";
 import { context } from "../state/context";
-import { SMPanel } from "../panels/panel";
 import { getRect, toSlug, emojiToEntities, toJSString } from "../api/api";
 import { message, getSavePath, toHTMLEncode } from "../api/helper";
 import { getLayer, exportImage, writeFile, buildTemplate } from "./utilities";
+import { createWebviewPanel } from "../webviewPanel";
 
 export function exportSpecification() {
-    if (!exportPanel()) return;
+    if (exportPanel() != 0) return;
     if (context.selectionArtboards.length <= 0) return false;
     let savePath = getSavePath();
     if (!savePath) return;
 
-    let processingPanel = SMPanel({
+    let processingPanel = createWebviewPanel({
         url: context.resourcesRoot + "/panel/processing.html",
         width: 304,
         height: 104,
-        floatWindow: true
     });
-    let processing = processingPanel.windowScriptObject();
     let template = NSString.stringWithContentsOfFile_encoding_error(context.resourcesRoot + "/template.html", 4, nil);
     let idx = 1;
     let artboardIndex = 0;
@@ -38,11 +36,17 @@ export function exportSpecification() {
     context.slices = [];
     context.sliceCache = {};
     context.maskCache = [];
-    context.wantsStop = false;
+    let canceled = false;
+    processingPanel.onClose(() => canceled = true);
+    processingPanel.show();
 
     coscript.scheduleWithRepeatingInterval_jsFunction(0, function (interval) {
         // message('Processing layer ' + idx + ' of ' + context.allCount);
-        processing.evaluateWebScript("processing('" + Math.round(idx / context.allCount * 100) + "%', '" + localize("Processing layer %@ of %@", [idx, context.allCount]) + "')");
+        processingPanel.postMessage({
+            percentage: Math.round(idx / context.allCount * 100),
+            text: localize("Processing layer %@ of %@", [idx, context.allCount])
+        });
+
         idx++;
 
         if (!data.artboards[artboardIndex]) {
@@ -72,10 +76,8 @@ export function exportSpecification() {
                 layerCount++;
                 exporting = false;
             } catch (e) {
-                context.wantsStop = true;
+                canceled = true;
                 logger.error(e)
-                processing.evaluateWebScript("$('#processing-text').html('<small>" + toHTMLEncode(msg) + "</small>');");
-                // if (ga) ga.sendError(message)
             }
 
             if (layerIndex >= artboard.children().length) {
@@ -161,18 +163,16 @@ export function exportSpecification() {
                 NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
 
                 message(localize("Export complete!"));
-                context.wantsStop = true;
+                canceled = true;
             }
 
         }
 
-        if (context.wantsStop === true) {
-            // if (ga) ga.sendEvent('spec', 'spec done');
+        if (canceled === true) {
+            processingPanel.close();
             return interval.cancel();
         }
 
-
     });
-
 
 }

@@ -23,6 +23,7 @@ export class WebviewPanel {
     private _options: WebviewPanelOptions;
     private _receiveMessageListener: (e: any) => any;
     private _DOMReadyListener: (webView, webFrame) => void;
+    private _closeListener: () => void
     private _isModal: boolean;
     private _threadDictionary: any;
 
@@ -95,7 +96,9 @@ export class WebviewPanel {
                 meaxure.listener = undefined;`);
             },
             "webView:didFinishLoadForFrame:": (webView, webFrame) => {
-                this._DOMReadyListener(webView, webFrame);
+                if (this._DOMReadyListener) {
+                    this._DOMReadyListener(webView, webFrame);
+                }
             },
             "webView:didChangeLocationWithinPageForFrame:": (webView, webFrame) => {
                 if (!this._receiveMessageListener) return;
@@ -126,6 +129,9 @@ export class WebviewPanel {
         contentView.addSubview(webView);
     }
     close() {
+        if (this._closeListener) {
+            this._closeListener();
+        }
         if (this._isModal) {
             this._panel.orderOut(nil);
             NSApp.stopModal();
@@ -165,5 +171,8 @@ export class WebviewPanel {
     }
     onWebviewDOMReady<T>(listener: (webView, webFrame) => void) {
         this._DOMReadyListener = listener;
+    }
+    onClose(listener: () => void) {
+        this._closeListener = listener;
     }
 } 
