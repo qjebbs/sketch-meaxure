@@ -1,4 +1,5 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
+import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from '../state/keepAround';
 
 export interface WebviewPanelOptions {
     identifier?: string,
@@ -26,6 +27,7 @@ export class WebviewPanel {
     private _closeListener: () => void
     private _isModal: boolean;
     private _threadDictionary: any;
+    private _keepAroundID: any;
 
     constructor(options: WebviewPanelOptions) {
         if (options.identifier) {
@@ -34,6 +36,7 @@ export class WebviewPanel {
                 return this._threadDictionary[options.identifier];
             }
         }
+        this._keepAroundID = uuidv4();
         this._options = Object.assign({
             width: 240,
             height: 320,
@@ -137,7 +140,7 @@ export class WebviewPanel {
             NSApp.stopModal();
         } else {
             this._panel.close();
-            coscript.setShouldKeepAround(false);
+            coscriptNotKeepAround(this._keepAroundID);
         }
         if (this._options.identifier) {
             this._threadDictionary.removeObjectForKey(this._options.identifier);
@@ -153,7 +156,7 @@ export class WebviewPanel {
         this._panel.setLevel(NSFloatingWindowLevel);
         this._panel.center();
         this._panel.makeKeyAndOrderFront(nil);
-        coscript.setShouldKeepAround(true);
+        coscriptKeepAround(this._keepAroundID);
     }
     postMessage<T>(msg: T) {
         let windowObject = this._webview.windowScriptObject();

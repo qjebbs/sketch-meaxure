@@ -2,7 +2,9 @@ import { context } from "../state/context";
 import { logger } from "../api/logger";
 import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "..";
 import { localize } from "../state/language";
+import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../state/keepAround";
 
+const keepAroundID = uuidv4();
 function getImage(name: string, state?: string) {
     let highDPI = NSScreen.mainScreen().backingScaleFactor() > 1;
     state = state || "normal";
@@ -54,12 +56,12 @@ function addCheckbox(rect: any, name: string, checked: boolean, callAction: Func
 }
 export function markToolbar() {
     const WIN_WIDTH = 136, WIN_HEIGHT = 524;
-    let identifier = "co.jebbs.measure",
+    let identifier = "co.jebbs.meaxure",
         threadDictionary = NSThread.mainThread().threadDictionary(),
         Toolbar = threadDictionary[identifier];
     if (Toolbar) return;
 
-    coscript.setShouldKeepAround(true);
+    coscriptKeepAround(keepAroundID);
     Toolbar = NSPanel.alloc().init();
     Toolbar.setStyleMask(NSTitledWindowMask + NSFullSizeContentViewWindowMask);
     Toolbar.setBackgroundColor(NSColor.colorWithRed_green_blue_alpha(0.98, 0.98, 0.98, 1));
@@ -78,7 +80,7 @@ export function markToolbar() {
         addButton(
             NSMakeRect(12, WIN_HEIGHT - 24, 12, 12), null, "close", "normal",
             function (sender) {
-                coscript.setShouldKeepAround(false);
+                coscriptNotKeepAround(keepAroundID);
                 threadDictionary.removeObjectForKey(identifier);
                 Toolbar.close();
             }
