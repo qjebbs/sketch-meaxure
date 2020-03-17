@@ -107,7 +107,7 @@ button{
     height: 12px;
     /*box-sizing: border-box;*/
     /*background: #3484F5;*/
-    background: #000;
+    background: #FFF;
     /*border: 1px solid rgba(255,255,255,0.10);*/
     border-radius: 1px;
     overflow: hidden;
@@ -455,7 +455,7 @@ button{
     font-weight: normal;
     padding: 0 0 0 44px;
     line-height: 32px;
-    color: #555;
+    color: #999;
     background: #000;
     border: 1px solid #353535;
     border-width: 1px 0;

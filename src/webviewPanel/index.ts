@@ -18,6 +18,8 @@ export function createWebviewPanel(options: WebviewPanelOptions): WebviewPanel {
     return new WebviewPanel(options);
 }
 
+const BACKGROUND_COLOR = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
+const BACKGROUND_COLOR_TITLE = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1);
 export class WebviewPanel {
     private _panel: any;
     private _webview: Webview;
@@ -56,7 +58,6 @@ export class WebviewPanel {
 
     private _createPanel(): any {
         let frame = NSMakeRect(0, 0, this._options.width, (this._options.height + 32));
-        let contentBgColor = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
         let panel = NSPanel.alloc().init();
         panel.setTitleVisibility(NSWindowTitleHidden);
         panel.setTitlebarAppearsTransparent(true);
@@ -64,7 +65,7 @@ export class WebviewPanel {
         panel.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
         panel.standardWindowButton(NSWindowZoomButton).setHidden(true);
         panel.setFrame_display(frame, false);
-        panel.setBackgroundColor(contentBgColor);
+        panel.setBackgroundColor(BACKGROUND_COLOR);
 
         let closeButton = panel.standardWindowButton(NSWindowCloseButton);
         closeButton.setFrameOrigin(NSMakePoint(8, 8));
@@ -110,20 +111,20 @@ export class WebviewPanel {
                 this._receiveMessageListener(data);
             }
         });
+        webView.setBackgroundColor(BACKGROUND_COLOR);
         webView.setFrameLoadDelegate_(delegate.getClassInstance());
         webView.setMainFrameURL_(this._options.url);
         return webView;
     }
     private _initPanelViews(panel, webView) {
-        let titleBgColor = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1);
         let contentView = panel.contentView();
         let titlebarView = contentView.superview().titlebarViewController().view();
         let titlebarContainerView = titlebarView.superview();
         titlebarContainerView.setFrame(NSMakeRect(0, this._options.height, this._options.width, 32));
         titlebarView.setFrameSize(NSMakeSize(this._options.width, 32));
         titlebarView.setTransparent(true);
-        titlebarView.setBackgroundColor(titleBgColor);
-        titlebarContainerView.superview().setBackgroundColor(titleBgColor);
+        titlebarView.setBackgroundColor(BACKGROUND_COLOR_TITLE);
+        titlebarContainerView.superview().setBackgroundColor(BACKGROUND_COLOR_TITLE);
 
         contentView.setWantsLayer(true);
         contentView.layer().setFrame(contentView.frame());
