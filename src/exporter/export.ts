@@ -8,7 +8,7 @@ import { getLayer, exportImage, writeFile, buildTemplate } from "./utilities";
 import { createWebviewPanel } from "../webviewPanel";
 
 export function exportSpecification() {
-    if (exportPanel() != 0) return;
+    if (!exportPanel()) return;
     if (context.selectionArtboards.length <= 0) return false;
     let savePath = getSavePath();
     if (!savePath) return;

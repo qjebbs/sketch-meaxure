@@ -1,7 +1,6 @@
 import { context } from "../state/context";
 import { calcArtboardsRow, calcArtboardsColumn, find } from "../api/helper";
 import { toJSString } from "../api/api";
-import { SMPanel } from "./panel";
 import { createWebviewPanel } from "../webviewPanel";
 
 interface ExportData {
@@ -91,7 +90,7 @@ export function exportPanel() {
         data.pages.push(pageData);
     }
 
-    let exitCode = 1;
+    let isCanceled = true;
     let panel = createWebviewPanel({
         url: context.resourcesRoot + "/panel/export.html",
         width: 320,
@@ -99,7 +98,7 @@ export function exportPanel() {
     });
     panel.onWebviewDOMReady(() => panel.postMessage(data));
     panel.onDidReceiveMessage<ExportData>((response) => {
-        exitCode = 0;
+        isCanceled = false;
         context.selectionArtboards = [];
         context.allCount = 0;
         for (let p = 0; p < data.pages.length; p++) {
@@ -129,5 +128,5 @@ export function exportPanel() {
         panel.close();
     });
     panel.showModal();
-    return exitCode;
+    return !isCanceled;
 }

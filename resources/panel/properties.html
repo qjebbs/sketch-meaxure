@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mark properties - Sketch Measure 2.0</title>
+    <title>Mark properties - Sketch MeaXure</title>
 
     <link href="assets/css/normalize.css" rel="stylesheet">
     <link href="assets/css/app.css" rel="stylesheet">
@@ -127,32 +127,32 @@
                             '</label>',
                         '</div>',
                     '</div>',
-                    '<div class="radiosbox">',
-                        '<div class="quarter">',
-                            '<div class="radiobox top-radio">',
-                                '<input id="top" type="radio" name="placement" value="top">',
-                                '<label for="top"></label>',
-                            '</div>',
-                        '</div>',
-                        '<div class="quarter text-right pdr7">',
-                            '<div class="radiobox right-radio">',
-                                '<input id="right" type="radio" name="placement" value="right">',
-                                '<label for="right"></label>',
-                            '</div>',
-                        '</div>',
-                        '<div class="quarter pdr7 pdl7">',
-                            '<div class="radiobox bottom-radio">',
-                                '<input id="bottom" type="radio" name="placement" value="bottom">',
-                                '<label for="bottom"></label>',
-                            '</div>',
-                        '</div>',
-                        '<div class="quarter text-right">',
-                            '<div class="radiobox left-radio">',
-                                '<input id="left" type="radio" name="placement" value="left">',
-                                '<label for="left"></label>',
-                            '</div>',
-                        '</div>',
-                    '</div>',
+                    // '<div class="radiosbox">',
+                    //     '<div class="quarter">',
+                    //         '<div class="radiobox top-radio">',
+                    //             '<input id="top" type="radio" name="placement" value="top">',
+                    //             '<label for="top"></label>',
+                    //         '</div>',
+                    //     '</div>',
+                    //     '<div class="quarter text-right pdr7">',
+                    //         '<div class="radiobox right-radio">',
+                    //             '<input id="right" type="radio" name="placement" value="right">',
+                    //             '<label for="right"></label>',
+                    //         '</div>',
+                    //     '</div>',
+                    //     '<div class="quarter pdr7 pdl7">',
+                    //         '<div class="radiobox bottom-radio">',
+                    //             '<input id="bottom" type="radio" name="placement" value="bottom">',
+                    //             '<label for="bottom"></label>',
+                    //         '</div>',
+                    //     '</div>',
+                    //     '<div class="quarter text-right">',
+                    //         '<div class="radiobox left-radio">',
+                    //             '<input id="left" type="radio" name="placement" value="left">',
+                    //             '<label for="left"></label>',
+                    //         '</div>',
+                    //     '</div>',
+                    // '</div>',
                 '</div>',
                 '<div class="footer">',
                     '<button id="submit" class="submit">' + _('Mark') + '</button>',
@@ -180,19 +180,29 @@
 
         $('#submit').click(function(){
             var options = {}
-            options.placement = $('input[name=placement]:checked').val();
+            // options.placement = $('input[name=placement]:checked').val();
             options.properties = [];
             $('input[name=properties]:checked').each(function(){
                 var $this = $(this);
                 options.properties.push($this.val());
             });
-
-            SMAction('submit', options);
-
+            meaxure.postMessage(options);
         });
 
     }
     </script>
   </head>
-  <body></body>
+  <body>
+        <script>
+            meaxure.onDidReceiveMessage(data => {
+                try {
+                    eval(data.language);
+                    init(data);
+                } catch (error) {
+                    $('body').html(`<p>${error.message}</p>`)
+                }
+            });
+            // $(()=>init());
+        </script>
+    </body>
 </html>
