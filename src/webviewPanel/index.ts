@@ -44,6 +44,10 @@ export class WebviewPanel {
     private _threadDictionary: any;
     private _keepAroundID: any;
 
+    static exists(identifier: string): boolean {
+        return !!NSThread.mainThread().threadDictionary()[identifier];
+    }
+
     constructor(options: WebviewPanelOptions) {
         if (options.identifier) {
             this._threadDictionary = NSThread.mainThread().threadDictionary();

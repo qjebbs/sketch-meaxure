@@ -7,14 +7,14 @@ import { Color } from "../api/interfaces";
 import { colorNames, colors } from "../state/common";
 import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
 
-export function markProperties() {
+export async function markProperties() {
     let selection = /*this.*/ context.selection;
     if (selection.count() <= 0) {
         /*this.*/ message(localize("Select a layer to mark!"));
         return false;
     }
     let target = selection[0];
-    if (!propertiesPanel())
+    if (!(await propertiesPanel()))
         return false;
     for (let i = 0; i < selection.count(); i++) {
         let target = selection[i];

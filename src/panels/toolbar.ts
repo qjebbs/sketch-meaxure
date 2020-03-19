@@ -56,7 +56,7 @@ function addCheckbox(rect: any, name: string, checked: boolean, callAction: Func
 }
 export function markToolbar() {
     const WIN_WIDTH = 136, WIN_HEIGHT = 524;
-    let identifier = "co.jebbs.meaxure",
+    let identifier = "co.jebbs.sketch-meaxure.toolbar",
         threadDictionary = NSThread.mainThread().threadDictionary(),
         Toolbar = threadDictionary[identifier];
     if (Toolbar) return;

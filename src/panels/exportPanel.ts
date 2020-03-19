@@ -2,6 +2,7 @@ import { context } from "../state/context";
 import { calcArtboardsRow, calcArtboardsColumn, find } from "../api/helper";
 import { toJSString } from "../api/api";
 import { createWebviewPanel } from "../webviewPanel";
+import { logger } from "../api/logger";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
 
@@ -79,24 +80,26 @@ export function exportPanel() {
         }
         data.pages.push(pageData);
     }
-
-    let isCanceled = true;
     let panel = createWebviewPanel({
+        identifier: 'co.jebbs.sketch-meaxure.export',
         url: context.resourcesRoot + "/panel/export.html",
         width: 320,
         height: 597,
     });
-    panel.onWebviewDOMReady(() => panel.postMessage<ExportPanelMessage>({ action: "init", data: data }));
-    panel.onDidReceiveMessage<ExportPanelMessage>((msg) => {
+    panel.onWebviewDOMReady(
+        () => panel.postMessage<ExportPanelMessage>({ action: "init", data: data })
+            .catch(err => logger.error('error occured when init export panel.\n' + ' Error: ' + JSON.stringify(err)))
+    );
+    function messageFunc(msg: ExportPanelMessage, resolve: (boolean) => void) {
         if (msg.action == 'sort') {
             data.order = msg.data.order;
             for (let p = 0; p < data.pages.length; p++) {
                 data.pages[p].artboards = sortArtboards(data.pages[p].artboards, msg.data.order, msg.data.reverse);
             }
-            panel.postMessage<ExportPanelMessage>({ action: 'update', data: data });
+            panel.postMessage<ExportPanelMessage>({ action: 'update', data: data })
+                .catch(err => logger.error('error occured when sort artboards.\n' + 'Error: ' + JSON.stringify(err)));
             return;
         } else if (msg.action == 'submit') {
-            isCanceled = false;
             context.selectionArtboards = [];
             context.allCount = 0;
             for (let p = 0; p < data.pages.length; p++) {
@@ -115,11 +118,15 @@ export function exportPanel() {
             context.runningConfig.exportOption = msg.data.exportOption;
             context.runningConfig.exportInfluenceRect = msg.data.exportInfluenceRect;
             context.runningConfig.order = msg.data.order;
+            resolve(true);
             panel.close();
         }
+    }
+    return new Promise<boolean>((resolve, reject) => {
+        panel.onClose(() => resolve(false));
+        panel.onDidReceiveMessage<ExportPanelMessage>((msg) => messageFunc(msg, resolve));
+        panel.show();
     });
-    panel.showModal();
-    return !isCanceled;
 }
 
 function sortArtboards(artboards: any[], artboardOrder: OptionArtboardOrder, reverse?: boolean): any[] {

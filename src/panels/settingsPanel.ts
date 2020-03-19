@@ -1,5 +1,6 @@
 import { context } from '../state/context';
-import { createWebviewPanel } from '../webviewPanel';
+import { createWebviewPanel, WebviewPanel } from '../webviewPanel';
+import { logger } from '../api/logger';
 
 interface SettingData {
     language?: string;
@@ -9,6 +10,9 @@ interface SettingData {
 }
 
 export function settingsPanel() {
+    let identifier = 'co.jebbs.sketch-meaxure.settings';
+    if (WebviewPanel.exists(identifier)) return false;
+
     let data: any = {};
     data.language = context.languageData;
     if (context.configs) {
@@ -17,16 +21,20 @@ export function settingsPanel() {
         data.colorFormat = context.configs.format;
     }
     let panel = createWebviewPanel({
+        identifier: identifier,
         url: context.resourcesRoot + "/panel/settings.html",
         width: 240,
         height: 316,
     });
-    panel.onWebviewDOMReady(() => panel.postMessage(data));
+    panel.onWebviewDOMReady(
+        () => panel.postMessage(data)
+            .catch(err => logger.error('error occured when init setting panel.\n' + 'Error: ' + JSON.stringify(err)))
+    );
     panel.onDidReceiveMessage<SettingData>((data) => {
         context.configs.scale = data.scale;
         context.configs.units = data.units;
         context.configs.format = data.colorFormat;
         panel.close();
     });
-    panel.showModal();
+    panel.show();
 }
