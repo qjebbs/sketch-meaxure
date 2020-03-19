@@ -1,6 +1,7 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from '../state/keepAround';
 import { logger } from '../api/logger';
+import { meaxure, wrapWebViewScripts } from './webviewScripts';
 
 export interface WebviewPanelOptions {
     identifier?: string,
@@ -15,7 +16,7 @@ interface Webview {
     mainFrameURL();
 }
 
-enum EventType {
+export enum EventType {
     PromiseResolve,
     PromiseReject,
 }
@@ -99,22 +100,7 @@ export class WebviewPanel {
         let delegate = new MochaJSDelegate({
             // https://developer.apple.com/documentation/webkit/webframeloaddelegate?language=objc
             "webView:didCommitLoadForFrame:": (webView, webFrame) => {
-                windowObject.evaluateWebScript(`
-                class meaxure {
-                    static postMessage(message) {
-                        window._MexurePostMessage = JSON.stringify(message);
-                        window.location.hash = Date.now();
-                    }
-                    static onDidReceiveMessage(listener) {
-                        meaxure.listener = listener;
-                    }
-                    static receiveMessage(message) {
-                        if (!meaxure.listener) return;
-                        let data = JSON.parse(decodeURIComponent(message));
-                        meaxure.listener(data);
-                    }
-                }
-                meaxure.listener = undefined;`);
+                windowObject.evaluateWebScript(meaxure);
             },
             "webView:didFinishLoadForFrame:": (webView, webFrame) => {
                 if (this._DOMReadyListener) {
@@ -193,33 +179,7 @@ export class WebviewPanel {
     evaluateWebScript(script: string): Promise<any> {
         let windowObject = this._webview.windowScriptObject();
         let eventID = uuidv4();
-        let scriptWrapped = `
-        (function(){
-            function scriptCallback(eventType, result) {
-                meaxure.postMessage({
-                    __EVENT_TYPE__: eventType,
-                    __EVENT_IDENTITY__: "${eventID}",
-                    message: result
-                })
-            }
-            try {
-                let scriptReturn = (function () {
-                    ${script}
-                })();
-                if (scriptReturn instanceof Promise) {
-                    scriptReturn.then(
-                        result => scriptCallback(${EventType.PromiseResolve}, result)
-                    ).catch(
-                        result => scriptCallback(${EventType.PromiseReject}, result)
-                    );
-                } else {
-                    scriptCallback(${EventType.PromiseResolve}, scriptReturn);
-                }
-            } catch (error) {
-                scriptCallback(${EventType.PromiseReject}, error);
-            }
-        })() 
-        `;
+        let scriptWrapped = wrapWebViewScripts(script, eventID);
         // alert(scriptWrapped);
         let promise = new Promise((resolve, reject) => {
             this._eventListeners[eventID] = function (eventType: EventType, msg: any) {
