@@ -12,59 +12,6 @@
     <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="assets/js/common.js"></script>
     <script type="text/javascript">
-        // var data = {
-        //     exportOption: 1,
-        //     order: 'artboard-rows',
-        //     reverse: false,
-        //     current: [0],
-        //     selection: [4, 7],
-        //     pages: [
-        //         {
-        //             name: 'Page 1',
-        //             objectID: '0',
-        //             artboards: [
-        //                 {
-        //                     name: 'Index',
-        //                     objectID: '0'
-        //                 },
-        //                 {
-        //                     name: 'Video',
-        //                     objectID: '1'
-        //                 },
-        //                 {
-        //                     name: 'Explore',
-        //                     objectID: '2'
-        //                 },
-        //                 {
-        //                     name: 'Profile',
-        //                     objectID: '3'
-        //                 }
-        //             ]
-        //         },
-        //         {
-        //             name: 'Page 2',
-        //             objectID: '1',
-        //             artboards: [
-        //                 {
-        //                     name: 'Single content',
-        //                     objectID: '4'
-        //                 },
-        //                 {
-        //                     name: 'Single Video',
-        //                     objectID: '5'
-        //                 },
-        //                 {
-        //                     name: 'Search page',
-        //                     objectID: '6'
-        //                 },
-        //                 {
-        //                     name: 'Settings',
-        //                     objectID: '7'
-        //                 }
-        //             ]
-        //         }
-        //     ]
-        // };
         var checkVCheckbox = function () {
             var allCheckboxLength = $('input[name=artboards]').length,
                 checkedLength = $('input[name=artboards]:checked').length;
@@ -101,18 +48,6 @@
 
                 });
             },
-            sendOrderRequest = function () {
-                let order = $('input[name=order]:checked').val();
-                let reverse = $('input[name=reverse]:checked').val() == '1';
-                // post a request to resort
-                meaxure.postMessage({
-                    action: 'sort',
-                    data: {
-                        order: order,
-                        reverse, reverse
-                    }
-                });
-            },
             updateArtboardsList = function (data) {
                 $.each(data.pages, function (index, page) {
                     if (page.artboards.length == 0) return;
@@ -129,6 +64,17 @@
                     });
                 });
                 filter(data);
+            },
+            sendOrderRequest = function () {
+                let order = $('input[name=order]:checked').val();
+                let reverse = $('input[name=reverse]:checked').val() == '1';
+                meaxure.postRequest({
+                    action: 'sort',
+                    data: {
+                        order: order,
+                        reverse, reverse
+                    }
+                }).then(data => updateArtboardsList(data));
             },
             filter = function (data) {
                 var $filter = $('#filter'),
@@ -434,30 +380,51 @@
                     $('#artboards-list').scrollTop(checkedItems.first().parent().parent().parent().position().top);
                 }
             }
-        // $(function () {
-        //     init(data)
-        // });
     </script>
 </head>
 
 <body>
     <script>
-        meaxure.onDidReceiveMessage(message => {
-            try {
-                processMessage(message)
-            } catch (error) {
-                $('body').html(`<p>${error.message}</p>`)
-            }
-            function processMessage(message) {
-                if (message.action == 'update') {
-                    updateArtboardsList(message.data);
-                    return;
+        if (window.meaxure) {
+            meaxure.postRequest({
+                action: 'init',
+            }).then(data => {
+                try {
+                    eval(data.language);
+                    init(data);
+                } catch (error) {
+                    $('body').html(`<p>${error.message}</p>`)
                 }
-                // message.action == 'init'
-                eval(message.data.language);
-                init(message.data);
-            }
-        });
+            });
+        } else {
+            let testData = {
+                exportOption: 1,
+                order: 'artboard-rows',
+                reverse: false,
+                current: [0],
+                selection: [4, 7],
+                pages: [{
+                    name: 'Page 1',
+                    objectID: '0',
+                    artboards: [
+                        { name: 'Index', objectID: '0' },
+                        { name: 'Video', objectID: '1' },
+                        { name: 'Explore', objectID: '2' },
+                        { name: 'Profile', objectID: '3' }
+                    ]
+                }, {
+                    name: 'Page 2',
+                    objectID: '1',
+                    artboards: [
+                        { name: 'Single content', objectID: '4' },
+                        { name: 'Single Video', objectID: '5' },
+                        { name: 'Search page', objectID: '6' },
+                        { name: 'Settings', objectID: '7' }
+                    ]
+                }]
+            };
+            init(testData);
+        }
     </script>
 </body>
 

@@ -16,15 +16,18 @@ interface Webview {
     mainFrameURL();
 }
 
-export enum EventType {
-    PromiseResolve,
-    PromiseReject,
+
+interface PanelRequestBase<T> {
+    __REQUEST_SUCCESS__: boolean;
+    message: T;
 }
 
-interface PanelEventMessage {
-    __EVENT_TYPE__: EventType;
-    __EVENT_IDENTITY__: string;
-    message: any;
+export interface PanelServerRequest<T> extends PanelRequestBase<T> {
+    __REQUEST_IDENTITY_S2C__: string;
+}
+
+export interface PanelClientRequest<T> extends PanelRequestBase<T> {
+    __REQUEST_IDENTITY_C2S__: string;
 }
 
 export function createWebviewPanel(options: WebviewPanelOptions): WebviewPanel {
@@ -37,18 +40,18 @@ export class WebviewPanel {
     private _panel: any;
     private _webview: Webview;
     private _options: WebviewPanelOptions;
-    private _receiveMessageListener: (...args) => void;
-    private _DOMReadyListener: (...args) => void;
-    private _closeListener: (...args) => void
-    private _eventListeners: { [key: string]: (eventType: EventType, data: any) => void } = {};
     private _isModal: boolean;
     private _threadDictionary: any;
     private _keepAroundID: any;
+    private _DOMReadyListener: (...args) => void;
+    private _closeListener: (...args) => void
+    private _receiveMessageListener: (...args) => void;
+    private _receiveRequeListener: (...args) => void;
+    private _postRequestListeners: { [key: string]: (success: boolean, data: any) => void } = {};
 
     static exists(identifier: string): boolean {
         return !!NSThread.mainThread().threadDictionary()[identifier];
     }
-
     constructor(options: WebviewPanelOptions) {
         if (options.identifier) {
             this._threadDictionary = NSThread.mainThread().threadDictionary();
@@ -109,13 +112,19 @@ export class WebviewPanel {
             },
             "webView:didChangeLocationWithinPageForFrame:": (webView, webFrame) => {
                 let data = JSON.parse(windowObject.valueForKey("_MexurePostMessage"));
-                if (data.__EVENT_TYPE__ !== undefined && data.__EVENT_IDENTITY__ !== undefined) {
-                    // an internal event message
-                    let eventMessage = data as PanelEventMessage;
-                    let callback = this._eventListeners[eventMessage.__EVENT_IDENTITY__];
-                    callback(eventMessage.__EVENT_TYPE__, eventMessage.message);
-                    delete this._eventListeners[eventMessage.__EVENT_IDENTITY__];
+                if (data.__REQUEST_SUCCESS__ !== undefined && data.__REQUEST_IDENTITY_S2C__ !== undefined) {
+                    // reply message of server-to-client request
+                    logger.debug('A reply of server request recieved.');
+                    let reply = data as PanelServerRequest<any>;
+                    let callback = this._postRequestListeners[reply.__REQUEST_IDENTITY_S2C__];
+                    callback(reply.__REQUEST_SUCCESS__, reply.message);
+                    delete this._postRequestListeners[reply.__REQUEST_IDENTITY_S2C__];
                     return;
+                }
+                if (data.__REQUEST_IDENTITY_C2S__ !== undefined) {
+                    // request message of client-to-server request
+                    logger.debug('A request from client recieved.');
+                    this._receiveRequeListener(data);
                 }
                 if (!this._receiveMessageListener) return;
                 this._receiveMessageListener(data);
@@ -176,35 +185,37 @@ export class WebviewPanel {
         `
         return this.evaluateWebScript(script);
     }
+    replyRequest<T>(request: PanelClientRequest<any>, success: boolean, response: T): Promise<any> {
+        return this.postMessage(<PanelClientRequest<any>>{
+            __REQUEST_IDENTITY_C2S__: request.__REQUEST_IDENTITY_C2S__,
+            __REQUEST_SUCCESS__: success,
+            message: response,
+        });
+    }
     evaluateWebScript(script: string): Promise<any> {
         let windowObject = this._webview.windowScriptObject();
-        let eventID = uuidv4();
-        let scriptWrapped = wrapWebViewScripts(script, eventID);
+        let requestID = uuidv4();
+        let scriptWrapped = wrapWebViewScripts(script, requestID);
         // alert(scriptWrapped);
         let promise = new Promise((resolve, reject) => {
-            this._eventListeners[eventID] = function (eventType: EventType, msg: any) {
-                switch (eventType) {
-                    case EventType.PromiseResolve:
-                        resolve(msg);
-                        return;
-                    case EventType.PromiseReject:
-                        reject(msg);
-                        return;
-                    default:
-                        break;
+            this._postRequestListeners[requestID] = function (success: boolean, msg: any) {
+                if (success) {
+                    resolve(msg);
+                    return;
                 }
+                reject(msg);
             }
             setTimeout(() => {
-                if (!this._eventListeners[eventID]) return;
+                if (!this._postRequestListeners[requestID]) return;
                 // reject the promise after timeout, 
                 // or the coascript waits for them, 
                 // like always set 'coscript.setShouldKeepAround(true)' 
-                let callback = this._eventListeners[eventID];
+                let callback = this._postRequestListeners[requestID];
                 callback(
-                    EventType.PromiseReject,
+                    false,
                     'Promise of evaluateWebScript not resolved or rejected in 10 seconds.'
                 );
-                delete this._eventListeners[eventID];
+                delete this._postRequestListeners[requestID];
             }, 10000);
         });
         windowObject.evaluateWebScript(scriptWrapped);
@@ -212,6 +223,9 @@ export class WebviewPanel {
     }
     onDidReceiveMessage<T>(listener: (e: T) => any) {
         this._receiveMessageListener = _tryCatchListener(listener);
+    }
+    onDidReceiveRequest<T>(listener: (e: PanelClientRequest<T>) => any) {
+        this._receiveRequeListener = _tryCatchListener(listener);
     }
     onWebviewDOMReady<T>(listener: (webView, webFrame) => void) {
         this._DOMReadyListener = _tryCatchListener(listener);

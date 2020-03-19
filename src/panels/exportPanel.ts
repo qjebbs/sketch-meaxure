@@ -1,7 +1,7 @@
 import { context } from "../state/context";
 import { calcArtboardsRow, calcArtboardsColumn, find } from "../api/helper";
 import { toJSString } from "../api/api";
-import { createWebviewPanel } from "../webviewPanel";
+import { createWebviewPanel, PanelClientRequest } from "../webviewPanel";
 import { logger } from "../api/logger";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
@@ -18,7 +18,7 @@ interface ExportData {
 }
 
 interface ExportPanelMessage {
-    action: 'init' | 'update' | 'sort' | 'submit';
+    action: 'init' | 'sort' | 'submit';
     data: ExportData;
 }
 
@@ -86,20 +86,23 @@ export function exportPanel() {
         width: 320,
         height: 597,
     });
-    panel.onWebviewDOMReady(
-        () => panel.postMessage<ExportPanelMessage>({ action: "init", data: data })
-            .catch(err => logger.error('error occured when init export panel.\n' + ' Error: ' + JSON.stringify(err)))
-    );
-    function messageFunc(msg: ExportPanelMessage, resolve: (boolean) => void) {
-        if (msg.action == 'sort') {
+    function replyFunc(request: PanelClientRequest<ExportPanelMessage>) {
+        let msg = request.message;
+        if (msg.action == 'init') {
+            panel.replyRequest<ExportData>(request, true, data)
+                .catch(err => logger.error('error occured when init export panel.\n' + 'Error: ' + JSON.stringify(err)));
+        } else if (msg.action == 'sort') {
             data.order = msg.data.order;
             for (let p = 0; p < data.pages.length; p++) {
                 data.pages[p].artboards = sortArtboards(data.pages[p].artboards, msg.data.order, msg.data.reverse);
             }
-            panel.postMessage<ExportPanelMessage>({ action: 'update', data: data })
+            panel.replyRequest<ExportData>(request, true, data)
                 .catch(err => logger.error('error occured when sort artboards.\n' + 'Error: ' + JSON.stringify(err)));
             return;
-        } else if (msg.action == 'submit') {
+        }
+    }
+    function messageFunc(msg: ExportPanelMessage, resolve: (boolean) => void) {
+        if (msg.action == 'submit') {
             context.selectionArtboards = [];
             context.allCount = 0;
             for (let p = 0; p < data.pages.length; p++) {
@@ -125,6 +128,7 @@ export function exportPanel() {
     return new Promise<boolean>((resolve, reject) => {
         panel.onClose(() => resolve(false));
         panel.onDidReceiveMessage<ExportPanelMessage>((msg) => messageFunc(msg, resolve));
+        panel.onDidReceiveRequest<ExportPanelMessage>((msg) => replyFunc(msg));
         panel.show();
     });
 }
