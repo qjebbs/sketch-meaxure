@@ -15,6 +15,17 @@ interface Webview {
     mainFrameURL();
 }
 
+enum EventType {
+    PromiseResolve,
+    PromiseReject,
+}
+
+interface PanelEventMessage {
+    __EVENT_TYPE__: EventType;
+    __EVENT_IDENTITY__: string;
+    message: any;
+}
+
 export function createWebviewPanel(options: WebviewPanelOptions): WebviewPanel {
     return new WebviewPanel(options);
 }
@@ -28,6 +39,7 @@ export class WebviewPanel {
     private _receiveMessageListener: (...args) => void;
     private _DOMReadyListener: (...args) => void;
     private _closeListener: (...args) => void
+    private _eventListeners: { [key: string]: (eventType: EventType, data: any) => void } = {};
     private _isModal: boolean;
     private _threadDictionary: any;
     private _keepAroundID: any;
@@ -106,9 +118,16 @@ export class WebviewPanel {
                 }
             },
             "webView:didChangeLocationWithinPageForFrame:": (webView, webFrame) => {
-                if (!this._receiveMessageListener) return;
-                // let hash = NSURL.URLWithString(webView.mainFrameURL()).fragment();
                 let data = JSON.parse(windowObject.valueForKey("_MexurePostMessage"));
+                if (data.__EVENT_TYPE__ !== undefined && data.__EVENT_IDENTITY__ !== undefined) {
+                    // an internal event message
+                    let eventMessage = data as PanelEventMessage;
+                    let callback = this._eventListeners[eventMessage.__EVENT_IDENTITY__];
+                    callback(eventMessage.__EVENT_TYPE__, eventMessage.message);
+                    delete this._eventListeners[eventMessage.__EVENT_IDENTITY__];
+                    return;
+                }
+                if (!this._receiveMessageListener) return;
                 this._receiveMessageListener(data);
             }
         });
@@ -160,16 +179,72 @@ export class WebviewPanel {
         this._panel.makeKeyAndOrderFront(nil);
         coscriptKeepAround(this._keepAroundID);
     }
-    postMessage<T>(msg: T) {
-        let windowObject = this._webview.windowScriptObject();
+    postMessage<T>(msg: T): Promise<any> {
+        // let windowObject = this._webview.windowScriptObject();
         let script = `
             meaxure.receiveMessage("${encodeURIComponent(JSON.stringify(msg))}");
         `
-        windowObject.evaluateWebScript(script);
+        return this.evaluateWebScript(script);
     }
-    evaluateWebScript(script: string) {
+    evaluateWebScript(script: string): Promise<any> {
         let windowObject = this._webview.windowScriptObject();
-        windowObject.evaluateWebScript(script);
+        let eventID = uuidv4();
+        let scriptWrapped = `
+        (function(){
+            function scriptCallback(eventType, result) {
+                meaxure.postMessage({
+                    __EVENT_TYPE__: eventType,
+                    __EVENT_IDENTITY__: "${eventID}",
+                    message: result
+                })
+            }
+            try {
+                let scriptReturn = (function () {
+                    ${script}
+                })();
+                if (scriptReturn instanceof Promise) {
+                    scriptReturn.then(
+                        result => scriptCallback(${EventType.PromiseResolve}, result)
+                    ).catch(
+                        result => scriptCallback(${EventType.PromiseReject}, result)
+                    );
+                } else {
+                    scriptCallback(${EventType.PromiseResolve}, scriptReturn);
+                }
+            } catch (error) {
+                scriptCallback(${EventType.PromiseReject}, error);
+            }
+        })() 
+        `;
+        // alert(scriptWrapped);
+        let promise = new Promise((resolve, reject) => {
+            this._eventListeners[eventID] = function (eventType: EventType, msg: any) {
+                switch (eventType) {
+                    case EventType.PromiseResolve:
+                        resolve(msg);
+                        return;
+                    case EventType.PromiseReject:
+                        reject(msg);
+                        return;
+                    default:
+                        break;
+                }
+            }
+            setTimeout(() => {
+                if (!this._eventListeners[eventID]) return;
+                // reject the promise after timeout, 
+                // or the coascript waits for them, 
+                // like always set 'coscript.setShouldKeepAround(true)' 
+                let callback = this._eventListeners[eventID];
+                callback(
+                    EventType.PromiseReject,
+                    'Promise of evaluateWebScript not resolved or rejected in 10 seconds.'
+                );
+                delete this._eventListeners[eventID];
+            }, 10000);
+        });
+        windowObject.evaluateWebScript(scriptWrapped);
+        return promise;
     }
     onDidReceiveMessage<T>(listener: (e: T) => any) {
         this._receiveMessageListener = _tryCatchListener(listener);
