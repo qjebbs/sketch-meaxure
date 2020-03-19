@@ -412,9 +412,6 @@ button{
 .color-format:focus .selectwrap{
     margin-top: -166px;
 }
-.artboard-order:focus .selectwrap{
-    margin-top: -236px;
-}
 .color-format .selectwrap label{
     height: auto;
     line-height: 16px;
@@ -832,14 +829,17 @@ button{
 }
 .orderbox{
     position: absolute;
-    right: 24px;
+    right: 20px;
 }
 .orderbox .radiobox,
-.orderbox .radiobox label{
+.orderbox .radiobox label,
+.reversebox .radiobox,
+.reversebox .radiobox label {
     width: 20px;
     height: 20px;
 }
-.orderbox .radiobox{
+.orderbox .radiobox,
+.reversebox .radiobox {
     margin: 0 0 0 8px;
 }
 .orderbox .radiobox label,
@@ -850,23 +850,52 @@ button{
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAHlBMVEUAAAD///////////////////////////////////8kfJuVAAAACXRSTlMA7tm7lWpEJhE46DAfAAAAPElEQVQoz2MYkmDmwAjOHLGCnjNnzpwCo2CAGcgzgFEwwKE5c1IDjIKDwpniMAoB2GYmwCkECIVRQwoAAHUjI92L7AS/AAAAAElFTkSuQmCC');
     background-position: 0;
 }
-.orderbox .radiobox.reverse-radio label,
-.orderbox .radiobox.reverse-radio input[type=radio]:checked + label,
-.orderbox .radiobox.reverse-radio input[type=radio]:disabled + label{
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAHlBMVEUAAAD///////////////////////////////////8kfJuVAAAACXRSTlMA7tm7lWpEJhE46DAfAAAAR0lEQVQoz2MYkiAUixjbzARMwcKZ4hhiHJozJzWgCzLPnDnTAF3QEyg4BdPamdisnYnN2pnYrJ2JzdqZ6NaiCkJ5I1Zw0AMALjgj3XRPFaMAAAAASUVORK5CYII=');
+.orderbox .radiobox.artboard-rows-radio label,
+.orderbox .radiobox.artboard-rows-radio input[type=radio]:checked + label,
+.orderbox .radiobox.artboard-rows-radio input[type=radio]:disabled + label{
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAAH6ji2bAAAABGdBTUEAALGPC/xhBQAAAIhJREFUOBHVkuEOwBAMhFn2/q+8qeQTmpWKRbb+OUfvWiWEybhSNJIorN6NKY4mpUce5VlQe8qGndnz755lS8nQtVDJXVi7sGRrx2knV7m1JHrUiKv/FVHgBF9HHDXibPb4xYHT9C4sv5GCTFG4DGjE0YEnCy9uf4XXr2x+MO8IdN6wQy34P78BajFT+TJzrbcAAAAASUVORK5CYII=');
+}
+.orderbox .radiobox.artboard-cols-radio label,
+.orderbox .radiobox.artboard-cols-radio input[type=radio]:checked + label,
+.orderbox .radiobox.artboard-cols-radio input[type=radio]:disabled + label{
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAAH6ji2bAAAABGdBTUEAALGPC/xhBQAAAH9JREFUOBHlkkEOwCAIBLX//3N1Y6aaiJjaHkzLBXRhAmgIf7bI8Gc24piNs2LdH4h4BM74LhFBflTU5uwUd+vRAKzm2UCiyEQpUX2AtRVAe4+41sdOVdcD0lS7JO74lZ5Grvu9Sbrjp0C6s6CWNgVaIO/OBVodABtpLpDib/kE2XU0DpdeoXEAAAAASUVORK5CYII=');
+}
+.orderbox .radiobox.layer-order-radio label,
+.orderbox .radiobox.layer-order-radio input[type=radio]:checked + label,
+.orderbox .radiobox.layer-order-radio input[type=radio]:disabled + label{
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAAH6ji2bAAAABGdBTUEAALGPC/xhBQAAAFpJREFUOBFjYBjJgBHm+f9AwAgEIBomBqJBYiCaCUQQA4hWSIxhA60GJXiwOQYWPNjksIoNBROxOnxoCsKDG+Z8WPoGRRyMDZPDRpMcwdgMwSc26kJ8oTNc5ABcWiwM0PDndAAAAABJRU5ErkJggg==');
 }
 .orderbox .radiobox.alphabet-radio label,
 .orderbox .radiobox.alphabet-radio input[type=radio]:checked + label,
 .orderbox .radiobox.alphabet-radio input[type=radio]:disabled + label{
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAIVBMVEUAAAD////////////////////////////////////////PIev5AAAACnRSTlMA7tm7lWpEJhEEWF/OUQAAAE1JREFUKM9jGJJgFWHBVauIFFwFREQKAgFWQbLMRAAKBcl2J4RLWBDB8wIasgRdcDJQ0BLdIg6tVYsaMGwvXCWO6Xa2VQlYfBTKMKQAAAJhMNB4a2QUAAAAAElFTkSuQmCC');
 }
-.orderbox .radiobox input[type=radio]:checked + label{
+.orderbox .radiobox input[type=radio]:checked + label,
+.reversebox .radiobox input[type=radio]:checked + label {
     background-color: #3484F5;
 }
-.orderbox .radiobox input[type=radio]:disabled + label{
+.orderbox .radiobox input[type=radio]:disabled + label,
+.reversebox .radiobox input[type=radio]:disabled + label {
     background-color: #000;
     opacity: .32;
     cursor: default;
+}
+.reversebox {
+    position: absolute;
+    right: 20px;
+}
+.reversebox .radiobox label,
+.reversebox .radiobox input[type=radio]:checked + label,
+.reversebox .radiobox input[type=radio]:disabled + label{
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAHlBMVEUAAAD///////////////////////////////////8kfJuVAAAACXRSTlMA7tm7lWpEJhE46DAfAAAAPElEQVQoz2MYkmDmwAjOHLGCnjNnzpwCo2CAGcgzgFEwwKE5c1IDjIKDwpniMAoB2GYmwCkECIVRQwoAAHUjI92L7AS/AAAAAElFTkSuQmCC');
+    background-position: 0;
+}
+.reversebox .radiobox.reverse-radio label,
+.reversebox .radiobox.reverse-radio input[type=radio]:checked + label,
+.reversebox .radiobox.reverse-radio input[type=radio]:disabled + label{
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAHlBMVEUAAAD///////////////////////////////////8kfJuVAAAACXRSTlMA7tm7lWpEJhE46DAfAAAAR0lEQVQoz2MYkiAUixjbzARMwcKZ4hhiHJozJzWgCzLPnDnTAF3QEyg4BdPamdisnYnN2pnYrJ2JzdqZ6NaiCkJ5I1Zw0AMALjgj3XRPFaMAAAAASUVORK5CYII=');
 }
 .update{
     padding: 24px;

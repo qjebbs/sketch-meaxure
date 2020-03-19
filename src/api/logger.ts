@@ -1,3 +1,5 @@
+import { message, alert } from "./helper";
+
 export enum LOGGER_LEVEL {
     DEBUG = 1,
     INFO,
@@ -26,14 +28,17 @@ export class Logger {
         this.log(LOGGER_LEVEL.DEBUG, ...msgs);
     }
     info(...msgs) {
+        message(msgs.join(' '));
         this.log(LOGGER_LEVEL.INFO, ...msgs);
     }
     warn(...msgs) {
+        message(msgs.join(' '));
         this.log(LOGGER_LEVEL.WARN, ...msgs);
     }
     error(...msgs) {
+        alert(msgs.join(' '));
         this.log(LOGGER_LEVEL.ERROR, ...msgs);
     }
 }
 
-export const logger = new Logger(LOGGER_LEVEL.ERROR);
+export const logger = new Logger(LOGGER_LEVEL.WARN);

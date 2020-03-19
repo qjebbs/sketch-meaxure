@@ -45,13 +45,12 @@
                     scale: $('input[name=scale]').val(),
                     units: $('input[name=units]').val(),
                     colorFormat: $('input[name=format]:checked').val(),
-                    artboardOrder: $('input[name=artboardOrder]:checked').val()
                 });
             },
             init = function (data) {
                 $('body').html([
                     '<div class="container">',
-                    '<div class="options" style="height:264px">',
+                    '<div class="options" style="height:194px">',
                     '<div class="resolution selectbox mrb16" tabindex="0">',
                     '<div class="selectwrap">',
                     '<h3>' + _('Design resolution') + '</h3>',
@@ -97,18 +96,6 @@
                     '<li><label id="argb-hex"><input type="radio" name="format" value="argb-hex"><span>' + _('ARGB hex') + '</span><i>#FF000000</i></label></li>',
                     '<li><label id="css-rgba"><input type="radio" name="format" value="css-rgba"><span>' + _('RGBA CSS') + '</span><i>rgba(0, 0, 0, 1)</i></label></li>',
                     '<li><label id="ui-color"><input type="radio" name="format" value="ui-color"><span>' + _('UIColor') + '</span><i>r: 1.0, g: 0.0, b: 0.0, a: 1.0</i></label></li>',
-                    '</ul>',
-                    '</div>',
-                    '</div>',
-                    '<h3 class="title">' + _('Artboard order') + '</h3>',
-                    '<div class="artboard-order selectbox" tabindex="0">',
-                    '<div class="selectwrap">',
-                    '<h3>' + _('Artboard order') + '</h3>',
-                    '<p></p>',
-                    '<ul>',
-                    '<li><label id="artboard-rows"><input type="radio" name="artboardOrder" value="artboard-rows"><span>' + _('By artboard rows') + '</span><i></i></label></li>',
-                    '<li><label id="artboard-cols"><input type="radio" name="artboardOrder" value="artboard-cols"><span>' + _('By artboard columns') + '</span><i></i></label></li>',
-                    '<li><label id="layer-order"><input type="radio" name="artboardOrder" value="layer-order"><span>' + _('By layer order') + '</span><i></i></label></li>',
                     '</ul>',
                     '</div>',
                     '</div>',

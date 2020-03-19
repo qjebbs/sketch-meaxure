@@ -1,5 +1,6 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from '../state/keepAround';
+import { logger } from '../api/logger';
 
 export interface WebviewPanelOptions {
     identifier?: string,
@@ -24,9 +25,9 @@ export class WebviewPanel {
     private _panel: any;
     private _webview: Webview;
     private _options: WebviewPanelOptions;
-    private _receiveMessageListener: (e: any) => any;
-    private _DOMReadyListener: (webView, webFrame) => void;
-    private _closeListener: () => void
+    private _receiveMessageListener: (...args) => void;
+    private _DOMReadyListener: (...args) => void;
+    private _closeListener: (...args) => void
     private _isModal: boolean;
     private _threadDictionary: any;
     private _keepAroundID: any;
@@ -171,12 +172,21 @@ export class WebviewPanel {
         windowObject.evaluateWebScript(script);
     }
     onDidReceiveMessage<T>(listener: (e: T) => any) {
-        this._receiveMessageListener = listener;
+        this._receiveMessageListener = _tryCatchListener(listener);
     }
     onWebviewDOMReady<T>(listener: (webView, webFrame) => void) {
-        this._DOMReadyListener = listener;
+        this._DOMReadyListener = _tryCatchListener(listener);
     }
     onClose(listener: () => void) {
-        this._closeListener = listener;
+        this._closeListener = _tryCatchListener(listener);
     }
-} 
+}
+function _tryCatchListener(fn: Function) {
+    return function (...args): void {
+        try {
+            fn(...args);
+        } catch (error) {
+            logger.error(error);
+        }
+    }
+}

@@ -1,6 +1,5 @@
 import { logger } from "./logger";
 import { deepEqual } from "./helper";
-export type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order';
 
 export class ConfigsMaster {
     private _prefix = "SMX3Configs";
@@ -14,12 +13,6 @@ export class ConfigsMaster {
     }
     set scale(value: number) {
         this._set<number>('scale', value);
-    }
-    get artboardOrder(): OptionArtboardOrder {
-        return this._read<OptionArtboardOrder>('artboardOrder', "artboard-rows");
-    }
-    set artboardOrder(value: OptionArtboardOrder) {
-        this._set<OptionArtboardOrder>('artboardOrder', value);
     }
     get units(): string {
         return this._read<string>('units', "px");

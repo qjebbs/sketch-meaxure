@@ -10,6 +10,10 @@ export function message(message) {
     sketch.UI.message(message);
 }
 
+export function alert(message) {
+    sketch.UI.alert('Sketch MeaXure', message);
+}
+
 export function extend(options, target) {
     target = target || this;
 
