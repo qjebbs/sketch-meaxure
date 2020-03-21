@@ -41,7 +41,7 @@
                 $('#' + DRID).click();
             },
             submit = function () {
-                meaxure.postMessage({
+                meaxure.postMessage('submit', {
                     scale: $('input[name=scale]').val(),
                     units: $('input[name=units]').val(),
                     colorFormat: $('input[name=format]:checked').val(),
@@ -209,7 +209,7 @@
 
 <body>
     <script>
-        meaxure.onDidReceiveMessage(data => {
+        meaxure.onDidReceiveMessage('init', data => {
             try {
                 eval(data.language);
                 init(data);

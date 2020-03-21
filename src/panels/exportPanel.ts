@@ -1,8 +1,7 @@
 import { context } from "../state/context";
 import { calcArtboardsRow, calcArtboardsColumn, find } from "../api/helper";
 import { toJSString } from "../api/api";
-import { createWebviewPanel, PanelClientRequest } from "../webviewPanel";
-import { logger } from "../api/logger";
+import { createWebviewPanel } from "../webviewPanel";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
 
@@ -17,12 +16,52 @@ interface ExportData {
     reverse: boolean;
 }
 
-interface ExportPanelMessage {
-    action: 'init' | 'sort' | 'submit';
-    data: ExportData;
+export function exportPanel() {
+    let data = prepareExportData();
+    let panel = createWebviewPanel({
+        identifier: 'co.jebbs.sketch-meaxure.export',
+        url: context.resourcesRoot + "/panel/export.html",
+        width: 320,
+        height: 597,
+    });
+    function onSubmit(rdata: ExportData, resolve: (boolean) => void) {
+        context.selectionArtboards = [];
+        context.allCount = 0;
+        for (let p = 0; p < data.pages.length; p++) {
+            let artboards: any[] = data.pages[p].artboards;
+            // don't sort again, already done in sort requests.
+            // artboards = sortArtboards(artboards, message.data.order, message.data.reverse);
+            for (let a = 0; a < artboards.length; a++) {
+                let artboard = artboards[a].MSArtboardGroup,
+                    objectID = toJSString(artboard.objectID());
+                if (rdata[objectID]) {
+                    context.allCount += artboard.children().count();
+                    context.selectionArtboards.push(artboard);
+                }
+            }
+        }
+        context.runningConfig.exportOption = rdata.exportOption;
+        context.runningConfig.exportInfluenceRect = rdata.exportInfluenceRect;
+        context.runningConfig.order = rdata.order;
+        resolve(true);
+        panel.close();
+    }
+    panel.onDidReceiveMessage<ExportData>('init', () => data);
+    panel.onDidReceiveMessage<ExportData>('sort', rdata => {
+        data.order = rdata.order;
+        for (let p = 0; p < data.pages.length; p++) {
+            data.pages[p].artboards = sortArtboards(data.pages[p].artboards, rdata.order, rdata.reverse);
+        }
+        return data;
+    });
+    return new Promise<boolean>((resolve, reject) => {
+        panel.onClose(() => resolve(false));
+        panel.onDidReceiveMessage<ExportData>('submit', rdata => onSubmit(rdata, resolve));
+        panel.show();
+    });
 }
 
-export function exportPanel() {
+function prepareExportData(): ExportData {
     context.artboardsData = [];
     context.selectionArtboards = {};
     let data = <ExportData>{
@@ -80,57 +119,7 @@ export function exportPanel() {
         }
         data.pages.push(pageData);
     }
-    let panel = createWebviewPanel({
-        identifier: 'co.jebbs.sketch-meaxure.export',
-        url: context.resourcesRoot + "/panel/export.html",
-        width: 320,
-        height: 597,
-    });
-    function replyFunc(request: PanelClientRequest<ExportPanelMessage>) {
-        let msg = request.message;
-        if (msg.action == 'init') {
-            panel.replyRequest<ExportData>(request, true, data)
-                .catch(err => logger.error('error occured when init export panel.\n' + 'Error: ' + JSON.stringify(err)));
-        } else if (msg.action == 'sort') {
-            data.order = msg.data.order;
-            for (let p = 0; p < data.pages.length; p++) {
-                data.pages[p].artboards = sortArtboards(data.pages[p].artboards, msg.data.order, msg.data.reverse);
-            }
-            panel.replyRequest<ExportData>(request, true, data)
-                .catch(err => logger.error('error occured when sort artboards.\n' + 'Error: ' + JSON.stringify(err)));
-            return;
-        }
-    }
-    function messageFunc(msg: ExportPanelMessage, resolve: (boolean) => void) {
-        if (msg.action == 'submit') {
-            context.selectionArtboards = [];
-            context.allCount = 0;
-            for (let p = 0; p < data.pages.length; p++) {
-                let artboards: any[] = data.pages[p].artboards;
-                // don't sort again, already done in sort requests.
-                // artboards = sortArtboards(artboards, message.data.order, message.data.reverse);
-                for (let a = 0; a < artboards.length; a++) {
-                    let artboard = artboards[a].MSArtboardGroup,
-                        objectID = toJSString(artboard.objectID());
-                    if (msg.data[objectID]) {
-                        context.allCount += artboard.children().count();
-                        context.selectionArtboards.push(artboard);
-                    }
-                }
-            }
-            context.runningConfig.exportOption = msg.data.exportOption;
-            context.runningConfig.exportInfluenceRect = msg.data.exportInfluenceRect;
-            context.runningConfig.order = msg.data.order;
-            resolve(true);
-            panel.close();
-        }
-    }
-    return new Promise<boolean>((resolve, reject) => {
-        panel.onClose(() => resolve(false));
-        panel.onDidReceiveMessage<ExportPanelMessage>((msg) => messageFunc(msg, resolve));
-        panel.onDidReceiveRequest<ExportPanelMessage>((msg) => replyFunc(msg));
-        panel.show();
-    });
+    return data;
 }
 
 function sortArtboards(artboards: any[], artboardOrder: OptionArtboardOrder, reverse?: boolean): any[] {

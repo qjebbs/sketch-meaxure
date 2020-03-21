@@ -19,12 +19,12 @@ export function propertiesPanel() {
         height: 296,
     });
     panel.onWebviewDOMReady(
-        () => panel.postMessage(data)
+        () => panel.postMessage('init', data)
             .catch(err => logger.error('error occured when init property panel.\n' + 'Error: ' + JSON.stringify(err)))
     );
     return new Promise<boolean>((resolve, reject) => {
         panel.onClose(() => resolve(false));
-        panel.onDidReceiveMessage<any>((data) => {
+        panel.onDidReceiveMessage<any>('submit', (data) => {
             context.configs.properties = data.properties;
             // context.runningConfig.placement = data.placement;
             resolve(true)

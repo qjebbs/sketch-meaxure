@@ -24,7 +24,7 @@
     </div>
     <script>
         $('#processing').css('width', 0);
-        meaxure.onDidReceiveMessage(data => {
+        meaxure.onDidReceiveMessage('process', data => {
             try {
                 $('#processing').css('width', data.percentage + "%");
                 $('#processing-text').text(data.text);

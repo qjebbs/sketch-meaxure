@@ -42,7 +42,7 @@ export async function exportSpecification() {
 
     coscript.scheduleWithRepeatingInterval_jsFunction(0, function (interval) {
         // message('Processing layer ' + idx + ' of ' + context.allCount);
-        processingPanel.postMessage({
+        processingPanel.postMessage('process', {
             percentage: Math.round(idx / context.allCount * 100),
             text: localize("Processing layer %@ of %@", [idx, context.allCount])
         });

@@ -186,7 +186,7 @@
                 var $this = $(this);
                 options.properties.push($this.val());
             });
-            meaxure.postMessage(options);
+            meaxure.postMessage('submit', options);
         });
 
     }
@@ -194,7 +194,7 @@
   </head>
   <body>
         <script>
-            meaxure.onDidReceiveMessage(data => {
+            meaxure.onDidReceiveMessage('init', data => {
                 try {
                     eval(data.language);
                     init(data);

@@ -17,17 +17,18 @@ interface Webview {
 }
 
 
-interface PanelRequestBase<T> {
-    __REQUEST_SUCCESS__: boolean;
+interface PanelMessageBase<T> {
+    __MESSAGE_TYPE__: string;
+    __MESSAGE_SUCCESS__?: boolean;
     message: T;
 }
 
-export interface PanelServerRequest<T> extends PanelRequestBase<T> {
-    __REQUEST_IDENTITY_S2C__: string;
+interface PanelServerMessage<T> extends PanelMessageBase<T> {
+    __SERVER_MESSAGE_ID__: string;
 }
 
-export interface PanelClientRequest<T> extends PanelRequestBase<T> {
-    __REQUEST_IDENTITY_C2S__: string;
+interface PanelClientMessage<T> extends PanelMessageBase<T> {
+    __CLIENT_MESSAGE_ID__: string;
 }
 
 export function createWebviewPanel(options: WebviewPanelOptions): WebviewPanel {
@@ -45,10 +46,13 @@ export class WebviewPanel {
     private _keepAroundID: any;
     private _DOMReadyListener: (...args) => void;
     private _closeListener: (...args) => void
-    private _receiveMessageListener: (...args) => void;
-    private _receiveRequeListener: (...args) => void;
-    private _postRequestListeners: { [key: string]: (success: boolean, data: any) => void } = {};
+    private _messageListeners: { [key: string]: (data: any) => any } = {};
+    private _replyListeners: { [key: string]: (success: boolean, data: any) => void } = {};
 
+    /**
+     * If the panel with specific identifier exists
+     * @param identifier 
+     */
     static exists(identifier: string): boolean {
         return !!NSThread.mainThread().threadDictionary()[identifier];
     }
@@ -76,7 +80,97 @@ export class WebviewPanel {
             this._threadDictionary[this._options.identifier] = this;
         }
     }
-
+    /**
+     * close the panel
+     */
+    close() {
+        if (this._closeListener) {
+            this._closeListener();
+        }
+        if (this._isModal) {
+            this._panel.orderOut(nil);
+            NSApp.stopModal();
+        } else {
+            this._panel.close();
+            coscriptNotKeepAround(this._keepAroundID);
+        }
+        if (this._options.identifier) {
+            this._threadDictionary.removeObjectForKey(this._options.identifier);
+        }
+    }
+    /**
+     * Show panel as modal
+     */
+    showModal() {
+        this._isModal = true;
+        NSApp.runModalForWindow(this._panel);
+    }
+    /**
+     * Show panel
+     */
+    show() {
+        this._isModal = false;
+        this._panel.becomeKeyWindow();
+        this._panel.setLevel(NSFloatingWindowLevel);
+        this._panel.center();
+        this._panel.makeKeyAndOrderFront(nil);
+        coscriptKeepAround(this._keepAroundID);
+    }
+    /**
+     * Post a message to webview, and get reply with promise.
+     * If no reply handler registered in webview, we get undefined reply.
+     * @param msg the msg to post
+     */
+    postMessage<T>(type: string, msg: T): Promise<T> {
+        let requestID = uuidv4();
+        let promise = new Promise<T>((resolve, reject) => {
+            this._registerReplyListener(requestID, resolve, reject);
+        });
+        this._postData<PanelServerMessage<T>>({
+            __SERVER_MESSAGE_ID__: requestID,
+            __MESSAGE_TYPE__: type,
+            message: msg,
+        });
+        return promise;
+    }
+    /**
+     * evaluate script in webview and get its return value with promise
+     * @param script the script to run
+     */
+    evaluateWebScript<T>(script: string): Promise<T> {
+        let windowObject = this._webview.windowScriptObject();
+        let requestID = uuidv4();
+        let scriptWrapped = wrapWebViewScripts(script, requestID);
+        // alert(scriptWrapped);
+        let promise = new Promise<T>((resolve, reject) => {
+            this._registerReplyListener(requestID, resolve, reject);
+        });
+        windowObject.evaluateWebScript(scriptWrapped);
+        return promise;
+    }
+    /**
+     * register a response function to specific request
+     * @param reply the function replies to the message
+     * @param msgType to what type of request the function replies to.
+     */
+    onDidReceiveMessage<T>(msgType: string, reply: (data: T) => any) {
+        if (!msgType) msgType = "";
+        this._messageListeners[msgType] = reply;
+    }
+    /**
+     * register a callback runs when the webview DOM is ready
+     * @param callback 
+     */
+    onWebviewDOMReady<T>(callback: (webView, webFrame) => void) {
+        this._DOMReadyListener = _tryCatchListener(callback);
+    }
+    /**
+     * register a callback runs when the panel is closed
+     * @param callback 
+     */
+    onClose(callback: () => void) {
+        this._closeListener = _tryCatchListener(callback);
+    }
     private _createPanel(): any {
         let frame = NSMakeRect(0, 0, this._options.width, (this._options.height + 32));
         let panel = NSPanel.alloc().init();
@@ -111,29 +205,45 @@ export class WebviewPanel {
                 }
             },
             "webView:didChangeLocationWithinPageForFrame:": (webView, webFrame) => {
-                let data = JSON.parse(windowObject.valueForKey("_MexurePostMessage"));
-                if (data.__REQUEST_SUCCESS__ !== undefined && data.__REQUEST_IDENTITY_S2C__ !== undefined) {
-                    // reply message of server-to-client request
-                    logger.debug('A reply of server request recieved.');
-                    let reply = data as PanelServerRequest<any>;
-                    let callback = this._postRequestListeners[reply.__REQUEST_IDENTITY_S2C__];
-                    callback(reply.__REQUEST_SUCCESS__, reply.message);
-                    delete this._postRequestListeners[reply.__REQUEST_IDENTITY_S2C__];
-                    return;
-                }
-                if (data.__REQUEST_IDENTITY_C2S__ !== undefined) {
-                    // request message of client-to-server request
-                    logger.debug('A request from client recieved.');
-                    this._receiveRequeListener(data);
-                }
-                if (!this._receiveMessageListener) return;
-                this._receiveMessageListener(data);
+                let data = JSON.parse(windowObject.valueForKey("_MeaxurePostedData"));
+                this._dispatchMessage(data);
             }
         });
         webView.setBackgroundColor(BACKGROUND_COLOR);
         webView.setFrameLoadDelegate_(delegate.getClassInstance());
         webView.setMainFrameURL_(this._options.url);
         return webView;
+    }
+    private _dispatchMessage(data: any): void {
+        if (data.__SERVER_MESSAGE_ID__ !== undefined) {
+            // reply message of server-to-client request
+            logger.debug('A reply of server request recieved.');
+            let reply = data as PanelServerMessage<any>;
+            let callback = this._replyListeners[reply.__SERVER_MESSAGE_ID__];
+            callback(reply.__MESSAGE_SUCCESS__, reply.message);
+            delete this._replyListeners[reply.__SERVER_MESSAGE_ID__];
+            return;
+        }
+        if (data.__CLIENT_MESSAGE_ID__ !== undefined) {
+            // request message of client-to-server request
+            let request = data as PanelClientMessage<any>;
+            let requestType = request.__MESSAGE_TYPE__;
+            if (!requestType) requestType = '';
+            logger.debug('A "' + requestType + '" request from client recieved.');
+            let callback = this._messageListeners[requestType];
+            let response: any = undefined;
+            let success = true;
+            if (callback) {
+                try {
+                    response = callback(request.message);
+                } catch (error) {
+                    success = false;
+                    response = error;
+                    logger.error(error)
+                }
+            }
+            this._replyRequest(request, success, response);
+        }
     }
     private _initPanelViews(panel, webView) {
         let contentView = panel.contentView();
@@ -151,87 +261,44 @@ export class WebviewPanel {
         contentView.layer().setMasksToBounds(true);
         contentView.addSubview(webView);
     }
-    close() {
-        if (this._closeListener) {
-            this._closeListener();
-        }
-        if (this._isModal) {
-            this._panel.orderOut(nil);
-            NSApp.stopModal();
-        } else {
-            this._panel.close();
-            coscriptNotKeepAround(this._keepAroundID);
-        }
-        if (this._options.identifier) {
-            this._threadDictionary.removeObjectForKey(this._options.identifier);
-        }
-    }
-    showModal() {
-        this._isModal = true;
-        NSApp.runModalForWindow(this._panel);
-    }
-    show() {
-        this._isModal = false;
-        this._panel.becomeKeyWindow();
-        this._panel.setLevel(NSFloatingWindowLevel);
-        this._panel.center();
-        this._panel.makeKeyAndOrderFront(nil);
-        coscriptKeepAround(this._keepAroundID);
-    }
-    postMessage<T>(msg: T): Promise<any> {
-        // let windowObject = this._webview.windowScriptObject();
+    private _postData<T>(data: T): void {
+        let windowObject = this._webview.windowScriptObject();
         let script = `
-            meaxure.receiveMessage("${encodeURIComponent(JSON.stringify(msg))}");
+            meaxure.raiseReceiveMessageEvent("${encodeURIComponent(JSON.stringify(data))}");
         `
-        return this.evaluateWebScript(script);
+        windowObject.evaluateWebScript(script);
     }
-    replyRequest<T>(request: PanelClientRequest<any>, success: boolean, response: T): Promise<any> {
-        return this.postMessage(<PanelClientRequest<any>>{
-            __REQUEST_IDENTITY_C2S__: request.__REQUEST_IDENTITY_C2S__,
-            __REQUEST_SUCCESS__: success,
+    private _replyRequest<T>(request: PanelClientMessage<any>, success: boolean, response: T) {
+        return this._postData(<PanelClientMessage<any>>{
+            __CLIENT_MESSAGE_ID__: request.__CLIENT_MESSAGE_ID__,
+            __MESSAGE_SUCCESS__: success,
             message: response,
         });
     }
-    evaluateWebScript(script: string): Promise<any> {
-        let windowObject = this._webview.windowScriptObject();
-        let requestID = uuidv4();
-        let scriptWrapped = wrapWebViewScripts(script, requestID);
-        // alert(scriptWrapped);
-        let promise = new Promise((resolve, reject) => {
-            this._postRequestListeners[requestID] = function (success: boolean, msg: any) {
-                if (success) {
-                    resolve(msg);
-                    return;
-                }
-                reject(msg);
+    private _registerReplyListener<T>(
+        requestID: string,
+        resolve: (value?: T | PromiseLike<T>) => void,
+        reject: (reason?: any) => void,
+    ) {
+        this._replyListeners[requestID] = function (success: boolean, msg: any) {
+            if (success) {
+                resolve(msg);
+                return;
             }
-            setTimeout(() => {
-                if (!this._postRequestListeners[requestID]) return;
-                // reject the promise after timeout, 
-                // or the coascript waits for them, 
-                // like always set 'coscript.setShouldKeepAround(true)' 
-                let callback = this._postRequestListeners[requestID];
-                callback(
-                    false,
-                    'Promise of evaluateWebScript not resolved or rejected in 10 seconds.'
-                );
-                delete this._postRequestListeners[requestID];
-            }, 10000);
-        });
-        windowObject.evaluateWebScript(scriptWrapped);
-        return promise;
-    }
-    onDidReceiveMessage<T>(listener: (e: T) => any) {
-        this._receiveMessageListener = _tryCatchListener(listener);
-    }
-    onDidReceiveRequest<T>(listener: (e: PanelClientRequest<T>) => any) {
-        this._receiveRequeListener = _tryCatchListener(listener);
-    }
-    onWebviewDOMReady<T>(listener: (webView, webFrame) => void) {
-        this._DOMReadyListener = _tryCatchListener(listener);
-    }
-    onClose(listener: () => void) {
-        this._closeListener = _tryCatchListener(listener);
+            reject(msg);
+        }
+        setTimeout(() => {
+            if (!this._replyListeners[requestID]) return;
+            // reject the promise after timeout, 
+            // or the coascript waits for them, 
+            // like always set 'coscript.setShouldKeepAround(true)' 
+            let callback = this._replyListeners[requestID];
+            callback(
+                false,
+                'A WebviewPanel server-to-client message not replied in 10 seconds.'
+            );
+            delete this._replyListeners[requestID];
+        }, 10000);
     }
 }
 function _tryCatchListener(fn: Function) {

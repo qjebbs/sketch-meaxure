@@ -68,13 +68,11 @@
             sendOrderRequest = function () {
                 let order = $('input[name=order]:checked').val();
                 let reverse = $('input[name=reverse]:checked').val() == '1';
-                meaxure.postRequest({
-                    action: 'sort',
-                    data: {
-                        order: order,
-                        reverse, reverse
-                    }
-                }).then(data => updateArtboardsList(data));
+                meaxure.postMessage('sort', {
+                    order: order,
+                    reverse, reverse
+                }
+                ).then(data => updateArtboardsList(data));
             },
             filter = function (data) {
                 var $filter = $('#filter'),
@@ -357,7 +355,7 @@
 
                     data.order = $('input[name=order]:checked').val();
 
-                    meaxure.postMessage({ action: 'submit', data: data });
+                    meaxure.postMessage('submit', data);
                 });
 
                 if (!data.selection) {
@@ -386,9 +384,7 @@
 <body>
     <script>
         if (window.meaxure) {
-            meaxure.postRequest({
-                action: 'init',
-            }).then(data => {
+            meaxure.postMessage('init').then(data => {
                 try {
                     eval(data.language);
                     init(data);
