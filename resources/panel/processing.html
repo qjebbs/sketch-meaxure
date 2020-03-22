@@ -29,7 +29,10 @@
                 $('#processing').css('width', data.percentage + "%");
                 $('#processing-text').text(data.text);
             } catch (error) {
-                $('body').html(`<p>${error.message}</p>`)
+                let err = Object.assign({}, error);
+                if (error.message) err.message = error.message;
+                if (error.stack) err.stack = error.stack;
+                $('body').html(`<p style="word-wrap:break-word; word-break:break-all;">${JSON.stringify(err)}</p>`);
             }
         });
     </script>

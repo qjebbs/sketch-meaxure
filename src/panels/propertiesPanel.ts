@@ -18,10 +18,7 @@ export function propertiesPanel() {
         width: 280,
         height: 296,
     });
-    panel.onWebviewDOMReady(
-        () => panel.postMessage('init', data)
-            .catch(err => logger.error('error occured when init property panel.\n' + 'Error: ' + JSON.stringify(err)))
-    );
+    panel.onDidReceiveMessage('init', () => data);
     return new Promise<boolean>((resolve, reject) => {
         panel.onClose(() => resolve(false));
         panel.onDidReceiveMessage<any>('submit', (data) => {

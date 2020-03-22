@@ -136,6 +136,7 @@
             pagesData = {},
             pagesName = {},
             init = function (data) {
+                if (data.language) eval(data.language);
                 $('body').html([
                     '<div class="container">',
                     '<div id="artboards-list" class="list">',
@@ -385,13 +386,9 @@
     <script>
         if (window.meaxure) {
             meaxure.postMessage('init').then(data => {
-                try {
-                    eval(data.language);
-                    init(data);
-                } catch (error) {
-                    $('body').html(`<p>${error.message}</p>`)
-                }
-            });
+                init(data);
+                onInitOK();
+            }).catch(error => showError(error));
         } else {
             let testData = {
                 exportOption: 1,

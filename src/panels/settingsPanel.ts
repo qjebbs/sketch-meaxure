@@ -26,10 +26,7 @@ export function settingsPanel() {
         width: 240,
         height: 316,
     });
-    panel.onWebviewDOMReady(
-        () => panel.postMessage('init', data)
-            .catch(err => logger.error('error occured when init setting panel.\n' + 'Error: ' + JSON.stringify(err)))
-    );
+    panel.onDidReceiveMessage('init', () => data);
     panel.onDidReceiveMessage<SettingData>('submit', data => {
         context.configs.scale = data.scale;
         context.configs.units = data.units;

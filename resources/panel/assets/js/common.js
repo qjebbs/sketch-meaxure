@@ -4,7 +4,7 @@ var _ = function (str) {
     return (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
 }
 
-$(function () {
+function onInitOK() {
     $(document)
         .on('contextmenu', function (event) {
             return false;
@@ -19,9 +19,45 @@ $(function () {
                 return false;
             }
         });
-});
+}
 
 function lookupItemInput(x, y) {
     var elem = document.elementFromPoint(x, y);
     $(elem).click();
+}
+
+function showError(error) {
+    if (error instanceof Error) {
+        $('html').html(`
+        <body style="-webkit-user-select:auto; padding:10px; background:#333; color:white; word-wrap:break-word; word-break:break-all;">
+            <p>
+            ${error.name}: ${error.message}
+            </p>
+            <p></p>
+            <p>
+            ${parseStack(error.stack)}
+            </p>
+        </body>
+        `);
+    } else {
+        $('html').html(`
+        <body style="-webkit-user-select:auto; padding:10px; background:#333; color:white; word-wrap:break-word; word-break:break-all;">
+            <p>
+            ${JSON.stringify(error)}
+            </p>
+        </body>
+        `);
+    }
+
+    function parseStack(stack) {
+        return stack.split('\n')
+            .map(line => parseStackLine(line))
+            .map(line => `${line}<br/>`)
+            .join('\n');
+    }
+
+    function parseStackLine(line) {
+        let hasFnName = line.indexOf('@') >= 0;
+        return line.replace(/@?file:\/\/.+\//, hasFnName ? '@' : '');
+    }
 }

@@ -48,6 +48,7 @@
                 });
             },
             init = function (data) {
+                if (data.language) eval(data.language);
                 $('body').html([
                     '<div class="container">',
                     '<div class="options" style="height:194px">',
@@ -209,15 +210,14 @@
 
 <body>
     <script>
-        meaxure.onDidReceiveMessage('init', data => {
-            try {
-                eval(data.language);
+        if (window.meaxure) {
+            meaxure.postMessage('init').then(data => {
                 init(data);
-            } catch (error) {
-                $('body').html(`<p>${error.message}</p>`)
-            }
-        });
-        // $(()=>init());
+                onInitOK();
+            }).catch(error => showError(error));
+        } else {
+            init();
+        }
     </script>
 </body>
 
