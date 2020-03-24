@@ -13,6 +13,7 @@ export async function exportSpecification() {
     let savePath = getSavePath();
     if (!savePath) return;
 
+    context.savePath = savePath;
     let processingPanel = createWebviewPanel({
         url: context.resourcesRoot + "/panel/processing.html",
         width: 304,
