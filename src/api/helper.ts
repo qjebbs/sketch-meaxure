@@ -1,10 +1,9 @@
 import { context } from "../state/context";
 import { localize } from "../state/language";
 import { getRect, is, toJSString, removeLayer } from "./api";
-import { logger } from "./logger";
 import { Rect } from "./interfaces";
 
-let sketch = require('sketch');
+export var sketch: Sketch = require('sketch');
 
 export function message(message) {
     sketch.UI.message(message);
@@ -143,96 +142,6 @@ export function toHTMLEncode(str) {
         .replace(/\ud83c|\ud83d/g, "");
     // return str.replace(/\&/g, "&amp;").replace(/\"/g, "&quot;").replace(/\'/g, "&#39;").replace(/\</g, "&lt;").replace(/\>/g, '&gt;');
 }
-export function calcArtboardsRow(artboardDatas) {
-    let curRow = 0;
-    let unCalcData = artboardDatas;
-    let rowTop = 0;
-    let rowBottom = 0;
-    while (unCalcData.length) {
-        curRow++;
-        // Find the top most artboard to start the row
-        let topMost = unCalcData[0];
-        for (let item of unCalcData) {
-            if (topMost.y1 > item.y1) {
-                topMost = item;
-            }
-        }
-        logger.debug("top most: " + topMost.name);
-        rowTop = topMost.y1;
-        rowBottom = topMost.y2;
-        // Find intersecting artboards
-        let isRangeExtened = true;
-        while (isRangeExtened) {
-            // Row range may updates when new item found,
-            // new range could include more items.
-            // So, loop until range not extended.
-            isRangeExtened = false;
-            for (let item of artboardDatas.filter(a => !a.row)) {
-                // If not beneath or above the range,
-                // we found an intersecting artboard.
-                if (!(item.y1 > rowBottom || item.y2 < rowTop)) {
-                    // Extend row range.
-                    if (rowTop > item.y1) {
-                        rowTop = item.y1;
-                        isRangeExtened = true;
-                    }
-                    if (rowBottom < item.y2) {
-                        rowBottom = item.y2;
-                        isRangeExtened = true;
-                    }
-                    item.row = curRow;
-                }
-            }
-        }
-        // Calculate next row.
-        unCalcData = artboardDatas.filter(a => !a.row)
-    }
-}
-export function calcArtboardsColumn(artboardDatas) {
-    let Col = 0;
-    let unCalcData = artboardDatas;
-    let colLeft = 0;
-    let colRight = 0;
-    while (unCalcData.length) {
-        Col++;
-        // Find the left most artboard to start the column
-        let leftMost = unCalcData[0];
-        for (let item of unCalcData) {
-            if (leftMost.x1 > item.x1) {
-                leftMost = item;
-            }
-        }
-        logger.debug("left most: " + leftMost.name);
-        colLeft = leftMost.x1;
-        colRight = leftMost.x2;
-        // Find intersecting artboards
-        let isRangeExtened = true;
-        while (isRangeExtened) {
-            // Column range may updates when new item found,
-            // new range could include more items.
-            // So, loop until range not extended.
-            isRangeExtened = false;
-            for (let item of artboardDatas.filter(a => !a.column)) {
-                // If not on right or left of the range,
-                // we found an intersecting artboard.
-                if (!(item.x1 > colRight || item.x2 < colLeft)) {
-                    // Extend column range.
-                    if (colLeft > item.x1) {
-                        colLeft = item.x1;
-                        isRangeExtened = true;
-                    }
-                    if (colRight < item.x2) {
-                        colRight = item.x2;
-                        isRangeExtened = true;
-                    }
-                    item.column = Col;
-                }
-            }
-        }
-        // Calculate next column.
-        unCalcData = artboardDatas.filter(a => !a.column)
-    }
-}
 
 export function getSavePath() {
     let filePath = /*this.*/context.document.fileURL() ? /*this.*/context.document.fileURL().path().stringByDeletingLastPathComponent() : "~";
@@ -276,4 +185,13 @@ export function deepEqual(x, y) {
 export function openURL(url) {
     let nsurl = NSURL.URLWithString(url);
     NSWorkspace.sharedWorkspace().openURL(nsurl);
+}
+
+export function tik() {
+    let start = Date.now();
+    return {
+        tok: function () {
+            return Date.now() - start;
+        }
+    }
 }

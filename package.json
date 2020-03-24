@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@skpm/builder": "^0.7.0",
+    "@types/sketch": "git+https://github.com/qjebbs/sketch.d.ts.git",
     "skpm": "^1.3.1",
     "ts-loader": "^6.2.1",
     "tslint": "^5.20.1",

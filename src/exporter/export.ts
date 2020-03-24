@@ -8,8 +8,9 @@ import { getLayer, exportImage, writeFile, buildTemplate } from "./utilities";
 import { createWebviewPanel } from "../webviewPanel";
 
 export async function exportSpecification() {
-    if (!(await exportPanel())) return;
-    if (context.selectionArtboards.length <= 0) return false;
+    let results = await exportPanel();
+    if (!results) return;
+    if (results.selectionArtboards.length <= 0) return false;
     let savePath = getSavePath();
     if (!savePath) return;
 
@@ -42,15 +43,16 @@ export async function exportSpecification() {
     processingPanel.show();
 
     coscript.scheduleWithRepeatingInterval_jsFunction(0, function (interval) {
-        // message('Processing layer ' + idx + ' of ' + context.allCount);
+        // message('Processing layer ' + idx + ' of ' + results.allCount);
         processingPanel.postMessage('process', {
-            percentage: Math.round(idx / context.allCount * 100),
-            text: localize("Processing layer %@ of %@", [idx, context.allCount])
+            percentage: Math.round(idx / results.allCount * 100),
+            text: localize("Processing layer %@ of %@", [idx, results.allCount])
         });
 
         idx++;
 
         if (!data.artboards[artboardIndex]) {
+            // start new artboard
             data.artboards.push({
                 layers: [],
                 notes: []
@@ -60,114 +62,114 @@ export async function exportSpecification() {
             context.maskRect = undefined;
         }
 
-        if (!exporting) {
-            exporting = true;
-            let artboard = context.selectionArtboards[artboardIndex],
-                page = artboard.parentGroup(),
-                layer = artboard.children()[layerIndex],
-                msg = page.name() + ' - ' + artboard.name() + ' - ' + layer.name();
-            // log( page.name() + ' - ' + artboard.name() + ' - ' + layer.name());
-            try {
-                getLayer(
-                    artboard, // Sketch artboard element
-                    layer, // Sketch layer element
-                    data.artboards[artboardIndex] // Save to data
-                );
-                layerIndex++;
-                layerCount++;
-                exporting = false;
-            } catch (e) {
-                canceled = true;
-                logger.error(e)
-            }
-
-            if (layerIndex >= artboard.children().length) {
-                let objectID = artboard.objectID(),
-                    artboardRect = getRect(artboard),
-                    page = artboard.parentGroup(),
-                    // name = toSlug(toHTMLEncode(page.name()) + ' ' + toHTMLEncode(artboard.name()));
-                    slug = toSlug(page.name() + ' ' + artboard.name());
-
-                data.artboards[artboardIndex].pageName = toHTMLEncode(emojiToEntities(page.name()));
-                data.artboards[artboardIndex].pageObjectID = toJSString(page.objectID());
-                data.artboards[artboardIndex].name = toHTMLEncode(emojiToEntities(artboard.name()));
-                data.artboards[artboardIndex].slug = slug;
-                data.artboards[artboardIndex].objectID = toJSString(artboard.objectID());
-                data.artboards[artboardIndex].width = artboardRect.width;
-                data.artboards[artboardIndex].height = artboardRect.height;
-
-                if (!context.runningConfig.exportOption) {
-                    let imageURL = NSURL.fileURLWithPath(exportImage({
-                        layer: artboard,
-                        scale: 2,
-                        name: objectID
-                    })),
-                        imageData = NSData.dataWithContentsOfURL(imageURL),
-                        imageBase64 = imageData.base64EncodedStringWithOptions(0);
-                    data.artboards[artboardIndex].imageBase64 = 'data:image/png;base64,' + imageBase64;
-
-                    let newData = JSON.parse(JSON.stringify(data));
-                    newData.artboards = [data.artboards[artboardIndex]];
-                    writeFile({
-                        content: buildTemplate(template, {
-                            lang: context.languageData,
-                            data: JSON.stringify(newData)
-                        }),
-                        path: toJSString(savePath),
-                        fileName: slug + ".html"
-                    });
-                } else {
-                    // data.artboards[artboardIndex].imagePath = "preview/" + objectID + ".png";
-                    data.artboards[artboardIndex].imagePath = "preview/" + encodeURI(slug) + ".png";
-
-                    exportImage({
-                        layer: artboard,
-                        path: toJSString(savePath) + "/preview",
-                        scale: 2,
-                        // name: objectID,
-                        name: slug
-                    });
-
-                    writeFile({
-                        content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#artboard" + artboardIndex + "\">",
-                        path: toJSString(savePath) + "/links",
-                        fileName: slug + ".html"
-                    });
-                }
-
-
-                layerIndex = 0;
-                artboardIndex++;
-            }
-
-            if (artboardIndex >= context.selectionArtboards.length && layerCount >= context.allCount) {
-                if (context.slices.length > 0) {
-                    data.slices = context.slices;
-                }
-
-                if (context.runningConfig.colors && context.runningConfig.colors.length > 0) {
-                    data.colors = context.runningConfig.colors;
-                }
-
-                let selectingPath = savePath;
-                if (context.runningConfig.exportOption) {
-                    writeFile({
-                        content: buildTemplate(template, {
-                            lang: context.languageData,
-                            data: JSON.stringify(data)
-                        }),
-                        path: toJSString(savePath),
-                        fileName: "index.html"
-                    });
-                    selectingPath = savePath + "/index.html";
-                }
-                NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
-
-                message(localize("Export complete!"));
-                canceled = true;
-            }
-
+        if (exporting) return;
+        exporting = true;
+        let artboard = results.selectionArtboards[artboardIndex],
+            page = artboard.parentGroup(),
+            layer = artboard.children()[layerIndex],
+            msg = page.name() + ' - ' + artboard.name() + ' - ' + layer.name();
+        // log( page.name() + ' - ' + artboard.name() + ' - ' + layer.name());
+        try {
+            getLayer(
+                artboard, // Sketch artboard element
+                layer, // Sketch layer element
+                data.artboards[artboardIndex] // Save to data
+            );
+            layerIndex++;
+            layerCount++;
+            exporting = false;
+        } catch (e) {
+            canceled = true;
+            logger.error(e)
         }
+
+        if (layerIndex >= artboard.children().length) {
+            let objectID = artboard.objectID(),
+                artboardRect = getRect(artboard),
+                page = artboard.parentGroup(),
+                // name = toSlug(toHTMLEncode(page.name()) + ' ' + toHTMLEncode(artboard.name()));
+                slug = toSlug(page.name() + ' ' + artboard.name());
+
+            data.artboards[artboardIndex].pageName = toHTMLEncode(emojiToEntities(page.name()));
+            data.artboards[artboardIndex].pageObjectID = toJSString(page.objectID());
+            data.artboards[artboardIndex].name = toHTMLEncode(emojiToEntities(artboard.name()));
+            data.artboards[artboardIndex].slug = slug;
+            data.artboards[artboardIndex].objectID = toJSString(artboard.objectID());
+            data.artboards[artboardIndex].width = artboardRect.width;
+            data.artboards[artboardIndex].height = artboardRect.height;
+
+            if (!context.runningConfig.exportOption) {
+                let imageURL = NSURL.fileURLWithPath(exportImage({
+                    layer: artboard,
+                    scale: 2,
+                    name: objectID
+                })),
+                    imageData = NSData.dataWithContentsOfURL(imageURL),
+                    imageBase64 = imageData.base64EncodedStringWithOptions(0);
+                data.artboards[artboardIndex].imageBase64 = 'data:image/png;base64,' + imageBase64;
+
+                let newData = JSON.parse(JSON.stringify(data));
+                newData.artboards = [data.artboards[artboardIndex]];
+                writeFile({
+                    content: buildTemplate(template, {
+                        lang: context.languageData,
+                        data: JSON.stringify(newData)
+                    }),
+                    path: toJSString(savePath),
+                    fileName: slug + ".html"
+                });
+            } else {
+                // data.artboards[artboardIndex].imagePath = "preview/" + objectID + ".png";
+                data.artboards[artboardIndex].imagePath = "preview/" + encodeURI(slug) + ".png";
+
+                exportImage({
+                    layer: artboard,
+                    path: toJSString(savePath) + "/preview",
+                    scale: 2,
+                    // name: objectID,
+                    name: slug
+                });
+
+                writeFile({
+                    content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#artboard" + artboardIndex + "\">",
+                    path: toJSString(savePath) + "/links",
+                    fileName: slug + ".html"
+                });
+            }
+
+
+            layerIndex = 0;
+            artboardIndex++;
+        }
+
+        if (artboardIndex >= results.selectionArtboards.length && layerCount >= results.allCount) {
+            if (context.slices.length > 0) {
+                data.slices = context.slices;
+            }
+
+            if (context.runningConfig.colors && context.runningConfig.colors.length > 0) {
+                data.colors = context.runningConfig.colors;
+            }
+
+            let selectingPath = savePath;
+            if (context.runningConfig.exportOption) {
+                writeFile({
+                    content: buildTemplate(template, {
+                        lang: context.languageData,
+                        data: JSON.stringify(data)
+                    }),
+                    path: toJSString(savePath),
+                    fileName: "index.html"
+                });
+                selectingPath = savePath + "/index.html";
+            }
+            NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
+
+            message(localize("Export complete!"));
+            canceled = true;
+        }
+
+
 
         if (canceled === true) {
             processingPanel.close();

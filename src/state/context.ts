@@ -34,9 +34,6 @@ interface markContext {
     languageData: string;
 
     // TODO: move to runningConfig
-    selectionArtboards: any;
-    artboardsData: any[];
-    allCount: number; // exporting layers count
     slices: any[];
     sliceCache: any;
     maskCache: any[];
