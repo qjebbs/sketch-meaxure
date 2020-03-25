@@ -1,16 +1,17 @@
 import { Layer } from "../api/layer";
 import { context } from "../state/context";
-import { message, find } from "../api/helper";
+import { find } from "../api/helper";
 import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle, getDistances } from "./base";
 import { colors } from "../state/common";
 import { Rect } from "../api/interfaces";
 import { localize } from "../state/language";
 import { removeLayer } from "../api/api";
+import { sketch } from "../sketch";
 
 export function drawSizes(position) {
     position = position || "top";
     if (context.selection.length <= 0) {
-        message(localize("Select any layer to mark!"));
+        sketch.UI.message(localize("Select any layer to mark!"));
         return false;
     }
     let layer;

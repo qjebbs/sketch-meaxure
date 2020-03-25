@@ -1,8 +1,9 @@
 import { context } from "../state/context";
-import { find, sketch, tik } from "../api/helper";
+import { find, tik } from "../api/helper";
 import { toJSString } from "../api/api";
 import { createWebviewPanel } from "../webviewPanel";
 import { logger } from "../api/logger";
+import { sketch } from "../sketch";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
 interface PageInfo {

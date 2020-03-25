@@ -2,14 +2,15 @@ import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle } fr
 
 import { colors } from "../state/common";
 import { context } from "../state/context";
-import { message, find } from "../api/helper";
+import { find } from "../api/helper";
 import { Layer } from "../api/layer";
 import { localize } from "../state/language";
 import { removeLayer } from "../api/api";
+import { sketch } from "../sketch";
 
 export function drawCoordinate() {
     if (context.selection.length <= 0) {
-        message(localize("Select any layer to mark!"));
+        sketch.UI.message(localize("Select any layer to mark!"));
         return false;
     }
     let layer;
@@ -30,31 +31,31 @@ function coordinateLayer(layer: Layer) {
     let layerRect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
         artboard = layer.current,
         artboardRect = context.configs.byInfluence ? artboard.influenceRect : artboard.rect,
-        layerStyle = /*self.*/sharedLayerStyle("Sketch Measure / Coordinate", /*self.*/colors.coordinate.shape),
-        textStyle = /*self.*/sharedTextStyle("Sketch Measure / Coordinate", /*self.*/colors.coordinate.text),
+        layerStyle = sharedLayerStyle("Sketch Measure / Coordinate", colors.coordinate.shape),
+        textStyle = sharedTextStyle("Sketch Measure / Coordinate", colors.coordinate.text),
         group = artboard.newGroup({
-            frame: /*self.*/Rectangle(0, 0, layerRect.width, layerRect.height),
+            frame: Rectangle(0, 0, layerRect.width, layerRect.height),
             name: layerName
         }),
         crossX = group.newShape({
-            frame: /*self.*/Rectangle(-8, 0, 17, 1),
+            frame: Rectangle(-8, 0, 17, 1),
             name: "crosshair-x"
         }),
         crossY = group.newShape({
-            frame: /*self.*/Rectangle(0, -8, 1, 17),
+            frame: Rectangle(0, -8, 1, 17),
             name: "crosshair-y"
         }),
-        posX = /*self.*/lengthUnit(layerRect.x - artboardRect.x),
-        posY = /*self.*/lengthUnit(layerRect.y - artboardRect.y),
+        posX = lengthUnit(layerRect.x - artboardRect.x),
+        posY = lengthUnit(layerRect.y - artboardRect.y),
         text = posX + ", " + posY,
         textShape = group.newText({
             text: text
         });
     setStyle(textShape, textStyle);
-    let bgRect = /*self.*/Rectangle(15, 15, textShape.frame.width, textShape.frame.height);
+    let bgRect = Rectangle(15, 15, textShape.frame.width, textShape.frame.height);
     textShape.frame = bgRect;
     let bgShape = group.newShape({
-        frame: /*self.*/Rectangle(11, 11, textShape.frame.width + 8, textShape.frame.height + 8),
+        frame: Rectangle(11, 11, textShape.frame.width + 8, textShape.frame.height + 8),
         name: "box"
     });
     bgShape.sketchObject.layers().firstObject().setCornerRadiusFromComponents("2")

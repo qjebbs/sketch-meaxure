@@ -1,5 +1,5 @@
 import { context } from "../state/context";
-import { message, isIntersect, find, isIntersectX, isIntersectY } from "../api/helper";
+import { isIntersect, find, isIntersectX, isIntersectY } from "../api/helper";
 import { sharedLayerStyle, sharedTextStyle } from "./base";
 import { colors } from "../state/common";
 import { Rect } from "../api/interfaces";
@@ -8,10 +8,11 @@ import { Layer } from "../api/layer";
 import { logger } from "../api/logger";
 import { removeLayer } from "../api/api";
 import { localize } from "../state/language";
+import { sketch } from "../sketch";
 
 export function drawSpacings(position?: string) {
     if (context.selection.length != 1 && context.selection.length != 2) {
-        message(localize("Select 1 or 2 layers to mark!"));
+        sketch.UI.message(localize("Select 1 or 2 layers to mark!"));
         return false;
     }
 
@@ -28,7 +29,7 @@ function distance(layers: Layer[], position: string) {
     let layerA = layers[0];
     let layerB = layers.length == 1 ? layerA.current : layers[1];
     if (layerB.isPage) {
-        message('Layer not in artboard, skipping...');
+        sketch.UI.message('Layer not in artboard, skipping...');
         return;
     }
 

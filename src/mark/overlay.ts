@@ -1,37 +1,38 @@
 import { localize } from "../state/language";
-import { message, find } from "../api/helper";
+import { find } from "../api/helper";
 import { getRect, removeLayer, addGroup, addShape } from "../api/api";
 import { sharedLayerStyle } from "./base";
 import { colors } from "../state/common";
 import { context } from "../state/context";
+import { sketch } from "../sketch";
 export function markOverlays() {
-    let selection = /*this.*/ context.selection;
+    let selection = context.selection;
     if (selection.count() <= 0) {
-        /*this.*/ message(localize("Select a layer to mark!"));
+        sketch.UI.message(localize("Select a layer to mark!"));
         return false;
     }
     for (let i = 0; i < selection.count(); i++) {
-        /*this.*/ overlay(selection[i]);
+        overlay(selection[i]);
     }
 }
 
 function overlay(target) {
     //Crashing on exception: -[MSImmutableSharedStyle hasMarkers]: unrecognized selector sent to instance 0x608002a4f510
-    let targetRect = /*this.*/getRect(target),
+    let targetRect = getRect(target),
         name = "#overlay-" + target.objectID(),
-        container = /*this.*/find({
+        container = find({
             key: "(name != NULL) && (name == %@)",
             match: name
         }),
-        overlayStyle = /*this.*/sharedLayerStyle("Sketch Measure / Overlay", /*this.*/colors.overlay.shape);
+        overlayStyle = sharedLayerStyle("Sketch Measure / Overlay", colors.overlay.shape);
 
-    if (container) /*this.*/removeLayer(container);
-    container = /*this.*/addGroup();
-    /*this.*/context.current.addLayers([container]);
+    if (container) removeLayer(container);
+    container = addGroup();
+    context.current.addLayers([container]);
     container.setName(name);
 
-    let overlay = /*this.*/addShape(),
-        overlayRect = /*this.*/getRect(overlay);
+    let overlay = addShape(),
+        overlayRect = getRect(overlay);
 
     container.addLayers([overlay]);
 

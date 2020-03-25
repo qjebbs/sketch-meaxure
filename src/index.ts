@@ -2,7 +2,7 @@ import { settingsPanel } from "./panels/settingsPanel";
 import { updateContext } from "./state/context";
 import { logger } from "./api/logger";
 import { markToolbar } from "./panels/toolbar";
-import { message, openURL } from "./api/helper";
+import { openURL } from "./api/helper";
 import { exportSpecification } from "./exporter/export";
 import { markNote } from "./mark/note";
 import { liteProperties, markProperties } from "./mark/properties";
@@ -11,6 +11,7 @@ import { drawCoordinate } from "./mark/coordinate";
 import { drawSizes } from "./mark/size";
 import { drawSpacings } from "./mark/spacings";
 import { toggleHidden, toggleLocked, clearAllMarks } from "./mark/manage";
+import { sketch } from "./sketch";
 
 function runAndCatch(fn: Function, context, ...args) {
     try {
@@ -18,7 +19,7 @@ function runAndCatch(fn: Function, context, ...args) {
         fn(...args);
     } catch (error) {
         logger.error(error);
-        message(error);
+        sketch.UI.message(error);
     }
 }
 

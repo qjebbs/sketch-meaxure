@@ -1,17 +1,7 @@
 import { context } from "../state/context";
 import { localize } from "../state/language";
-import { getRect, is, toJSString, removeLayer } from "./api";
+import { getRect, is, toJSString } from "./api";
 import { Rect } from "./interfaces";
-
-export var sketch: Sketch = require('sketch');
-
-export function message(message) {
-    sketch.UI.message(message);
-}
-
-export function alert(message) {
-    sketch.UI.alert('Sketch MeaXure', message);
-}
 
 export function extend(options, target) {
     target = target || this;
@@ -27,14 +17,14 @@ export function mathHalf(number) {
 }
 export function convertUnit(value, isText?, percentageType?) {
     if (value instanceof Array) {
-        let units = /*this.*/context.configs.units.split("/"),
+        let units = context.configs.units.split("/"),
             unit = units[0];
 
         if (units.length > 1 && isText) {
             unit = units[1];
         }
 
-        let scale = /*this.*/context.configs.scale;
+        let scale = context.configs.scale;
         let tempValues = [];
 
         value.forEach(function (element) {
@@ -45,8 +35,8 @@ export function convertUnit(value, isText?, percentageType?) {
 
     } else {
 
-        if (percentageType && /*this.*/context.artboard) {
-            let artboardRect = /*this.*/getRect(/*this.*/context.artboard);
+        if (percentageType && context.artboard) {
+            let artboardRect = getRect(context.artboard);
             if (percentageType == "width") {
                 return Math.round((value / artboardRect.width) * 1000) / 10 + "%";
             } else if (percentageType == "height") {
@@ -54,8 +44,8 @@ export function convertUnit(value, isText?, percentageType?) {
             }
         }
 
-        let val = Math.round(value / /*this.*/context.configs.scale * 10) / 10,
-            units: string[] = /*this.*/context.configs.units.split("/"),
+        let val = Math.round(value / context.configs.scale * 10) / 10,
+            units: string[] = context.configs.units.split("/"),
             unit = units[0];
 
         if (units.length > 1 && isText) {
@@ -73,9 +63,9 @@ export function toHex(c) {
 export function hexToRgb(hex) {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
-        r: /*this.*/ parseInt(result[1], 16),
-        g: /*this.*/parseInt(result[2], 16),
-        b: /*this.*/parseInt(result[3], 16)
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
     } : null;
 }
 export function isIntersect(a: Rect, b: Rect) {
@@ -92,7 +82,7 @@ export function isIntersectY(a: Rect, b: Rect) {
         (a.y < b.y && a.y + a.height > b.y + b.height); // y range of a includes b's
 }
 export function getDistance(targetRect, containerRect?) {
-    containerRect = containerRect || /*this.*/getRect(/*this.*/context.current);
+    containerRect = containerRect || getRect(context.current);
 
     return {
         top: (targetRect.y - containerRect.y),
@@ -105,13 +95,13 @@ export function find(format, container?, returnArray?) {
     if (!format || !format.key || !format.match) {
         return false;
     }
-    container = container || /*this.*/context.current;
+    container = container || context.current;
     let predicate = NSPredicate.predicateWithFormat(format.key, format.match),
         items;
 
     if (container.pages) {
         items = container.pages();
-    } else if (/*this.*/is(container, MSSharedStyleContainer) || /*this.*/is(container, MSSharedTextStyleContainer)) {
+    } else if (is(container, MSSharedStyleContainer) || is(container, MSSharedTextStyleContainer)) {
         items = container.objectsSortedByName();
     } else if (container.children) {
         items = container.children();
@@ -132,7 +122,7 @@ export function find(format, container?, returnArray?) {
     }
 }
 export function toHTMLEncode(str) {
-    return /*this.*/toJSString(str)
+    return toJSString(str)
         .replace(/\</g, "&lt;")
         .replace(/\>/g, '&gt;')
         .replace(/\'/g, "&#39;")
@@ -144,8 +134,8 @@ export function toHTMLEncode(str) {
 }
 
 export function getSavePath() {
-    let filePath = /*this.*/context.document.fileURL() ? /*this.*/context.document.fileURL().path().stringByDeletingLastPathComponent() : "~";
-    let fileName = /*this.*/context.document.displayName().stringByDeletingPathExtension();
+    let filePath = context.document.fileURL() ? context.document.fileURL().path().stringByDeletingLastPathComponent() : "~";
+    let fileName = context.document.displayName().stringByDeletingPathExtension();
     let savePanel = NSSavePanel.savePanel();
 
     savePanel.setTitle(localize("Export spec"));

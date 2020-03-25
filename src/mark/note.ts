@@ -1,45 +1,46 @@
 import { localize } from "../state/language";
-import { message, find, mathHalf } from "../api/helper";
+import { find, mathHalf } from "../api/helper";
 import { colors } from "../state/common";
 import { getRect, is, addGroup, addShape, addText, removeLayer } from "../api/api";
 import { context } from "../state/context";
 import { sharedLayerStyle, sharedTextStyle } from "./base";
+import { sketch } from "../sketch";
 
 export function markNote() {
-    let selection = /*this.*/context.selection;
+    let selection = context.selection;
 
     if (selection.count() <= 0) {
-        /*this.*/message(localize("Select a text layer to mark!"));
+        sketch.UI.message(localize("Select a text layer to mark!"));
         return false;
     }
 
     let target = selection[0];
 
-    if (/#note-/.exec(target.parentGroup().name()) && /*this.*/is(target, MSTextLayer)) {
-        /*this.*/resizeNote(target.parentGroup());
+    if (/#note-/.exec(target.parentGroup().name()) && is(target, MSTextLayer)) {
+        resizeNote(target.parentGroup());
     } else {
         for (let i = 0; i < selection.count(); i++) {
             let target = selection[i];
-            if (/*this.*/is(target, MSTextLayer)) {
-                /*this.*/note(target);
+            if (is(target, MSTextLayer)) {
+                note(target);
             }
         }
     }
 }
 function note(target) {
-    let targetRect = /*this.*/getRect(target),
+    let targetRect = getRect(target),
         objectID = target.objectID(),
         noteStyle = {
-            layer: /*this.*/sharedLayerStyle("Sketch Measure / Note", /*this.*/colors.note.shape, /*this.*/colors.note.border),
-            text: /*this.*/sharedTextStyle("Sketch Measure / Note", /*this.*/colors.note.text)
+            layer: sharedLayerStyle("Sketch Measure / Note", colors.note.shape, colors.note.border),
+            text: sharedTextStyle("Sketch Measure / Note", colors.note.text)
         }
-    let container = /*this.*/addGroup();
+    let container = addGroup();
 
-    /*this.*/context.current.addLayers([container]);
+    context.current.addLayers([container]);
     container.setName("#note-" + new Date().getTime());
 
-    let note = /*this.*/addShape(),
-        text = /*this.*/addText();
+    let note = addShape(),
+        text = addText();
 
     container.addLayers([note, text]);
 
@@ -52,8 +53,8 @@ function note(target) {
     note.setSharedStyle(noteStyle.layer);
     text.setSharedStyle(noteStyle.text);
 
-    let noteRect = /*this.*/getRect(note),
-        textRect = /*this.*/getRect(text),
+    let noteRect = getRect(note),
+        textRect = getRect(text),
         fontSize = text.fontSize(),
         scale = fontSize / 12;
 
@@ -61,7 +62,7 @@ function note(target) {
         text.setTextBehaviour(1);
         textRect.setWidth(160 * scale);
         text.finishEditing();
-        textRect = /*this.*/getRect(text);
+        textRect = getRect(text);
     }
 
     textRect.setX(targetRect.x);
@@ -72,20 +73,20 @@ function note(target) {
     noteRect.setHeight(textRect.height + 12 * scale);
 
     container.fixGeometryWithOptions(0);
-    /*this.*/removeLayer(target);
+    removeLayer(target);
 }
 
 function resizeNote(container) {
-    let text = /*this.*/find({
+    let text = find({
         key: "(class != NULL) && (class == %@)",
         match: MSTextLayer
     }),
-        label = /*this.*/find({
+        label = find({
             key: "(name != NULL) && (name == %@)",
             match: "note-box"
         }),
-        textRect = /*this.*/getRect(text),
-        labelRect = /*this.*/getRect(label),
+        textRect = getRect(text),
+        labelRect = getRect(label),
         oldWidth = labelRect.width,
         oldHeight = labelRect.height,
         newWidth = textRect.width + 12,
@@ -95,13 +96,13 @@ function resizeNote(container) {
 
     if (!dWidth && !dHeight) return false;
 
-    labelRect.setX(labelRect.x - /*this.*/mathHalf(dWidth));
-    labelRect.setY(labelRect.y - /*this.*/mathHalf(dHeight));
+    labelRect.setX(labelRect.x - mathHalf(dWidth));
+    labelRect.setY(labelRect.y - mathHalf(dHeight));
     labelRect.setWidth(newWidth);
     labelRect.setHeight(newHeight);
 
-    textRect.setX(textRect.x - /*this.*/mathHalf(dWidth));
-    textRect.setY(textRect.y - /*this.*/mathHalf(dHeight));
+    textRect.setX(textRect.x - mathHalf(dWidth));
+    textRect.setY(textRect.y - mathHalf(dHeight));
 
     text.setTextBehaviour(1);
     text.setTextBehaviour(0);

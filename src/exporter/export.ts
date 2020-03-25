@@ -3,9 +3,10 @@ import { logger } from "../api/logger";
 import { exportPanel } from "../panels/exportPanel";
 import { context } from "../state/context";
 import { getRect, toSlug, emojiToEntities, toJSString } from "../api/api";
-import { message, getSavePath, toHTMLEncode } from "../api/helper";
+import { getSavePath, toHTMLEncode } from "../api/helper";
 import { getLayer, exportImage, writeFile, buildTemplate } from "./utilities";
 import { createWebviewPanel } from "../webviewPanel";
+import { sketch } from "../sketch";
 
 export async function exportSpecification() {
     let results = await exportPanel();
@@ -43,7 +44,7 @@ export async function exportSpecification() {
     processingPanel.show();
 
     coscript.scheduleWithRepeatingInterval_jsFunction(0, function (interval) {
-        // message('Processing layer ' + idx + ' of ' + results.allCount);
+        //sketch.UI.message('Processing layer ' + idx + ' of ' + results.allCount);
         processingPanel.postMessage('process', {
             percentage: Math.round(idx / results.allCount * 100),
             text: localize("Processing layer %@ of %@", [idx, results.allCount])
@@ -165,7 +166,7 @@ export async function exportSpecification() {
             }
             NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
 
-            message(localize("Export complete!"));
+            sketch.UI.message(localize("Export complete!"));
             canceled = true;
         }
 

@@ -4,13 +4,13 @@ import { context } from "../state/context";
 import { Layer } from "../api/layer";
 
 export function sharedLayerStyle(name, color, borderColor?) {
-    let sharedStyles = /*this.*/context.documentData.layerStyles();
-    let style = /*this.*/find({
+    let sharedStyles = context.documentData.layerStyles();
+    let style = find({
         key: "(name != NULL) && (name == %@)",
         match: name
     }, sharedStyles);
 
-    style = (!style || /*this.*/is(style, MSSharedStyle)) ? style : style[0];
+    style = (!style || is(style, MSSharedStyle)) ? style : style[0];
 
     if (style == false) {
         style = MSStyle.alloc().init();
@@ -33,24 +33,24 @@ export function sharedLayerStyle(name, color, borderColor?) {
         sharedStyles.addSharedObject(s);
     }
 
-    style = /*this.*/find({
+    style = find({
         key: "(name != NULL) && (name == %@)",
         match: name
     }, sharedStyles);
     return style;
 }
 export function sharedTextStyle(name, color, alignment?) {
-    let sharedStyles = /*this.*/context.document.documentData().layerTextStyles(),
-        style = /*this.*/find({
+    let sharedStyles = context.document.documentData().layerTextStyles(),
+        style = find({
             key: "(name != NULL) && (name == %@)",
             match: name
         }, sharedStyles);
 
-    style = (!style || /*this.*/is(style, MSSharedStyle)) ? style : style[0];
+    style = (!style || is(style, MSSharedStyle)) ? style : style[0];
 
     if (style == false) {
         let nsColor = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a);
-        let text = /*this.*/addText();
+        let text = addText();
         alignment = alignment || 0; //[left, right, center, justify]
 
         text.changeTextColorTo(nsColor.NSColorWithColorSpace(nil));
@@ -64,10 +64,10 @@ export function sharedTextStyle(name, color, alignment?) {
         const s = MSSharedStyle.alloc().initWithName_style(name, style);
 
         sharedStyles.addSharedObject(s);
-        /*this.*/removeLayer(text);
+        removeLayer(text);
     }
 
-    style = /*this.*/find({
+    style = find({
         key: "(name != NULL) && (name == %@)",
         match: name
     }, sharedStyles);
@@ -75,17 +75,17 @@ export function sharedTextStyle(name, color, alignment?) {
 
 }
 export function setLabel(options) {
-    options = /*this.*/extend(options, {
+    options = extend(options, {
         text: "Label",
-        container: /*this.*/context.current,
-        target: /*this.*/context.current
+        container: context.current,
+        target: context.current
     });
     let container = options.container,
         styles = options.styles,
         target = options.target,
         placement = options.placement,
-        shapeTemp = /*this.*/addShape(),
-        textTemp = /*this.*/addText();
+        shapeTemp = addShape(),
+        textTemp = addText();
 
     if (styles) {
         shapeTemp.setSharedStyle(styles.layer);
@@ -117,18 +117,18 @@ export function setLabel(options) {
     text.setTextBehaviour(0); // fixed for v40
 
     // get rect
-    let targetRect = /*this.*/getRect(target),
-        arrowRect = /*this.*/getRect(arrow),
-        boxRect = /*this.*/getRect(box),
-        textRect = /*this.*/getRect(text);
+    let targetRect = getRect(target),
+        arrowRect = getRect(arrow),
+        boxRect = getRect(box),
+        textRect = getRect(text);
 
     // rect function
-    let x = targetRect.x + /*this.*/mathHalf(targetRect.width) - /*this.*/mathHalf(textRect.width),
-        y = targetRect.y + /*this.*/mathHalf(targetRect.height) - /*this.*/mathHalf(textRect.height),
-        arrowX = x - 3 + /*this.*/mathHalf(textRect.width + 6) - 3,
-        arrowY = y - 3 + /*this.*/mathHalf(textRect.height + 6) - 3;
+    let x = targetRect.x + mathHalf(targetRect.width) - mathHalf(textRect.width),
+        y = targetRect.y + mathHalf(targetRect.height) - mathHalf(textRect.height),
+        arrowX = x - 3 + mathHalf(textRect.width + 6) - 3,
+        arrowY = y - 3 + mathHalf(textRect.height + 6) - 3;
 
-    if (!/*this.*/is(target, MSPage) && !/*this.*/is(target, MSArtboardGroup)) {
+    if (!is(target, MSPage) && !is(target, MSArtboardGroup)) {
         switch (placement) {
             case "top":
                 y = targetRect.y - textRect.height - 10;
@@ -149,8 +149,8 @@ export function setLabel(options) {
         }
     }
 
-    if (/*this.*/is(/*this.*/context.current, MSArtboardGroup)) {
-        let artboardRect = /*this.*/getRect(/*this.*/context.current);
+    if (is(context.current, MSArtboardGroup)) {
+        let artboardRect = getRect(context.current);
 
         if (x - 4 < artboardRect.x) {
             x = artboardRect.x + 4;
@@ -183,9 +183,9 @@ export function setLabel(options) {
     };
 }
 function setRuler(options) {
-    options = /*this.*/extend(options, {
-        container: /*this.*/context.current,
-        target: /*this.*/context.current,
+    options = extend(options, {
+        container: context.current,
+        target: context.current,
         type: "width",
         placement: "center",
     });
@@ -194,7 +194,7 @@ function setRuler(options) {
         styles = options.styles,
         target = options.target,
         placement = options.placement,
-        shapeTemp = /*this.*/addShape();
+        shapeTemp = addShape();
 
     if (styles) {
         shapeTemp.setSharedStyle(styles.layer);
@@ -205,10 +205,10 @@ function setRuler(options) {
     let start = shapeTemp.duplicate(),
         end = shapeTemp.duplicate(),
         line = shapeTemp.duplicate(),
-        targetRect = /*this.*/getRect(target),
-        startRect = /*this.*/getRect(start),
-        endRect = /*this.*/getRect(end),
-        lineRect = /*this.*/getRect(line);
+        targetRect = getRect(target),
+        startRect = getRect(start),
+        endRect = getRect(end),
+        lineRect = getRect(line);
 
     container.addLayers([start, end, line]);
 
@@ -228,10 +228,10 @@ function setRuler(options) {
         endRect.setHeight(1);
 
         // get positions
-        let x = targetRect.x + /*this.*/mathHalf(targetRect.width) - 1,
+        let x = targetRect.x + mathHalf(targetRect.width) - 1,
             y = targetRect.y;
 
-        if (!/*this.*/is(target, MSPage) && !/*this.*/is(target, MSArtboardGroup)) {
+        if (!is(target, MSPage) && !is(target, MSArtboardGroup)) {
             switch (placement) {
                 case "left":
                     x = targetRect.x - 4;
@@ -257,9 +257,9 @@ function setRuler(options) {
 
         // get positions
         x = targetRect.x;
-        y = targetRect.y + /*this.*/mathHalf(targetRect.height) - 1;
+        y = targetRect.y + mathHalf(targetRect.height) - 1;
 
-        if (!/*this.*/is(target, MSPage) && !/*this.*/is(target, MSArtboardGroup)) {
+        if (!is(target, MSPage) && !is(target, MSArtboardGroup)) {
             switch (placement) {
                 case "top":
                     y = targetRect.y - 4;

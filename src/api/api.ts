@@ -3,7 +3,6 @@ import { context } from "../state/context";
 import { find, toHex } from "./helper";
 import { Rect, Point, Color, ColorStop, Gradient } from "./interfaces";
 
-
 export function is(layer, theClass) {
     if (!layer) return false;
     let klass = layer.class();
@@ -72,7 +71,7 @@ export function emojiToEntities(str) {
         });
 }
 export function toSlug(str) {
-    return /*this.*/toJSString(str)
+    return toJSString(str)
         .toLowerCase()
         .replace(/(<([^>]+)>)/ig, "")
         .replace(/[\/\+\|]/g, " ")
@@ -83,7 +82,7 @@ export function toJSString(str) {
     return new String(str).toString();
 }
 export function toJSNumber(str) {
-    return Number(/*this.*/toJSString(str));
+    return Number(toJSString(str));
 }
 export function pointToJSON(point): Point {
     return {
@@ -115,7 +114,7 @@ export function colorToJSON(color): Color {
         b: Math.round(color.blue() * 255),
         a: color.alpha(),
         "color-hex": color.immutableModelObject().stringValueWithAlpha(false) + " " + Math.round(color.alpha() * 100) + "%",
-        "argb-hex": "#" + /*this.*/toHex(color.alpha() * 255) + color.immutableModelObject().stringValueWithAlpha(false).replace("#", ""),
+        "argb-hex": "#" + toHex(color.alpha() * 255) + color.immutableModelObject().stringValueWithAlpha(false).replace("#", ""),
         "css-rgba": "rgba(" + [
             Math.round(color.red() * 255),
             Math.round(color.green() * 255),
@@ -132,7 +131,7 @@ export function colorToJSON(color): Color {
 }
 export function colorStopToJSON(colorStop): ColorStop {
     return {
-        color: /*this.*/colorToJSON(colorStop.color()),
+        color: colorToJSON(colorStop.color()),
         position: colorStop.position()
     };
 }
@@ -140,13 +139,13 @@ export function gradientToJSON(gradient): Gradient {
     let stopsData = [],
         stop, stopIter = gradient.stops().objectEnumerator();
     while (stop = stopIter.nextObject()) {
-        stopsData.push(/*this.*/colorStopToJSON(stop));
+        stopsData.push(colorStopToJSON(stop));
     }
 
     return {
         type: GradientTypes[gradient.gradientType()],
-        from: /*this.*/pointToJSON(gradient.from()),
-        to: /*this.*/pointToJSON(gradient.to()),
+        from: pointToJSON(gradient.from()),
+        to: pointToJSON(gradient.to()),
         colorStops: stopsData
     };
 }
@@ -157,13 +156,13 @@ export function shadowToJSON(shadow) {
         offsetY: shadow.offsetY(),
         blurRadius: shadow.blurRadius(),
         spread: shadow.spread(),
-        color: /*this.*/colorToJSON(shadow.color())
+        color: colorToJSON(shadow.color())
     };
 }
 export function getRadius(layer) {
-    if (layer.layers && /*this.*/is(layer.layers().firstObject(), MSRectangleShape)) {
+    if (layer.layers && is(layer.layers().firstObject(), MSRectangleShape)) {
         return (layer.layers().firstObject().cornerRadiusString().split(';').map(Number).length == 1) ? layer.layers().firstObject().fixedRadius() : layer.layers().firstObject().cornerRadiusString().split(';').map(Number);
-    } else if (/*this.*/is(layer, MSRectangleShape)) {
+    } else if (is(layer, MSRectangleShape)) {
         return (layer.cornerRadiusString().split(';').map(Number).length == 1) ? layer.fixedRadius() : layer.cornerRadiusString().split(';').map(Number);
     } else {
         return 0;
@@ -185,11 +184,11 @@ export function getBorders(style) {
 
             switch (fillType) {
                 case "color":
-                    borderData.color = /*this.*/colorToJSON(border.color());
+                    borderData.color = colorToJSON(border.color());
                     break;
 
                 case "gradient":
-                    borderData.gradient = /*this.*/gradientToJSON(border.gradient());
+                    borderData.gradient = gradientToJSON(border.gradient());
                     break;
 
                 default:
@@ -216,11 +215,11 @@ export function getFills(style) {
 
             switch (fillType) {
                 case "color":
-                    fillData.color = /*this.*/colorToJSON(fill.color());
+                    fillData.color = colorToJSON(fill.color());
                     break;
 
                 case "gradient":
-                    fillData.gradient = /*this.*/gradientToJSON(fill.gradient());
+                    fillData.gradient = gradientToJSON(fill.gradient());
                     break;
 
                 default:
@@ -238,14 +237,14 @@ export function getShadows(style) {
         shadow, shadowIter = style.shadows().objectEnumerator();
     while (shadow = shadowIter.nextObject()) {
         if (shadow.isEnabled()) {
-            shadowsData.push(/*this.*/shadowToJSON(shadow));
+            shadowsData.push(shadowToJSON(shadow));
         }
     }
 
     shadowIter = style.innerShadows().objectEnumerator();
     while (shadow = shadowIter.nextObject()) {
         if (shadow.isEnabled()) {
-            shadowsData.push(/*this.*/shadowToJSON(shadow));
+            shadowsData.push(shadowToJSON(shadow));
         }
     }
 
@@ -255,7 +254,7 @@ export function getOpacity(style) {
     return style.contextSettings().opacity()
 }
 export function getStyleName(layer) {
-    let styles = (/*this.*/is(layer, MSTextLayer)) ? /*this.*/context.document.documentData().layerTextStyles() : /*this.*/context.document.documentData().layerStyles(),
+    let styles = (is(layer, MSTextLayer)) ? context.document.documentData().layerTextStyles() : context.document.documentData().layerStyles(),
         layerStyle = layer.style(),
         sharedObjectID = layerStyle.objectID(),
         style;
@@ -263,12 +262,12 @@ export function getStyleName(layer) {
     styles = styles.objectsSortedByName();
 
     if (styles.count() > 0) {
-        style = /*this.*/find({
+        style = find({
             key: "(objectID != NULL) && (objectID == %@)",
             match: sharedObjectID
         }, styles);
     }
 
     if (!style) return "";
-    return /*this.*/toJSString(style.name());
+    return toJSString(style.name());
 }
