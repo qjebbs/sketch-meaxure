@@ -3,7 +3,7 @@ import { getDistance, convertUnit, extend, find, mathHalf } from "../api/helper"
 import { propertiesPanel } from "../panels/propertiesPanel";
 import { context } from "../state/context";
 import { getRect, is, colorToJSON, getFills, getBorders, getRadius, getStyleName, removeLayer, addGroup, shadowToJSON } from "../api/api";
-import { Color } from "../api/interfaces";
+import { SMColor } from "../api/interfaces";
 import { colorNames, colors } from "../state/common";
 import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
 import { sketch } from "../sketch";
@@ -78,7 +78,7 @@ function properties(options) {
     properties.forEach(function (property) {
         switch (property) {
             case "color":
-                let fill, color: Color;
+                let fill, color: SMColor;
                 if (is(target, MSTextLayer)) {
                     let color = colorToJSON(target.textColor()),
                         colorID = color["argb-hex"];

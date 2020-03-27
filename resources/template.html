@@ -909,7 +909,7 @@ var I18N = {},
                     fillsData = $.extend(true, [], layerData.fills);
                 $.each(fillsData.reverse(), function(index, fill){
                     fills.push('<div class="item items-group" data-label="' +_(fill.fillType.firstUpperCase()) + ':">');
-                    if (fill.fillType == "color") {
+                    if (fill.fillType.toLowerCase() == "color") {
                         fills.push( self.colorItem(fill.color) );
                     }
                     else{
@@ -969,7 +969,7 @@ var I18N = {},
                                 '<label></label>',
                             '</div>');
                     borders.push('<div class="item" data-label="' +_(border.fillType.firstUpperCase()) + ':">');
-                    if (border.fillType == "color") {
+                    if (border.fillType.toLowerCase() == "color") {
                         borders.push(self.colorItem(border.color));
                     }
                     else{
@@ -1115,7 +1115,7 @@ var I18N = {},
             if (layerData.type != "shape" || typeof(layerData.fills) == 'undefined' || layerData.fills.length == 0) return colorCode;
             var f;
             for (f in layerData.fills) {
-                if(layerData.fills[f].fillType == "color"){
+                if(layerData.fills[f].fillType.toLowerCase() == "color"){
                     return "android:background=\"" + layerData.fills[f].color["argb-hex"] + "\"\r\n";
                 }
             }
@@ -1130,7 +1130,7 @@ var I18N = {},
             if (layerData.type != "shape" || typeof(layerData.fills) == 'undefined' || layerData.fills.length == 0) return colorCode;
             var f;
             for (f in layerData.fills) {
-                if(layerData.fills[f].fillType == "color"){
+                if(layerData.fills[f].fillType.toLowerCase() == "color"){
                     return "view.backgroundColor = [UIColor colorWithRed:" + layerData.fills[f].color.r + "/255.0 green:" + layerData.fills[f].color.g  + "/255.0 blue:" + layerData.fills[f].color.b + "/255.0 alpha:" + layerData.fills[f].color.a + "/1.0]\;\r\n";
                 }
             }

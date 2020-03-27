@@ -288,11 +288,11 @@ export class WebviewPanel {
             reject(msg);
         }
         setTimeout(() => {
-            if (!this._replyListeners[requestID]) return;
+            let callback = this._replyListeners[requestID];
+            if (!callback) return;
             // reject the promise after timeout, 
             // or the coascript waits for them, 
             // like always set 'coscript.setShouldKeepAround(true)' 
-            let callback = this._replyListeners[requestID];
             callback(
                 false,
                 'A WebviewPanel server-to-client message not replied in 10 seconds.'

@@ -1,9 +1,9 @@
-import { Layer } from "../api/layer";
+import { SMLayer } from "../api/SMLayer";
 import { context } from "../state/context";
 import { find } from "../api/helper";
 import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle, getDistances } from "./base";
 import { colors } from "../state/common";
-import { Rect } from "../api/interfaces";
+import { SMRect } from "../api/interfaces-deprecated";
 import { localize } from "../state/language";
 import { removeLayer } from "../api/api";
 import { sketch } from "../sketch";
@@ -17,11 +17,11 @@ export function drawSizes(position) {
     let layer;
     let enmu = context.selection.objectEnumerator();
     while (layer = enmu.nextObject()) {
-        drawSize(new Layer(layer), position);
+        drawSize(new SMLayer(layer), position);
     }
 }
 
-export function drawSize(layer: Layer, position: string, name?, style?) {
+export function drawSize(layer: SMLayer, position: string, name?, style?) {
     let sizeType = /top|middle|bottom/.exec(position) ? "width" : "height";
     let id = new String(layer.ID).toString();
     name = name || "#" + sizeType + "-" + position + "-" + id;
@@ -49,7 +49,7 @@ export function drawSize(layer: Layer, position: string, name?, style?) {
     createLabel(sizeType, group, position, text, style, forSize);
     group.adjustToFit();
 }
-function createGroup(layer: Layer, position: string, name: string) {
+function createGroup(layer: SMLayer, position: string, name: string) {
     if (layer) {
         let rect = context.configs.byInfluence ? layer.influenceRect : layer.rect,
             artboard = layer.current,
@@ -70,7 +70,7 @@ function createGroup(layer: Layer, position: string, name: string) {
         return group;
     }
 }
-function createLabel(sizeType: string, group: Layer, position: string, text: string, style: any, forSize: any) {
+function createLabel(sizeType: string, group: SMLayer, position: string, text: string, style: any, forSize: any) {
 
     let size = "width" == sizeType ? group.frame.width : group.frame.height,
         offset = forSize ? 4 : 0,
@@ -164,7 +164,7 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
     let artboard = box.current;
     if (artboard.isArtboard) {
         let artboardRect = artboard.rect,
-            boxNewRect = <Rect>{},
+            boxNewRect = <SMRect>{},
             textNewRext: any = {};
         boxRect = box.rect;
         if (artboardRect.x > boxRect.x) {
@@ -192,7 +192,7 @@ function createLabel(sizeType: string, group: Layer, position: string, text: str
     }
     if (flag) arrow.remove();
 }
-function createLine(sizeType: string, group: Layer, position: string, style: any) {
+function createLine(sizeType: string, group: SMLayer, position: string, style: any) {
     let size = "width" == sizeType ? group.frame.width : group.frame.height,
         x1 = "width" == sizeType ? 0 : "left" == position ? size - 4 : "center" == position ? Math.round((size - 1) / 2) : 3,
         y1 = "height" == sizeType ? 0 : "top" == position ? size - 4 : "middle" == position ? Math.round((size - 1) / 2) : 3,

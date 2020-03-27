@@ -35,8 +35,10 @@ interface ExportData {
 }
 
 interface ExportConfig {
-    selectionArtboards: any[];
+    selectionArtboards: Artboard[];
     allCount: number;
+    advancedMode: boolean;
+    byInfluence: boolean;
 }
 
 export function exportPanel(): Promise<ExportConfig> {
@@ -58,17 +60,17 @@ export function exportPanel(): Promise<ExportConfig> {
             for (let info of page.artboards) {
                 if (rdata[info.objectID]) {
                     let artboard = allArtboards[info.objectID];
-                    layersCount += artboard.sketchObject.children().count();
-                    exportArtboards.push(artboard.sketchObject);
+                    layersCount += artboard.allSubLayers().length;
+                    exportArtboards.push(artboard);
                 }
             }
         }
-        context.runningConfig.exportOption = rdata.exportOption;
-        context.runningConfig.exportInfluenceRect = rdata.exportInfluenceRect;
         context.runningConfig.order = rdata.order;
         resolve(<ExportConfig>{
             selectionArtboards: exportArtboards,
             allCount: layersCount,
+            advancedMode: rdata.exportOption,
+            byInfluence: rdata.exportInfluenceRect,
         });
         panel.close();
     }
@@ -94,8 +96,8 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
         selection: [],
         current: [],
         pages: [],
-        exportOption: context.runningConfig.exportOption === undefined ? true : context.runningConfig.exportOption,
-        exportInfluenceRect: context.runningConfig.exportInfluenceRect,
+        exportOption: true,
+        exportInfluenceRect: context.configs.byInfluence,
         order: 'artboard-rows',
         reverse: false,
     };

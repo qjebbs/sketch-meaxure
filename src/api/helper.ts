@@ -1,7 +1,6 @@
 import { context } from "../state/context";
-import { localize } from "../state/language";
 import { getRect, is, toJSString } from "./api";
-import { Rect } from "./interfaces";
+import { SMRect } from "./interfaces-deprecated";
 
 export function extend(options, target) {
     target = target || this;
@@ -68,15 +67,15 @@ export function hexToRgb(hex) {
         b: parseInt(result[3], 16)
     } : null;
 }
-export function isIntersect(a: Rect, b: Rect) {
+export function isIntersect(a: SMRect, b: SMRect) {
     return isIntersectX(a, b) && isIntersectY(a, b);
 }
-export function isIntersectX(a: Rect, b: Rect) {
+export function isIntersectX(a: SMRect, b: SMRect) {
     return (a.x >= b.x && a.x <= b.x + b.width) || //left board of a in x range of b
         (a.x + a.width >= b.x && a.x + a.width <= b.x + b.width) || //right board of a in x range of b
         (a.x < b.x && a.x + a.width > b.x + b.width)  // x range of a includes b's
 }
-export function isIntersectY(a: Rect, b: Rect) {
+export function isIntersectY(a: SMRect, b: SMRect) {
     return (a.y >= b.y && a.y <= b.y + b.height) || //top board of a in y range of b
         (a.y + a.height >= b.y && a.y + a.height <= b.y + b.height) || //bottom board of a in y range of b
         (a.y < b.y && a.y + a.height > b.y + b.height); // y range of a includes b's
@@ -131,24 +130,6 @@ export function toHTMLEncode(str) {
         .replace(/\u2029/g, "\\u2029")
         .replace(/\ud83c|\ud83d/g, "");
     // return str.replace(/\&/g, "&amp;").replace(/\"/g, "&quot;").replace(/\'/g, "&#39;").replace(/\</g, "&lt;").replace(/\>/g, '&gt;');
-}
-
-export function getSavePath() {
-    let filePath = context.document.fileURL() ? context.document.fileURL().path().stringByDeletingLastPathComponent() : "~";
-    let fileName = context.document.displayName().stringByDeletingPathExtension();
-    let savePanel = NSSavePanel.savePanel();
-
-    savePanel.setTitle(localize("Export spec"));
-    savePanel.setNameFieldLabel(localize("Export to:"));
-    savePanel.setPrompt(localize("Export"));
-    savePanel.setCanCreateDirectories(true);
-    savePanel.setNameFieldStringValue(fileName);
-
-    if (savePanel.runModal() != NSOKButton) {
-        return false;
-    }
-
-    return savePanel.URL().path();
 }
 
 export function deepEqual(x, y) {

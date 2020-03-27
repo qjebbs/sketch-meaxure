@@ -2,9 +2,9 @@ import { context } from "../state/context";
 import { isIntersect, find, isIntersectX, isIntersectY } from "../api/helper";
 import { sharedLayerStyle, sharedTextStyle } from "./base";
 import { colors } from "../state/common";
-import { Rect } from "../api/interfaces";
+import { SMRect } from "../api/interfaces-deprecated";
 import { drawSize } from "./size";
-import { Layer } from "../api/layer";
+import { SMLayer } from "../api/SMLayer";
 import { logger } from "../api/logger";
 import { removeLayer } from "../api/api";
 import { localize } from "../state/language";
@@ -17,15 +17,15 @@ export function drawSpacings(position?: string) {
     }
 
     position = position || "";
-    let layer: Layer, layers: Layer[] = [];
+    let layer: SMLayer, layers: SMLayer[] = [];
     let enmu = context.selection.objectEnumerator();
     while (layer = enmu.nextObject()) {
-        layers.push(new Layer(layer));
+        layers.push(new SMLayer(layer));
     }
     distance(layers, position);
 }
 
-function distance(layers: Layer[], position: string) {
+function distance(layers: SMLayer[], position: string) {
     let layerA = layers[0];
     let layerB = layers.length == 1 ? layerA.current : layers[1];
     if (layerB.isPage) {
@@ -69,8 +69,8 @@ function distance(layers: Layer[], position: string) {
     }
 }
 
-function drawHorizontal(artboard: Layer, layerName: string, from: Rect, to: Rect) {
-    let tmp = <Rect>{};
+function drawHorizontal(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+    let tmp = <SMRect>{};
     if (isIntersectX(from, to)) {
         logger.debug('No horizontal space for selected layers, skipping...');
         return;
@@ -91,8 +91,8 @@ function drawHorizontal(artboard: Layer, layerName: string, from: Rect, to: Rect
     drawSpacingShape(artboard, tmp, "middle", layerName);
 }
 
-function drawVertical(artboard: Layer, layerName: string, from: Rect, to: Rect) {
-    let tmp = <Rect>{};
+function drawVertical(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+    let tmp = <SMRect>{};
     if (isIntersectY(from, to)) {
         logger.debug('No vertical space for selected layers, skipping...');
         return;
@@ -113,8 +113,8 @@ function drawVertical(artboard: Layer, layerName: string, from: Rect, to: Rect) 
     drawSpacingShape(artboard, tmp, "center", layerName);
 }
 
-function drawTop(artboard: Layer, layerName: string, from: Rect, to: Rect) {
-    let tmp = <Rect>{};
+function drawTop(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+    let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -135,8 +135,8 @@ function drawTop(artboard: Layer, layerName: string, from: Rect, to: Rect) {
     drawSpacingShape(artboard, tmp, "center", layerName);
 }
 
-function drawBottom(artboard: Layer, layerName: string, from: Rect, to: Rect) {
-    let tmp = <Rect>{};
+function drawBottom(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+    let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -157,8 +157,8 @@ function drawBottom(artboard: Layer, layerName: string, from: Rect, to: Rect) {
     drawSpacingShape(artboard, tmp, "center", layerName);
 }
 
-function drawLeft(artboard: Layer, layerName: string, from: Rect, to: Rect) {
-    let tmp = <Rect>{};
+function drawLeft(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+    let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -179,8 +179,8 @@ function drawLeft(artboard: Layer, layerName: string, from: Rect, to: Rect) {
     drawSpacingShape(artboard, tmp, "middle", layerName);
 }
 
-function drawRight(artboard: Layer, layerName: string, from: Rect, to: Rect) {
-    let tmp = <Rect>{};
+function drawRight(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+    let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -201,7 +201,7 @@ function drawRight(artboard: Layer, layerName: string, from: Rect, to: Rect) {
     drawSpacingShape(artboard, tmp, "middle", layerName);
 }
 
-function drawSpacingShape(container: Layer, frame: Rect, drawSizePosition: string, layerName: string) {
+function drawSpacingShape(container: SMLayer, frame: SMRect, drawSizePosition: string, layerName: string) {
     let tempShape = container.newShape({
         layerName: "temp"
     });

@@ -1,7 +1,7 @@
-import { Rect } from "./interfaces";
+import { SMRect } from "./interfaces-deprecated";
 import { TextAligns, FillTypes, GradientTypes, BorderPositions, emojiRegExp } from "../state/common";
 
-export class Layer {
+export class SMLayer {
     private _layer: any;
     constructor(layer: any) {
         this._layer = layer;
@@ -24,7 +24,7 @@ export class Layer {
     get frame() {
         return this.getRect("frame")
     }
-    set frame(rect: Rect) {
+    set frame(rect: SMRect) {
         this.setRect("frame", rect)
     }
     get position() {
@@ -42,7 +42,7 @@ export class Layer {
     get rect() {
         return this.getRect("absoluteRect")
     }
-    set rect(rect: Rect) {
+    set rect(rect: SMRect) {
         this.setRect("absoluteRect", rect)
     }
     get influenceRect() {
@@ -94,7 +94,7 @@ export class Layer {
     }
     get current() {
         if (this._layer.parentGroup) {
-            let layer: Layer = this;
+            let layer: SMLayer = this;
             while (layer) {
                 layer = layer.container;
                 if (layer.isPage || layer.isArtboard) {
@@ -109,7 +109,7 @@ export class Layer {
         }
     }
     get container() {
-        if (this._layer.parentGroup) return new Layer(this._layer.parentGroup())
+        if (this._layer.parentGroup) return new SMLayer(this._layer.parentGroup())
     }
     get text() {
         return this._layer.stringValue ? this._layer.stringValue() : void 0
@@ -131,7 +131,7 @@ export class Layer {
     }
     get radius() {
         if (!this.isShape || !this._layer.layers) return;
-        if (!new Layer(this._layer.layers().firstObject()).is(MSRectangleShape)) return 0;
+        if (!new SMLayer(this._layer.layers().firstObject()).is(MSRectangleShape)) return 0;
         return this._layer.layers().firstObject().fixedRadius();
     }
     set radius(val: number) {
@@ -196,7 +196,7 @@ export class Layer {
             return data;
         }
     }
-    getRect(name: "frame" | "absoluteRect"): Rect {
+    getRect(name: "frame" | "absoluteRect"): SMRect {
         let rect = this._layer[name]();
         return {
             x: Number(rect.x()),
@@ -205,7 +205,7 @@ export class Layer {
             height: Number(rect.height())
         }
     }
-    setRect(name: "frame" | "absoluteRect", rect: Rect) {
+    setRect(name: "frame" | "absoluteRect", rect: SMRect) {
         let layerRect = this._layer[name]();
         if (rect.x && /\d+/.test(rect.x.toString())) layerRect.setX(rect.x);
         if (rect.y && /\d+/.test(rect.y.toString())) layerRect.setY(rect.y);
@@ -236,7 +236,7 @@ export class Layer {
                 }
             };
             this._layer.addLayers([shape]);
-            let layer = new Layer(shape);
+            let layer = new SMLayer(shape);
             for (let field in data) layer[field] = data[field];
             return layer
         }

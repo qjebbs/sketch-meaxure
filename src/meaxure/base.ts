@@ -1,7 +1,7 @@
 import { extend, find, mathHalf } from "../api/helper";
 import { getRect, removeLayer, addGroup, addText, is, addShape } from "../api/api";
 import { context } from "../state/context";
-import { Layer } from "../api/layer";
+import { SMLayer } from "../api/SMLayer";
 
 export function sharedLayerStyle(name, color, borderColor?) {
     let sharedStyles = context.documentData.layerStyles();
@@ -306,10 +306,10 @@ export function Rectangle(x: number, y: number, width: number, height: number) {
         height: height
     }
 }
-export function setStyle(layer: Layer, style) {
+export function setStyle(layer: SMLayer, style) {
     layer.sketchObject.setSharedStyle(style);
 }
-export function getDistances(from: Layer, to?: Layer) {
+export function getDistances(from: SMLayer, to?: SMLayer) {
     to = to || from.current;
     let rectFrom = from.rect,
         rectTo = to.rect;

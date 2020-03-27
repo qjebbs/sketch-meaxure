@@ -32,15 +32,6 @@ interface markContext {
     configs: ConfigsMaster;
     runningConfig: RunningConfig;
     languageData: string;
-
-    // TODO: move to runningConfig
-    slices: any[];
-    sliceCache: any;
-    maskCache: any[];
-    maskObjectID: any;
-    maskRect: any;
-    savePath: string;
-    assetsPath: string;
 }
 
 export let context: markContext = undefined;

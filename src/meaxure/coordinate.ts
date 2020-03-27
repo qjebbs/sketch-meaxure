@@ -3,7 +3,7 @@ import { sharedLayerStyle, sharedTextStyle, lengthUnit, Rectangle, setStyle } fr
 import { colors } from "../state/common";
 import { context } from "../state/context";
 import { find } from "../api/helper";
-import { Layer } from "../api/layer";
+import { SMLayer } from "../api/SMLayer";
 import { localize } from "../state/language";
 import { removeLayer } from "../api/api";
 import { sketch } from "../sketch";
@@ -16,10 +16,10 @@ export function drawCoordinate() {
     let layer;
     let enmu = context.selection.objectEnumerator();
     while (layer = enmu.nextObject()) {
-        coordinateLayer(new Layer(layer));
+        coordinateLayer(new SMLayer(layer));
     }
 }
-function coordinateLayer(layer: Layer) {
+function coordinateLayer(layer: SMLayer) {
     let layerID = new String(layer.ID).toString();
     let layerName = "#coordinate-" + layerID;
     let container = find({

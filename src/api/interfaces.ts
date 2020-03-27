@@ -1,18 +1,16 @@
+import { SMRect } from "./interfaces-deprecated";
 
-export interface Rect {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    maxX?: number;
-    maxY?: number;
-    setX?: (value: number) => void;
-    setY?: (value: number) => void;
-    setWidth?: (value: number) => void;
-    setHeight?: (value: number) => void;
+export interface LayerStates {
+    isVisible: boolean,
+    isLocked: boolean,
+    hasSlice: boolean,
+    isMaskChildLayer: boolean,
+    isMeaXure: boolean,
+    isEmptyText: boolean,
+    isInShapeGroup: boolean,
 }
 
-export interface Color {
+export interface SMColor {
     r: number;
     g: number;
     b: number;
@@ -22,19 +20,87 @@ export interface Color {
     "css-rgba": string;
     "ui-color": string;
 }
-export interface Gradient {
-    type: string;
-    from: Point;
-    to: Point;
-    colorStops: ColorStop[];
+export interface BorderData {
+    fillType: FillType,
+    position: BorderPosition,
+    thickness: number,
+    color: SMColor,
+    gradient: Gradient,
+}
+export interface FillData {
+    fillType: FillType,
+    color: SMColor,
+    gradient: Gradient,
 }
 
-export interface Point {
-    x: number;
-    y: number;
+export type SMType = "text" | "symbol" | "slice" | "shape";
+export interface LayerData {
+    // shared
+    objectID: string,
+    type: SMType,
+    name: string,
+    rect: SMRect,
+    // slice
+    rotation: number,
+    radius: number[],
+    borders: BorderData[],
+    fills: FillData[],
+    shadows: SMShadow[],
+    opacity: number,
+    styleName: string,
+    // text
+    content: string,
+    color: SMColor,
+    fontSize: number,
+    fontFace: string,
+    textAlign: Alignment,
+    letterSpacing: number,
+    lineHeight: number,
+    // slice
+    exportable: SMExportable[],
+    // css
+    css: string[],
+}
+export interface SMNote { rect: SMRect, note: string }
+export interface ArtboardData {
+    // artboard: Artboard,
+    pageName: string,
+    pageObjectID: string,
+    name: string,
+    slug: string,
+    objectID: string,
+    width: number,
+    height: number,
+    imagePath?: string,
+    imageBase64?: string,
+    notes: SMNote[],
+    layers: LayerData[],
+}
+export interface ExportData {
+    scale: number,
+    unit: string,
+    colorFormat: string,
+    artboards: ArtboardData[],
+    slices: any[],
+    colors: any[]
 }
 
-export interface ColorStop {
-    color: Color;
-    position: any;
+export interface SMExportFormat {
+    format: string,
+    scale: number,
+    prefix?: string,
+    suffix?: string,
+}
+export interface SMShadow {
+    type: "outer" | "inner",
+    offsetX: number,
+    offsetY: number,
+    blurRadius: number,
+    spread: number,
+    color: SMColor,
+}
+export interface SMExportable {
+    name: string,
+    format: string,
+    path: string,
 }

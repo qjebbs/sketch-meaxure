@@ -1,7 +1,8 @@
 import { GradientTypes, FillTypes, BorderPositions } from "../state/common";
 import { context } from "../state/context";
 import { find, toHex } from "./helper";
-import { Rect, Point, Color, ColorStop, Gradient } from "./interfaces";
+import { SMRect, SMPoint, SMColorStop, SMGradient } from "./interfaces-deprecated";
+import { SMColor } from "./interfaces";
 
 export function is(layer, theClass) {
     if (!layer) return false;
@@ -24,7 +25,7 @@ export function removeLayer(layer) {
     let container = layer.parentGroup();
     if (container) container.removeLayer(layer);
 }
-export function getRect(layer): Rect {
+export function getRect(layer): SMRect {
     let rect = layer.absoluteRect();
     return {
         x: Math.round(rect.x()),
@@ -84,7 +85,7 @@ export function toJSString(str) {
 export function toJSNumber(str) {
     return Number(toJSString(str));
 }
-export function pointToJSON(point): Point {
+export function pointToJSON(point): SMPoint {
     return {
         x: parseFloat(point.x),
         y: parseFloat(point.y)
@@ -107,7 +108,7 @@ export function rectToJSON(rect, referenceRect) {
         height: Math.round(rect.height() * 10) / 10
     };
 }
-export function colorToJSON(color): Color {
+export function colorToJSON(color): SMColor {
     return {
         r: Math.round(color.red() * 255),
         g: Math.round(color.green() * 255),
@@ -129,13 +130,13 @@ export function colorToJSON(color): Color {
         ].join(" ") + ")"
     };
 }
-export function colorStopToJSON(colorStop): ColorStop {
+export function colorStopToJSON(colorStop): SMColorStop {
     return {
         color: colorToJSON(colorStop.color()),
         position: colorStop.position()
     };
 }
-export function gradientToJSON(gradient): Gradient {
+export function gradientToJSON(gradient): SMGradient {
     let stopsData = [],
         stop, stopIter = gradient.stops().objectEnumerator();
     while (stop = stopIter.nextObject()) {
@@ -178,8 +179,8 @@ export function getBorders(style) {
                     fillType: fillType,
                     position: BorderPositions[border.position()],
                     thickness: border.thickness(),
-                    color: <Color>{},
-                    gradient: <Gradient>{},
+                    color: <SMColor>{},
+                    gradient: <SMGradient>{},
                 };
 
             switch (fillType) {
@@ -209,8 +210,8 @@ export function getFills(style) {
             let fillType = FillTypes[fill.fillType()],
                 fillData = {
                     fillType: fillType,
-                    color: <Color>{},
-                    gradient: <Gradient>{}
+                    color: <SMColor>{},
+                    gradient: <SMGradient>{}
                 };
 
             switch (fillType) {

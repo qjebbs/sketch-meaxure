@@ -3,14 +3,14 @@ import { updateContext } from "./state/context";
 import { logger } from "./api/logger";
 import { markToolbar } from "./panels/toolbar";
 import { openURL } from "./api/helper";
-import { exportSpecification } from "./exporter/export";
-import { markNote } from "./mark/note";
-import { liteProperties, markProperties } from "./mark/properties";
-import { markOverlays } from "./mark/overlay";
-import { drawCoordinate } from "./mark/coordinate";
-import { drawSizes } from "./mark/size";
-import { drawSpacings } from "./mark/spacings";
-import { toggleHidden, toggleLocked, clearAllMarks } from "./mark/manage";
+import { exportSpecification } from "./meaxure/export";
+import { markNote } from "./meaxure/note";
+import { liteProperties, markProperties } from "./meaxure/properties";
+import { markOverlays } from "./meaxure/overlay";
+import { drawCoordinate } from "./meaxure/coordinate";
+import { drawSizes } from "./meaxure/size";
+import { drawSpacings } from "./meaxure/spacings";
+import { toggleHidden, toggleLocked, clearAllMarks } from "./meaxure/manage";
 import { sketch } from "./sketch";
 
 function runAndCatch(fn: Function, context, ...args) {
