@@ -91,6 +91,11 @@ declare namespace NSScreen {
 }
 declare namespace NSFont {
     function systemFontOfSize(size: number);
+    function fontWithName_size(name: string, size: number): any;
+}
+
+declare namespace NSLayoutManager {
+    function alloc();
 }
 
 declare namespace NSWorkspace {

@@ -23,7 +23,7 @@ let slices = [];
 let colors = [];
 let maskStack: MaskStackData[];
 let sliceCache: { [key: string]: SMExportable[] } = {}
-let tempDetachedGroups: Group[] = [];
+let tempCreatedLayers: Layer[] = [];
 let savePath: string;
 let assetsPath: string;
 let exporting = false;
@@ -50,7 +50,7 @@ export async function exportSpecification() {
     colors = [];
     maskStack = [];
     sliceCache = {};
-    tempDetachedGroups = [];
+    tempCreatedLayers = [];
     let processingPanel = createWebviewPanel({
         url: context.resourcesRoot + "/panel/processing.html",
         width: 304,
@@ -59,7 +59,7 @@ export async function exportSpecification() {
     processingPanel.onClose(() => cancelled = true);
     processingPanel.show();
     let onFinishCleanup = function () {
-        for (let tmp of tempDetachedGroups) {
+        for (let tmp of tempCreatedLayers) {
             if (tmp) tmp.remove();
         }
         exporting = false;
@@ -234,8 +234,7 @@ function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardData, byIn
     if (layerData.type == "symbol") {
         getSymbol(artboard, layer as SymbolInstance, layerData, data, byInfluence);
     }
-    // TODO: get sub text
-    // getText(artboard, layer, layerData, data);
+    getTextFragment(artboard, layer as Text, layerData, data);
     updateMaskStackAfterLayer(layer);
 }
 
@@ -551,7 +550,7 @@ function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: LayerDa
     if (master.exportFormats.length || master.allSubLayers().length < 2) return;
     let tempInstance = layer.duplicate() as SymbolInstance;
     let tempGroup = tempInstance.detach({ recursively: false });
-    tempDetachedGroups.push(tempGroup);
+    tempCreatedLayers.push(tempGroup);
 
     let idx = 0;
     let masterAllLayers = master.allSubLayers();
@@ -614,4 +613,34 @@ function isExportable(layer: Layer) {
         layer.type == sketch.Types.Image ||
         layer.type == sketch.Types.Slice ||
         layer.type == sketch.Types.SymbolInstance
+}
+function getTextFragment(artboard: Artboard, layer: Text, layerData: LayerData, data: ArtboardData) {
+    if (layer.type != sketch.Types.Text) return;
+    let fragments = layer.getFragments();
+    if (fragments.length < 2) return;
+    let maxLineHeight = Math.max(...fragments.map(f => f.style.lineHeight));
+    let textFrame = layer.frame;
+    let offsetFragmentsX = 0;
+    let offsetFragmentsY = 0;
+    for (let fragment of fragments) {
+        let subText = new sketch.Text({ text: fragment.text, parent: layer.parent });
+        tempCreatedLayers.push(subText);
+        subText.style = fragment.style;
+        subText.style.lineHeight = maxLineHeight;
+        subText.frame.x = textFrame.x + offsetFragmentsX;
+        subText.frame.y = textFrame.y + offsetFragmentsY;
+        offsetFragmentsX += subText.frame.width;
+        if (offsetFragmentsX > textFrame.width) {
+            offsetFragmentsX -= textFrame.width;
+            offsetFragmentsY += maxLineHeight;
+        }
+        // TODO: improve for wrapped fragment text
+        getLayerData(
+            artboard,
+            subText,
+            data,
+            false
+        );
+        subText.remove();
+    }
 }
