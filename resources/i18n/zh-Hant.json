@@ -102,7 +102,7 @@
     "Export spec": "匯出規範",
     "Export to:": "匯出到:",
     "Exporting...": "正在匯出...",
-    "Export complete!": "匯出完畢",
+    "Export complete! Takes %s seconds": "匯出完畢! 耗時 %@ 秒",
     "The slice not in current artboard.": "此切圖位於其他畫布裡",
     "Inside Border": "内邊框",
     "Outside Border": "外邊框",
