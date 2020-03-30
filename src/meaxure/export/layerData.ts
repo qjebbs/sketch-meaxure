@@ -29,6 +29,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         layerStates.hasSlice ||
         layerStates.isMeaXure ||
         layerStates.isInShapeGroup) {
+        updateMaskStackAfterLayer(layer);
         return;
     }
 

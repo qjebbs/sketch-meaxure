@@ -16,8 +16,14 @@ import { sketch } from "./sketch";
 function runAndCatch(fn: Function, context, ...args) {
     try {
         updateContext(context);
-        fn(...args);
+        let returns = fn(...args);
+        if (returns instanceof Promise) {
+            returns.catch(error => showError(error))
+        }
     } catch (error) {
+        showError(error);
+    }
+    function showError(error) {
         logger.error(error);
         sketch.UI.message(error);
     }

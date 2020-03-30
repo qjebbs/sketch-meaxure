@@ -35,7 +35,7 @@ export function updateMaskStackAfterLayer(layer: Layer) {
         }
         // if current is the last child layer of the stop group, mask stops
         if (layer.id == lastLayer.id) {
-            logger.debug(`mask ${m.mask.name} stops after layer ${layer.name} of group ${m.stopAfterGroup.name}`);
+            // logger.debug(`mask ${m.mask.name} stops after layer ${layer.name} of group ${m.stopAfterGroup.name}`);
             continue;
         }
         tempStack.push(m);
@@ -49,7 +49,7 @@ export function updateMaskStackBeforeLayer(layer: Layer, artboard: Artboard) {
         let tempStack = [];
         for (let m of maskStack) {
             if (m.stopBeforeLayer && layer.id == m.stopBeforeLayer.id) {
-                logger.debug(`mask ${m.mask.name} stops before layer ${layer.name}`);
+                // logger.debug(`mask ${m.mask.name} stops before layer ${layer.name}`);
                 continue;
             }
             tempStack.push(m);
@@ -70,14 +70,11 @@ export function updateMaskStackBeforeLayer(layer: Layer, artboard: Artboard) {
                 break;
             }
         }
-        if (!breakMaskLayer) {
-            logger.debug(`find mask ${layer.name} stops after group ${layer.parent.name}`);
-        } else {
-            logger.debug(`find mask ${layer.name} stops before layer ${breakMaskLayer.name}`);
-        }
         maskStack.push({
             mask: layer,
             stopBeforeLayer: breakMaskLayer,
+            // we still set the stopAfterGroup, since the breakMaskLayer 
+            // could have chances to be deleted before enumerate to it
             stopAfterGroup: layer.parent,
             rect: layer.frame.changeBasis({
                 from: layer.parent,
@@ -90,7 +87,7 @@ export function applyMasks(layer: Layer, layerData: LayerData) {
     // If no active masks, nothing to do
     if (!maskStack.length) return;
     // we have currentMask applied to current layer
-    logger.debug(`${layer.name} has clip mask of ${maskStack.reduce((p, c) => p += c.mask.name + ',', '')}`)
+    // logger.debug(`${layer.name} has clip mask of ${maskStack.reduce((p, c) => p += c.mask.name + ',', '')}`)
     let layerRect = layerData.rect;
     for (let mask of maskStack) {
         layerRect = getIntersection(mask.rect, layerRect)
