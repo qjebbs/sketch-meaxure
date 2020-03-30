@@ -30,7 +30,7 @@ export function extendText() {
         let results: TextFragment[] = [];
         for (let i = 0; i < fragments.length; i++) {
             let fragment = fragments[i];
-            let styleBase = Object.assign({}, (this as Layer).style);
+            let styleBase = JSON.parse(JSON.stringify((this as Layer).style));
             let fontFamily = fragment.NSFont.family;
             let fontSize = fragment.NSFont.attributes.NSFontSizeAttribute;
             results.push(
