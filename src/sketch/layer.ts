@@ -14,6 +14,7 @@ declare module 'sketch/sketch' {
              * @returns the sibling layer or undefined if offsets to non-existed index
              */
             sibling(offset: number): Layer;
+            exportSVG(): string;
         }
     }
 }
@@ -77,5 +78,10 @@ export function extendLayer() {
         let index = (this as Layer).index + offset;
         if (index > layers.length - 1 || index < 0) return undefined;
         return layers[index];
+    }
+    target.exportSVG = function (): string {
+        let svgExporter = SketchSVGExporter.new().exportLayers([(this as Layer).sketchObject.immutableModelObject()]);
+        let svgStrong = NSString.alloc().initWithData_encoding(svgExporter, 4);
+        return new String(svgStrong).toString();
     }
 }

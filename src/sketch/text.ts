@@ -1,11 +1,12 @@
 import { sketch } from ".";
 import { toJSNumber, toJSString } from "../api/api";
 
-interface TextFragment {
+export interface TextFragment {
     length: number,
     location: number,
     text: string,
     style: Style,
+    defaultLineHeight: number,
 }
 
 declare module 'sketch/sketch' {
@@ -45,9 +46,9 @@ export function extendText() {
                             fontFamily: fontFamily,
                             textStrikethrough: fragment.NSStrikethrough ? 'single' : null,
                             textUnderline: fragment.NSUnderline ? 'single' : null,
-                            lineHeight: getDefaultLineHeightForFont(fontFamily, fontSize),
                         }
-                    )
+                    ),
+                    defaultLineHeight: getDefaultLineHeightForFont(fontFamily, fontSize),
                 }
             );
         }
