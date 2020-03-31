@@ -16,6 +16,6 @@ export function makeNote(layer: Layer, artboard: Artboard): SMNote {
     layer.hidden = true;
     return <SMNote>{
         rect: layer.frame.changeBasis({ from: layer.parent, to: artboard }),
-        note: toHTMLEncode(emojiToEntities(textLayer.text).replace(/\n/g, "<br>")),
+        note: toHTMLEncode(emojiToEntities(textLayer.text)).replace(/\n/g, "<br>"),
     };
 }
