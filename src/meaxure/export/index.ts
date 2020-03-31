@@ -11,6 +11,7 @@ import { ExportData, ArtboardData } from "../../api/interfaces";
 import { getLayerData } from "./layerData";
 import { clearSliceCache, getCollectedSlices } from "./slice";
 import { clearMaskStack } from "./mask";
+import { getDocumentColors } from "./colors";
 
 export let tempCreatedLayers: Layer[] = [];
 export let savePath: string;
@@ -25,12 +26,13 @@ export async function exportSpecification() {
     let results = await exportPanel();
     if (!results) return;
     if (results.selectionArtboards.length <= 0) return false;
+    let document = sketch.Document.fromNative(context.document);
     savePath = sketch.UI.savePanel(
         localize("Export spec"),
         localize("Export to:"),
         localize("Export"),
         true,
-        context.document.displayName().stringByDeletingPathExtension()
+        document.fileName
     );
     if (!savePath) return;
     assetsPath = savePath + "/assets";
@@ -61,7 +63,7 @@ export async function exportSpecification() {
         colorFormat: context.configs.format,
         artboards: [],
         slices: [],
-        colors: []
+        colors: getDocumentColors(document)
     };
 
     let cancelled = false;
