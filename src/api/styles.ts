@@ -1,8 +1,8 @@
-import { BorderData, FillData, SMShadow } from "./interfaces"; 
-import { SMColor } from "./interfaces"; 
+import { BorderData, FillData, SMShadow } from "./interfaces";
+import { SMColor } from "./interfaces";
 import { sketch } from "../sketch";
 
-export function getBordersFromStyle(style: Style) {
+export function getBordersFromStyle(style: Style): BorderData[] {
     let bordersData: BorderData[] = [];
     for (let border of style.borders) {
         if (!border.enabled) continue;
@@ -29,7 +29,7 @@ export function getBordersFromStyle(style: Style) {
     }
     return bordersData;
 }
-export function getFillsFromStyle(style: Style) {
+export function getFillsFromStyle(style: Style): FillData[] {
     let fillsData: FillData[] = [];
     for (let fill of style.fills) {
         if (!fill.enabled) continue;

@@ -32,8 +32,6 @@ export function getRect(layer): SMRect {
         y: Math.round(rect.y()),
         width: Math.round(rect.width()),
         height: Math.round(rect.height()),
-        maxX: Math.round(rect.x() + rect.width()),
-        maxY: Math.round(rect.y() + rect.height()),
         setX: function (x) {
             rect.setX(x);
             this.x = x;

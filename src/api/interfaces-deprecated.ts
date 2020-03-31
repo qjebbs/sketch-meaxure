@@ -5,8 +5,6 @@ export interface SMRect {
     y: number;
     width: number;
     height: number;
-    maxX?: number;
-    maxY?: number;
     setX?: (value: number) => void;
     setY?: (value: number) => void;
     setWidth?: (value: number) => void;

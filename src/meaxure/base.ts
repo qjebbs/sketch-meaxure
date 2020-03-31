@@ -135,11 +135,11 @@ export function setLabel(options) {
                 arrowY = y + textRect.height;
                 break;
             case "right":
-                x = targetRect.maxX + 10;
+                x = targetRect.x + targetRect.width + 10;
                 arrowX = x - 8;
                 break;
             case "bottom":
-                y = targetRect.maxY + 10;
+                y = targetRect.y + targetRect.height + 10;
                 arrowY = y - 8;
                 break;
             case "left":
@@ -154,12 +154,12 @@ export function setLabel(options) {
 
         if (x - 4 < artboardRect.x) {
             x = artboardRect.x + 4;
-        } else if (x + textRect.width + 4 > artboardRect.maxX) {
-            x = artboardRect.maxX - (textRect.width + 4);
+        } else if (x + textRect.width + 4 > targetRect.x + targetRect.width) {
+            x = targetRect.x + targetRect.width - (textRect.width + 4);
         } else if (y - 4 < artboardRect.y) {
             y = artboardRect.y + 4;
-        } else if (y + textRect.height + 4 > artboardRect.maxY) {
-            y = artboardRect.maxY - (textRect.height + 4);
+        } else if (y + textRect.height + 4 > artboardRect.y + artboardRect.height) {
+            y = artboardRect.y + artboardRect.height - (textRect.height + 4);
         }
     }
 
@@ -237,7 +237,7 @@ function setRuler(options) {
                     x = targetRect.x - 4;
                     break;
                 case "right":
-                    x = targetRect.maxX + 3;
+                    x = targetRect.x + targetRect.width + 3;
                     break;
             }
         }
@@ -245,7 +245,7 @@ function setRuler(options) {
         let startX = x - 2,
             startY = y,
             endX = startX,
-            endY = targetRect.maxY - 1;
+            endY = targetRect.y + targetRect.height - 1;
     } else {
         // set sizes
         lineRect.setWidth(targetRect.width);
@@ -265,14 +265,14 @@ function setRuler(options) {
                     y = targetRect.y - 4;
                     break;
                 case "bottom":
-                    y = targetRect.maxY + 3;
+                    y = targetRect.y + targetRect.height + 3;
                     break;
             }
         }
 
         startX = x;
         startY = y - 2;
-        endX = targetRect.maxX - 1;
+        endX = targetRect.x + targetRect.width - 1;
         endY = startY;
     }
 
