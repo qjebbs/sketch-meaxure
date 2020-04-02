@@ -217,7 +217,7 @@ export class WebviewPanel {
     private _dispatchMessage(data: any): void {
         if (data.__SERVER_MESSAGE_ID__ !== undefined) {
             // reply message of server-to-client request
-            logger.debug('A reply of server request recieved.');
+            // logger.debug('A reply of server request recieved.');
             let reply = data as PanelServerMessage<any>;
             let callback = this._replyListeners[reply.__SERVER_MESSAGE_ID__];
             callback(reply.__MESSAGE_SUCCESS__, reply.message);
@@ -229,7 +229,7 @@ export class WebviewPanel {
             let request = data as PanelClientMessage<any>;
             let requestType = request.__MESSAGE_TYPE__;
             if (!requestType) requestType = '';
-            logger.debug('A "' + requestType + '" request from client recieved.');
+            // logger.debug('A "' + requestType + '" request from client recieved.');
             let callback = this._messageListeners[requestType];
             let response: any = undefined;
             let success = true;

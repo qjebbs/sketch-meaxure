@@ -13,53 +13,45 @@ interface RunningConfig {
     placement: string; //property placement
 }
 
-interface markContext {
-    // sketch
+interface Context {
     document: any;
-    prefs: any;
-    // meaxure
-    SMVersion: string;
-    SMLanguage: string;
+    selection: any;
+    scriptPath: string;
+    api(): any;
+}
+
+interface SMContext extends Context {
     resourcesRoot: string;
-    documentData: any;
-    UIMetadata: any;
-    window: any;
     page: any;
-    pages: any;
     artboard: any;
     current: any;
-    selection: any;
     configs: ConfigsMaster;
     runningConfig: RunningConfig;
     languageData: string;
 }
 
-export let context: markContext = undefined;
+export let context: SMContext = undefined;
 
-export function updateContext(ctx?) {
+export function updateContext(ctx?: Context) {
     if (!ctx && !context) throw new Error("Context not initialized");
     let notInitilized = context === undefined;
     // initialized the context
     if (!context && ctx) {
-        logger.debug("initContextRunOnce");
-        context = <markContext>{};
-        initContextRunOnce(ctx)
+        // logger.debug("initContextRunOnce");
+        context = <SMContext>{};
+        initContextRunOnce()
     }
-    logger.debug("Update context");
+    // logger.debug("Update context");
     if (ctx) extend(ctx, context);
     // current document either from ctx or NSDocumentController
     let document = (ctx ? ctx.document : undefined) || NSDocumentController.sharedDocumentController().currentDocument();
     if (notInitilized || document != context.document) {
         // properties updates only when document change
-        logger.debug("Update target document");
+        // logger.debug("Update target document");
         context.document = document
         context.configs = new ConfigsMaster(document);
-        context.documentData = context.document.documentData();
-        context.UIMetadata = context.document.mutableUIMetadata();
-        context.window = context.document.window();
     }
     // properties always need to update
-    context.pages = context.document.pages();
     context.page = context.document.currentPage();
     context.artboard = context.page.currentArtboard();
     context.current = context.artboard || context.page;
@@ -67,11 +59,7 @@ export function updateContext(ctx?) {
     return context;
 }
 
-function initContextRunOnce(ctx) {
-    context.prefs = NSUserDefaults.standardUserDefaults();
-    // context.version = context.plugin.version() + "";
-    context.SMVersion = context.prefs.stringForKey("SMVersion") + "" || "0";
-    context.SMLanguage = context.prefs.stringForKey("SMLanguage") + "" || "0";
+function initContextRunOnce() {
     context.resourcesRoot = path.resourcePath("");
     context.languageData = initLanguage();
     context.runningConfig = <RunningConfig>{};

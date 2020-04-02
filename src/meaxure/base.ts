@@ -4,7 +4,7 @@ import { context } from "../state/context";
 import { SMLayer } from "../api/SMLayer";
 
 export function sharedLayerStyle(name, color, borderColor?) {
-    let sharedStyles = context.documentData.layerStyles();
+    let sharedStyles = context.document.documentData().layerStyles();
     let style = find({
         key: "(name != NULL) && (name == %@)",
         match: name

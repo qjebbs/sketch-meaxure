@@ -65,13 +65,13 @@ export class ConfigsMaster {
     private _read<T>(field: string, defaultValue: T): T {
         if (this._configCache === undefined) {
             this._configCache = JSON.parse(this.store.objectForKey(this._prefix));
-            logger.debug("read config storage:", this._configCache);
+            // logger.debug("read config storage:", this._configCache);
             if (this._configCache === null) this._configCache = {};
         }
         let value = this._configCache[field];
-        logger.debug(`read config: "${field}"=${value}`);
+        // logger.debug(`read config: "${field}"=${value}`);
         if (value === undefined) {
-            logger.debug(`use default ${defaultValue} for "${field}"`);
+            // logger.debug(`use default ${defaultValue} for "${field}"`);
             return defaultValue;
         }
         return value;
@@ -79,7 +79,7 @@ export class ConfigsMaster {
     private _set<T>(field: string, value: T) {
         if (deepEqual(this._configCache[field], value)) return;
         this._configCache[field] = value;
-        logger.debug(`save to storage due to: "${field}"=>${value}`);
+        // logger.debug(`save to storage due to: "${field}"=>${value}`);
         this._saveCacheToStorage();
     }
     private _saveCacheToStorage() {

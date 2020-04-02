@@ -42,9 +42,7 @@ interface ExportConfig {
 }
 
 export function exportPanel(): Promise<ExportConfig> {
-    let timer1 = tik();
     let [data, allArtboards] = prepareExportData();
-    logger.debug(`prepareExportData() takes ${timer1.tok() / 1000} seconds`, data);
     let panel = createWebviewPanel({
         identifier: 'co.jebbs.sketch-meaxure.export',
         url: context.resourcesRoot + "/panel/export.html",
@@ -197,7 +195,7 @@ function calcArtboardsRow(artboardDatas) {
                 topMost = item;
             }
         }
-        logger.debug("top most: " + topMost.name);
+        // logger.debug("top most: " + topMost.name);
         rowTop = topMost.y1;
         rowBottom = topMost.y2;
         // Find intersecting artboards
@@ -243,7 +241,7 @@ function calcArtboardsColumn(artboardDatas) {
                 leftMost = item;
             }
         }
-        logger.debug("left most: " + leftMost.name);
+        // logger.debug("left most: " + leftMost.name);
         colLeft = leftMost.x1;
         colRight = leftMost.x2;
         // Find intersecting artboards
