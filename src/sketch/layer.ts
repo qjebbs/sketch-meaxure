@@ -8,13 +8,6 @@ declare module 'sketch/sketch' {
             hasClippingMask: boolean;
             CSSAttributes: string[];
             allSubLayers(): Layer[];
-            /**
-             * get sibling layer
-             * @param offset offset to this Layer, e.g.: 1 for next layer, -1 for previous
-             * @returns the sibling layer or undefined if offsets to non-existed index
-             */
-            sibling(offset: number): Layer;
-            exportSVG(): string;
         }
     }
 }
@@ -71,17 +64,5 @@ export function extendLayer() {
             }
         }
         return layers;
-    }
-    target.sibling = function (offset: number): Layer {
-        if (offset == 0) return this;
-        let layers = (this as Layer).parent.layers;
-        let index = (this as Layer).index + offset;
-        if (index > layers.length - 1 || index < 0) return undefined;
-        return layers[index];
-    }
-    target.exportSVG = function (): string {
-        let svgExporter = SketchSVGExporter.new().exportLayers([(this as Layer).sketchObject.immutableModelObject()]);
-        let svgStrong = NSString.alloc().initWithData_encoding(svgExporter, 4);
-        return new String(svgStrong).toString();
     }
 }

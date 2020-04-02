@@ -1,7 +1,7 @@
 import { SMExportable, LayerData, SMExportFormat } from "../../api/interfaces";
 import { assetsPath } from ".";
 import { context } from "../../state/context";
-import { exportImage } from "../../api/utilities";
+import { exportImage } from "./files";
 
 let slices = [];
 let sliceCache: { [key: string]: SMExportable[] } = {}

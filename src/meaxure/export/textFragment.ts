@@ -41,7 +41,9 @@ export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardD
     }
 }
 function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragment[][] {
-    let svg = layer.exportSVG();
+    let svg = (
+        sketch.export(layer, { output: undefined, formats: 'svg' }) as Buffer
+    ).toString();
     let lines = getFragmentLinesFromSVG(svg);
     let fragmentsByLines: TextFragment[][] = [];
     let currentFragment: TextFragment = undefined;

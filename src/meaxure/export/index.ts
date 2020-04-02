@@ -5,7 +5,7 @@ import { context } from "../../state/context";
 import { createWebviewPanel } from "../../webviewPanel";
 import { toSlug, emojiToEntities } from "../../api/api";
 import { toHTMLEncode, tik } from "../../api/helper";
-import { writeFile, buildTemplate, exportImage } from "../../api/utilities";
+import { writeFile, buildTemplate, exportImage } from "./files";
 import { logger } from "../../api/logger";
 import { ExportData, ArtboardData } from "../../api/interfaces";
 import { getLayerData } from "./layerData";
