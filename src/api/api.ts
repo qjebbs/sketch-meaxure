@@ -253,7 +253,7 @@ export function getOpacity(style) {
     return style.contextSettings().opacity()
 }
 export function getStyleName(layer) {
-    let styles = (is(layer, MSTextLayer)) ? context.document.documentData().layerTextStyles() : context.document.documentData().layerStyles(),
+    let styles = (is(layer, MSTextLayer)) ? context.sketchObject.document.documentData().layerTextStyles() : context.sketchObject.document.documentData().layerStyles(),
         layerStyle = layer.style(),
         sharedObjectID = layerStyle.objectID(),
         style;

@@ -4,7 +4,7 @@ import { context } from "../state/context";
 import { SMLayer } from "../api/SMLayer";
 
 export function sharedLayerStyle(name, color, borderColor?) {
-    let sharedStyles = context.document.documentData().layerStyles();
+    let sharedStyles = context.sketchObject.document.documentData().layerStyles();
     let style = find({
         key: "(name != NULL) && (name == %@)",
         match: name
@@ -40,7 +40,7 @@ export function sharedLayerStyle(name, color, borderColor?) {
     return style;
 }
 export function sharedTextStyle(name, color, alignment?) {
-    let sharedStyles = context.document.documentData().layerTextStyles(),
+    let sharedStyles = context.sketchObject.document.documentData().layerTextStyles(),
         style = find({
             key: "(name != NULL) && (name == %@)",
             match: name

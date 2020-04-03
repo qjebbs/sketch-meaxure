@@ -13,10 +13,8 @@ export function drawCoordinate() {
         sketch.UI.message(localize("Select any layer to mark!"));
         return false;
     }
-    let layer;
-    let enmu = context.selection.objectEnumerator();
-    while (layer = enmu.nextObject()) {
-        coordinateLayer(new SMLayer(layer));
+    for (let layer of context.selection.layers) {
+        coordinateLayer(new SMLayer(layer.sketchObject));
     }
 }
 function coordinateLayer(layer: SMLayer) {

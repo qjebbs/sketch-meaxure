@@ -6,7 +6,7 @@ import { colors } from "../state/common";
 import { context } from "../state/context";
 import { sketch } from "../sketch";
 export function markOverlays() {
-    let selection = context.selection;
+    let selection = context.sketchObject.selection;
     if (selection.count() <= 0) {
         sketch.UI.message(localize("Select a layer to mark!"));
         return false;

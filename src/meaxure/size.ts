@@ -14,10 +14,8 @@ export function drawSizes(position) {
         sketch.UI.message(localize("Select any layer to mark!"));
         return false;
     }
-    let layer;
-    let enmu = context.selection.objectEnumerator();
-    while (layer = enmu.nextObject()) {
-        drawSize(new SMLayer(layer), position);
+    for (let layer of context.selection.layers) {
+        drawSize(new SMLayer(layer.sketchObject), position);
     }
 }
 

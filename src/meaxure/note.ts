@@ -7,7 +7,7 @@ import { sharedLayerStyle, sharedTextStyle } from "./base";
 import { sketch } from "../sketch";
 
 export function markNote() {
-    let selection = context.selection;
+    let selection =  context.sketchObject.selection;
 
     if (selection.count() <= 0) {
         sketch.UI.message(localize("Select a text layer to mark!"));

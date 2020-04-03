@@ -100,11 +100,11 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
         reverse: false,
     };
 
-    if (context.selection.count() > 0) {
+    if ( context.sketchObject.selection.count() > 0) {
         let selectionArtboards = find({
             key: "(class != NULL) && (class == %@)",
             match: MSArtboardGroup
-        }, context.selection, true);
+        },  context.sketchObject.selection, true);
         if (selectionArtboards.count() > 0) {
             let artboard;
             selectionArtboards = selectionArtboards.objectEnumerator();
@@ -115,7 +115,7 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
     }
     if (context.artboard) data.current.push(toJSString(context.artboard.objectID()));
 
-    for (let page of sketch.Document.fromNative(context.document).pages) {
+    for (let page of context.document.pages) {
         let pageData = <PageInfo>{};
         let artboards = page.layers as Artboard[];
         pageData.name = page.name;

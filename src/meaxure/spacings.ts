@@ -17,10 +17,9 @@ export function drawSpacings(position?: string) {
     }
 
     position = position || "";
-    let layer: SMLayer, layers: SMLayer[] = [];
-    let enmu = context.selection.objectEnumerator();
-    while (layer = enmu.nextObject()) {
-        layers.push(new SMLayer(layer));
+    let layers: SMLayer[] = [];
+    for (let layer of context.selection.layers) {
+        layers.push(new SMLayer(layer.sketchObject));
     }
     distance(layers, position);
 }

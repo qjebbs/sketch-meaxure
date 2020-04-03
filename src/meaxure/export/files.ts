@@ -5,7 +5,7 @@ import { sketch } from "../../sketch";
 import { context } from "../../state/context";
 
 export function exportImage(layer: Layer, format: SMExportFormat, path: string, name: string) {
-    let document = context.document;
+    let document = context.sketchObject.document;
     let slice = MSExportRequest.exportRequestsFromExportableLayer(layer.sketchObject).firstObject();
     let savePathName = [];
 

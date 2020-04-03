@@ -1,40 +1,33 @@
 import { context } from "../state/context";
 import { is, removeLayer } from "../api/api";
 import { regexNames } from "../state/common";
+import { sketch } from "../sketch";
 
 export function clearAllMarks() {
-    let targets = context.selection.length ? context.selection : [context.page];
-    for (let i = 0; i < targets.length; i++) {
-        let current = targets[i];
-        let layer;
-        let layers = current.children().objectEnumerator();
-        while (layer = layers.nextObject()) {
-            if (is(layer, MSLayerGroup) && regexNames.exec(layer.name())) {
-                removeLayer(layer)
+    let targets = context.selection.length ? context.selection.layers : [context.page];
+    for (let target of targets) {
+        for (let layer of target.allSubLayers()) {
+            if (layer.type == sketch.Types.Group && regexNames.exec(layer.name)) {
+                layer.remove();
             }
         }
     }
 }
 
 export function toggleHidden() {
-    let layer;
-    let layers = context.page.children().objectEnumerator();
     let isHidden = !context.configs.isHidden;
-    while (layer = layers.nextObject()) {
-        if (is(layer, MSLayerGroup) && regexNames.exec(layer.name())) {
-            layer.setIsVisible(isHidden);
+    for (let layer of context.page.allSubLayers()) {
+        if (layer.type == sketch.Types.Group && regexNames.exec(layer.name)) {
+            layer.hidden = isHidden;
         }
     }
     context.configs.isHidden = isHidden;
 }
 export function toggleLocked() {
     let isLocked = !context.configs.isLocked;
-    let layers = context.page.children().objectEnumerator();
-
-    let layer;
-    while (layer = layers.nextObject()) {
-        if (is(layer, MSLayerGroup) && regexNames.exec(layer.name())) {
-            layer.setIsLocked(isLocked);
+    for (let layer of context.page.allSubLayers()) {
+        if (layer.type == sketch.Types.Group && regexNames.exec(layer.name)) {
+            layer.locked = isLocked;
         }
     }
     context.configs.isLocked = isLocked;

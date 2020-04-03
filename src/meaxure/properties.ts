@@ -9,7 +9,7 @@ import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
 import { sketch } from "../sketch";
 
 export async function markProperties() {
-    let selection = context.selection;
+    let selection = context.sketchObject.selection;
     if (selection.count() <= 0) {
         sketch.UI.message(localize("Select a layer to mark!"));
         return false;
@@ -28,7 +28,7 @@ export async function markProperties() {
 }
 
 export function liteProperties() {
-    let selection = context.selection;
+    let selection = context.sketchObject.selection;
 
     if (selection.count() <= 0) {
         sketch.UI.message(localize("Select a layer to mark!"));
