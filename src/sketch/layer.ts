@@ -1,4 +1,5 @@
 import { sketch } from ".";
+import { alignLayers } from "./alignment";
 
 declare module 'sketch/sketch' {
     namespace _Sketch {
@@ -8,6 +9,7 @@ declare module 'sketch/sketch' {
             hasClippingMask: boolean;
             CSSAttributes: string[];
             allSubLayers(): Layer[];
+            alignTo(layer: Layer, horizontal?: { from: Alignment, to: Alignment }, vertical?: { from: VerticalAlignment, to: VerticalAlignment }): void;
         }
     }
 }
@@ -65,4 +67,11 @@ export function extendLayer() {
         }
         return layers;
     }
+    target.alignTo = function (
+        layer: Layer,
+        horizontal?: { from: Alignment, to: Alignment },
+        vertical?: { from: VerticalAlignment, to: VerticalAlignment }
+    ) {
+        alignLayers(this, layer, horizontal, vertical);
+    };
 }

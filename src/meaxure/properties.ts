@@ -169,60 +169,66 @@ function setLabel(options: { target: Layer, text: string, textStyle?: SharedStyl
     box.frame.height = textRect.height + 8;
     arrow.transform.rotation = 45;
 
-    let targetRect = target.frame.changeBasis({ from: target.parent, to: artboard });
-    let boxRect = box.frame.changeBasis({ from: box.parent, to: artboard });
-    let arrowRect = arrow.frame.changeBasis({ from: arrow.parent, to: artboard });
+    text.alignTo(
+        box,
+        { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+        { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+    )
 
-    let x: number;
-    let y: number;
-    let arrOffsetX: number;
-    let arrOffsetY: number;
-    let halfArrow = Math.floor(arrowRect.height / 2);
     switch (placement) {
         case "top":
-            // move box to top, with margin 8
-            x = targetRect.x + Math.floor(targetRect.width / 2) - Math.floor(boxRect.width / 2);
-            y = targetRect.y - boxRect.height - 8;
-            arrOffsetX = Math.floor(boxRect.width / 2) - Math.floor(arrowRect.width / 2);
-            arrOffsetY = boxRect.height - halfArrow;
+            arrow.alignTo(
+                box,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.bottom },
+            )
+            container.adjustToFit();
+            container.alignTo(
+                target,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.bottom, to: sketch.Text.VerticalAlignment.top }
+            )
             break;
         case "right":
-            // move box to right, with margin 8
-            x = targetRect.x + targetRect.width + 8;
-            y = targetRect.y + Math.floor(targetRect.height / 2) - Math.floor(boxRect.height / 2);
-            arrOffsetX = - halfArrow;
-            arrOffsetY = Math.floor(boxRect.height / 2) - Math.floor(arrowRect.height / 2);
+            arrow.alignTo(
+                box,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.left },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+            )
+            container.adjustToFit();
+            container.alignTo(
+                target,
+                { from: sketch.Text.Alignment.left, to: sketch.Text.Alignment.right },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center }
+            )
             break;
         case "bottom":
-            // move box to bottom, with margin 8
-            x = targetRect.x + Math.floor(targetRect.width / 2) - Math.floor(boxRect.width / 2);
-            y = targetRect.y + targetRect.height + 8;
-            arrOffsetX = Math.floor(boxRect.width / 2) - Math.floor(arrowRect.width / 2);
-            arrOffsetY = -halfArrow;
+            arrow.alignTo(
+                box,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.top },
+            )
+            container.adjustToFit();
+            container.alignTo(
+                target,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.top, to: sketch.Text.VerticalAlignment.bottom }
+            )
             break;
         case "left":
-            // move box to left, with margin 8
-            x = targetRect.x - boxRect.width - 8;
-            y = targetRect.y + Math.floor(targetRect.height / 2) - Math.floor(boxRect.height / 2);
-            arrOffsetX = boxRect.width - halfArrow;
-            arrOffsetY = Math.floor(boxRect.height / 2) - Math.floor(arrowRect.height / 2);
+            arrow.alignTo(
+                box,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.right },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+            )
+            container.adjustToFit();
+            container.alignTo(
+                target,
+                { from: sketch.Text.Alignment.right, to: sketch.Text.Alignment.left },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center }
+            )
             break;
     }
-    // move box to position
-    box.frame.x = x;
-    box.frame.y = y;
-    // move text to position
-    text.frame.x = box.frame.x + 4;
-    text.frame.y = box.frame.y + 4;
-    // move arrow to position
-    arrow.frame.x = box.frame.x + arrOffsetX;
-    arrow.frame.y = box.frame.y + arrOffsetY;
-    container.adjustToFit();
-
-    return {
-        element: box,
-        rect: boxRect
-    };
 }
 
 function fillTypeContent(fillJSON: FillData) {
