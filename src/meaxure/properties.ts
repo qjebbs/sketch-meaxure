@@ -1,24 +1,21 @@
 import { localize } from "../state/language";
-import { getDistance, convertUnit, extend, find, mathHalf } from "../api/helper";
+import { convertUnit } from "../api/helper";
 import { propertiesPanel } from "../panels/propertiesPanel";
 import { context } from "../state/context";
-import { getRect, is, colorToJSON, getFills, getBorders, getRadius, getStyleName, removeLayer, addGroup, shadowToJSON } from "../api/api";
-import { SMColor } from "../api/interfaces";
-import { colorNames, colors } from "../state/common";
-import { sharedLayerStyle, sharedTextStyle, setLabel } from "./base";
+import { colors } from "../state/common";
 import { sketch } from "../sketch";
+import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "../api/styles";
+import { FillData, SMShadow } from "../api/interfaces";
 
 export async function markProperties() {
-    let selection = context.sketchObject.selection;
-    if (selection.count() <= 0) {
+    let selection = context.selection;
+    if (selection.length <= 0) {
         sketch.UI.message(localize("Select a layer to mark!"));
         return false;
     }
-    let target = selection[0];
     if (!(await propertiesPanel()))
         return false;
-    for (let i = 0; i < selection.count(); i++) {
-        let target = selection[i];
+    for (let target of selection.layers) {
         properties({
             target: target,
             placement: context.runningConfig.placement,
@@ -28,254 +25,224 @@ export async function markProperties() {
 }
 
 export function liteProperties() {
-    let selection = context.sketchObject.selection;
+    let selection = context.selection.layers;
 
-    if (selection.count() <= 0) {
+    if (selection.length <= 0) {
         sketch.UI.message(localize("Select a layer to mark!"));
         return false;
     }
 
-    let target = selection[0];
-
-    if (/#properties-/.exec(target.parentGroup().name())) {
-        resizeProperties(target.parentGroup());
-    } else {
-        for (let i = 0; i < selection.count(); i++) {
-            let target = selection[i],
-                targetRect = getRect(target),
-                distance = getDistance(targetRect),
-                placement = {};
-
-            placement[distance.right] = "right";
-            placement[distance.bottom] = "bottom";
-            placement[distance.left] = "left";
-            placement[distance.top] = "top";
-
-            properties({
-                target: target,
-                placement: placement[Math.max(distance.top, distance.right, distance.bottom, distance.left)],
-                properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "font-face", "character", "line-height", "paragrapht"]
-            });
-        }
+    for (let target of selection) {
+        properties({
+            target: target,
+            placement: "right",
+            properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "font-face", "character", "line-height", "paragraph", "style-name"]
+        });
     }
 }
 
-function properties(options) {
-    options = extend(options, {
+function properties(options: { target: Layer, placement: string, properties?: string[], content?: string }) {
+    options = Object.assign({
         placement: "top",
-        properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph"]
-    });
-    let properties = options.properties,
-        placement = options.placement,
-        styles = {
-            layer: sharedLayerStyle("Sketch Measure / Property", colors.property.shape),
-            text: sharedTextStyle("Sketch Measure / Property", colors.property.text)
-        },
-        target = options.target,
-        targetStyle = target.style(),
-        content = [];
+        properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph", "style-name"]
+    }, options);
+    let placement = options.placement;
+    let target = options.target;
 
-    properties.forEach(function (property) {
+    let name = "#properties-" + target.id;
+    let root = context.current;
+    sketch.find<Group>(
+        `Group, [name="${name}"]`,
+        root
+    ).forEach(g => g.remove());
+
+    let container = new sketch.Group({ name: name, parent: root });
+    setLabel({
+        container: container,
+        target: target,
+        textStyle: sharedTextStyle(context.document, "Sketch MeaXure / Property", colors.property.text),
+        layerStyle: sharedLayerStyle(context.document, "Sketch MeaXure / Property", colors.property.shape),
+        text: options.content || getProperties(target, options.properties),
+        placement: placement
+    });
+    // container.fixGeometryWithOptions(0);
+}
+
+function getProperties(target: Layer, properties: string[]): string {
+    let targetStyle = target.style;
+    let elements = properties.map((property) => {
         switch (property) {
             case "color":
-                let fill, color: SMColor;
-                if (is(target, MSTextLayer)) {
-                    let color = colorToJSON(target.textColor()),
-                        colorID = color["argb-hex"];
-                    color = (colorNames && colorNames[colorID]) ? colorNames[colorID] : color[context.configs.format];
-                    content.push("color: " + color);
-                } else if (is(target, MSShapeGroup)) {
-                    let fillsJSON = getFills(targetStyle);
-                    if (fillsJSON.length <= 0) return false;
+                if (target.type == sketch.Types.Text) {
+                    let color = parseColor(targetStyle.textColor);
+                    return "color: " + color[context.configs.format];
+                } else {
+                    let fillsJSON = getFillsFromStyle(targetStyle);
+                    if (fillsJSON.length <= 0) return undefined;
                     let fillJSON = fillsJSON.pop();
-                    content.push("fill: " + fillTypeContent(fillJSON))
+                    return "fill: " + fillTypeContent(fillJSON);
                 }
-
-                break;
             case "border":
-                let bordersJSON = getBorders(targetStyle);
-                if (bordersJSON.length <= 0) return false;
+                let bordersJSON = getBordersFromStyle(targetStyle);
+                if (bordersJSON.length <= 0) return undefined;
                 let borderJSON = bordersJSON.pop();
-                content.push("border: " + convertUnit(borderJSON.thickness) + " " + borderJSON.position + "\r\n * " + fillTypeContent(borderJSON));
-                break;
+                return "border: " + convertUnit(borderJSON.thickness) + " " + borderJSON.position + "\r\n * " + fillTypeContent(borderJSON);
             case "opacity":
-                content.push("opacity: " + Math.round(targetStyle.contextSettings().opacity() * 100) + "%");
-                break;
+                return "opacity: " + Math.round(targetStyle.opacity * 100) + "%";
             case "radius":
-                if ((is(target, MSShapeGroup) && is(target.layers().firstObject(), MSRectangleShape)) || is(target, MSRectangleShape)) {
-                    content.push("radius: " + convertUnit(getRadius(target)));
+                if (
+                    target.type == sketch.Types.ShapePath ||
+                    (target.type == sketch.Types.Group && target.layers[0].type == sketch.Types.ShapePath)
+                ) {
+                    return "radius: " + convertUnit(getLayerRadius(target));
                 }
-                break;
             case "shadow":
-                if (targetStyle.firstEnabledShadow()) {
-                    content.push("shadow: outer\r\n" + shadowContent(targetStyle.firstEnabledShadow()));
+                let results = [];
+                let shadows = getShadowsFromStyle(targetStyle);
+                let innerShadow = shadows.filter(s => s.type == 'inner')[0];
+                let outerShadow = shadows.filter(s => s.type == 'outer')[0];
+                if (outerShadow) {
+                    results.push("shadow: outer\r\n" + shadowContent(outerShadow));
                 }
-                if (targetStyle.enabledInnerShadows().firstObject()) {
-                    content.push("shadow: inner\r\n" + shadowContent(targetStyle.enabledInnerShadows().firstObject()));
+                if (innerShadow) {
+                    results.push("shadow: inner\r\n" + shadowContent(innerShadow));
                 }
-                break;
+                return results.join('\n');
             case "font-size":
-                if (!is(target, MSTextLayer)) return false;
-                content.push("font-size: " + convertUnit(target.fontSize(), true));
-                break;
+                if (target.type != sketch.Types.Text) return undefined;
+                return "font-size: " + convertUnit(targetStyle.fontSize, true);
             case "line-height":
-                if (!is(target, MSTextLayer)) return false;
-                let defaultLineHeight = target.font().defaultLineHeightForFont(),
-                    lineHeight = target.lineHeight() || defaultLineHeight;
-                content.push("line: " + convertUnit(lineHeight, true) + " (" + Math.round(lineHeight / target.fontSize() * 10) / 10 + ")");
-                break;
+                if (target.type != sketch.Types.Text) return undefined;
+                let lineHeight = targetStyle.lineHeight;
+                if (!lineHeight) return undefined;
+                return "line: " + convertUnit(lineHeight, true) + " (" + Math.round(lineHeight / targetStyle.fontSize * 10) / 10 + ")";
             case "font-face":
-                if (!is(target, MSTextLayer)) return false;
-                content.push("font-face: " + target.fontPostscriptName());
-                break;
+                if (target.type != sketch.Types.Text) return undefined;
+                return "font-face: " + targetStyle.fontFamily;
             case "character":
-                if (!is(target, MSTextLayer)) return false;
-                content.push("character: " + convertUnit(target.characterSpacing(), true));
-                break;
+                if (target.type != sketch.Types.Text) return undefined;
+                return "character: " + convertUnit(targetStyle.kerning, true);
             case "paragraph":
-                if (!is(target, MSTextLayer)) return false;
-                content.push("paragraph: " + convertUnit(target.paragraphStyle().paragraphSpacing(), true));
-                break;
+                if (target.type != sketch.Types.Text) return undefined;
+                return "paragraph: " + convertUnit(targetStyle.paragraphSpacing, true);
             case "style-name":
-                let styleName = getStyleName(target);
-                if (styleName) {
-                    content.push("style-name: " + styleName);
-                }
+                let sharedStyle = (target as Group).sharedStyle;
+                if (sharedStyle) return "style-name: " + sharedStyle.name;
                 break;
             case "layer-name":
-                content.push("layer-name: " + target.name());
-                break;
+                return "layer-name: " + target.name;
             default:
                 break;
         }
     });
-
-    let objectID = target.objectID(),
-        name = "#properties-" + objectID,
-        container = find({
-            key: "(name != NULL) && (name == %@)",
-            match: name
-        });
-
-    if (container) removeLayer(container);
-    container = addGroup();
-    context.current.addLayers([container]);
-    container.setName(name);
-
-    let label = setLabel({
-        container: container,
-        target: target,
-        styles: styles,
-        text: content.join("\r\n"),
-        placement: placement
-    });
-    context.runningConfig.placement = placement;
-    container.fixGeometryWithOptions(0);
+    return elements.filter(e => !!e).join('\n');
 }
 
-function resizeProperties(container) {
-    let placement = context.runningConfig.placement,
-        text = find({
-            key: "(class != NULL) && (class == %@)",
-            match: MSTextLayer
-        }, container),
-        label = find({
-            key: "(name != NULL) && (name == %@)",
-            match: "label-box"
-        }, container),
-        textRect = getRect(text),
-        labelRect = getRect(label),
-        oldWidth = labelRect.width,
-        oldHeight = labelRect.height,
-        newWidth = textRect.width + 8,
-        newHeight = textRect.height + 8,
-        dWidth = newWidth - oldWidth,
-        dHeight = newHeight - oldHeight,
-        dHalfWidth = mathHalf(dWidth),
-        dHalfHeight = mathHalf(dHeight),
-        lx = labelRect.x,
-        ly = labelRect.y,
-        lw = labelRect.width,
-        lh = labelRect.height,
-        tx = textRect.x,
-        ty = textRect.y,
-        tw = textRect.width,
-        th = textRect.height;
+function setLabel(options: { target: Layer, text: string, textStyle?: SharedStyle, layerStyle?: SharedStyle, placement?: string, container?: Group, }) {
+    options = Object.assign({
+        text: "Label",
+        container: context.current,
+    }, options);
+    if (!options.target) return;
+    let container = options.container;
+    let target = options.target;
+    let placement = options.placement || 'right';
 
-    if (!dWidth && !dHeight) return false;
+    let arrow = new sketch.ShapePath({ name: 'label-arrow', parent: container });
+    let box = new sketch.ShapePath({ name: 'label-box', parent: container });
+    let text = new sketch.Text({ name: 'label-text', text: options.text, parent: container });
+    arrow.sharedStyle = options.layerStyle;
+    box.sharedStyle = options.layerStyle;
+    text.sharedStyle = options.textStyle;
+    arrow.style = options.layerStyle.style;
+    box.style = options.layerStyle.style;
+    text.style = options.textStyle.style;
+    // set radius
+    box.points.forEach(p => p.cornerRadius = 2);
 
+    // update frame parameters except postion
+    let artboard = target.getParentArtboard();
+    let textRect = text.frame.changeBasis({ from: text, to: box });
+    arrow.frame.width = 6;
+    arrow.frame.height = 6;
+    box.frame.width = textRect.width + 8;
+    box.frame.height = textRect.height + 8;
+    arrow.transform.rotation = 45;
+
+    let targetRect = target.frame.changeBasis({ from: target.parent, to: artboard });
+    let boxRect = box.frame.changeBasis({ from: box.parent, to: artboard });
+    let arrowRect = arrow.frame.changeBasis({ from: arrow.parent, to: artboard });
+
+    let x: number;
+    let y: number;
+    let arrOffsetX: number;
+    let arrOffsetY: number;
+    let halfArrow = Math.floor(arrowRect.height / 2);
     switch (placement) {
         case "top":
-            lx = lx - dHalfWidth;
-            ly = ly - dHeight;
-            lw = lw + dWidth;
-            lh = lh + dHeight;
-            tx = tx - dHalfWidth;
-            ty = ty - dHeight;
+            // move box to top, with margin 8
+            x = targetRect.x + Math.floor(targetRect.width / 2) - Math.floor(boxRect.width / 2);
+            y = targetRect.y - boxRect.height - 8;
+            arrOffsetX = Math.floor(boxRect.width / 2) - Math.floor(arrowRect.width / 2);
+            arrOffsetY = boxRect.height - halfArrow;
             break;
         case "right":
-            ly = ly - dHalfHeight;
-            lw = lw + dWidth;
-            lh = lh + dHeight;
-            ty = ty - dHalfHeight;
+            // move box to right, with margin 8
+            x = targetRect.x + targetRect.width + 8;
+            y = targetRect.y + Math.floor(targetRect.height / 2) - Math.floor(boxRect.height / 2);
+            arrOffsetX = - halfArrow;
+            arrOffsetY = Math.floor(boxRect.height / 2) - Math.floor(arrowRect.height / 2);
             break;
         case "bottom":
-            lx = lx - dHalfWidth;
-            lw = lw + dWidth;
-            lh = lh + dHeight;
-            tx = tx - dHalfWidth;
+            // move box to bottom, with margin 8
+            x = targetRect.x + Math.floor(targetRect.width / 2) - Math.floor(boxRect.width / 2);
+            y = targetRect.y + targetRect.height + 8;
+            arrOffsetX = Math.floor(boxRect.width / 2) - Math.floor(arrowRect.width / 2);
+            arrOffsetY = -halfArrow;
             break;
         case "left":
-            lx = lx - dWidth;
-            ly = ly - dHalfHeight;
-            lw = lw + dWidth;
-            lh = lh + dHeight;
-            tx = tx - dWidth;
-            ty = ty - dHalfHeight;
+            // move box to left, with margin 8
+            x = targetRect.x - boxRect.width - 8;
+            y = targetRect.y + Math.floor(targetRect.height / 2) - Math.floor(boxRect.height / 2);
+            arrOffsetX = boxRect.width - halfArrow;
+            arrOffsetY = Math.floor(boxRect.height / 2) - Math.floor(arrowRect.height / 2);
             break;
     }
+    // move box to position
+    box.frame.x = x;
+    box.frame.y = y;
+    // move text to position
+    text.frame.x = box.frame.x + 4;
+    text.frame.y = box.frame.y + 4;
+    // move arrow to position
+    arrow.frame.x = box.frame.x + arrOffsetX;
+    arrow.frame.y = box.frame.y + arrOffsetY;
+    container.adjustToFit();
 
-    labelRect.setX(lx);
-    labelRect.setY(ly);
-    labelRect.setWidth(lw);
-    labelRect.setHeight(lh);
-
-    textRect.setX(tx);
-    textRect.setY(ty);
-
-    text.setTextBehaviour(1);
-    text.setTextBehaviour(0);
-
-    container.fixGeometryWithOptions(0);
+    return {
+        element: box,
+        rect: boxRect
+    };
 }
 
-function fillTypeContent(fillJSON) {
-    if (fillJSON.fillType == "color") {
-        let colorID = fillJSON.color["argb-hex"];
-        return (colorNames && colorNames[colorID]) ? colorNames[colorID] : fillJSON.color[context.configs.format];
+function fillTypeContent(fillJSON: FillData) {
+    if (fillJSON.fillType == "Color") {
+        return fillJSON.color[context.configs.format];
     }
 
-    if (fillJSON.fillType == "gradient") {
+    if (fillJSON.fillType == "Gradient") {
         let fc = [];
-        fc.push(fillJSON.gradient.type)
-        fillJSON.gradient.colorStops.forEach(function (gradient) {
-            let colorID = gradient.color["argb-hex"],
-                color = (colorNames && colorNames[colorID]) ? colorNames[colorID] : gradient.color[context.configs.format];
-            fc.push(" * " + color);
+        fc.push(fillJSON.gradient.gradientType)
+        fillJSON.gradient.stops.forEach(function (stop) {
+            fc.push(" * " + stop.color);
         });
         return fc.join("\r\n");
     }
 }
-
-function shadowContent(shadow) {
-    let shadowJSON = shadowToJSON(shadow),
-        sc = [];
-    // FIXME: unknown code
-    // if (shadowJSON <= 0) return false;
-
-    sc.push(" * x, y - " + convertUnit(shadowJSON.offsetX) + ", " + convertUnit(shadowJSON.offsetY));
-    if (shadowJSON.blurRadius) sc.push(" * blur - " + convertUnit(shadowJSON.blurRadius));
-    if (shadowJSON.spread) sc.push(" * spread - " + convertUnit(shadowJSON.spread));
+function shadowContent(shadow: SMShadow) {
+    let sc = [];
+    sc.push(" * x, y - " + convertUnit(shadow.offsetX) + ", " + convertUnit(shadow.offsetY));
+    if (shadow.blurRadius) sc.push(" * blur - " + convertUnit(shadow.blurRadius));
+    if (shadow.spread) sc.push(" * spread - " + convertUnit(shadow.spread));
     return sc.join("\r\n")
 }
-

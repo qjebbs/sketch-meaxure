@@ -27,8 +27,8 @@ interface SMContext {
     selection: Selection;
     resourcesRoot: string;
     page: Page;
-    artboard: any;
-    current: any;
+    artboard: Artboard;
+    current: Artboard | Page;
     configs: ConfigsMaster;
     runningConfig: RunningConfig;
     languageData: string;
@@ -60,7 +60,7 @@ export function updateContext(ctx?: Context) {
     if (document) {
         // properties always need to update
         context.page = context.document.selectedPage;
-        context.artboard = context.page.sketchObject.currentArtboard();
+        context.artboard = sketch.Artboard.fromNative(context.page.sketchObject.currentArtboard());
         context.current = context.artboard || context.page;
         context.selection = context.document.selectedLayers;
     }

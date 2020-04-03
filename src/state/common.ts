@@ -9,32 +9,10 @@ export const BorderPositions = ["center", "inside", "outside"],
     regexNames = /(?:#(?:width|height|spacing)-(?:left|right|center|top|bottom|middle|horizontal|vertical)-)|(?:#(?:coordinate|overlay|properties|note)-)/, //|(?:OVERLAY|WIDTH|HEIGHT|TOP|RIGHT|BOTTOM|LEFT|VERTICAL|HORIZONTAL|NOTE|PROPERTY|LITE)#
 
     colors = {
-        coordinate: {
-            shape: { r: .29, g: .56, b: .89, a: 1 },
-            text: { r: 1, g: 1, b: 1, a: 1 }
-        },
-        overlay: {
-            shape: { r: 1, g: .333333, b: 0, a: .3 },
-            text: { r: 1, g: 1, b: 1, a: 1 }
-        },
-        size: {
-            shape: { r: 1, g: .333333, b: 0, a: 1 },
-            text: { r: 1, g: 1, b: 1, a: 1 }
-        },
-        spacing: {
-            shape: { r: .313725, g: .890196, b: .760784, a: 1 },
-            text: { r: 1, g: 1, b: 1, a: 1 }
-        },
-        property: {
-            shape: { r: .960784, g: .65098, b: .137255, a: 1 },
-            text: { r: 1, g: 1, b: 1, a: 1 }
-        },
-        lite: {
-            shape: { r: .564706, g: .07451, b: .996078, a: 1 },
-            text: { r: 1, g: 1, b: 1, a: 1 }
-        },
-        note: {
-            shape: { r: 1, g: .988235, b: .862745, a: 1 }, border: { r: .8, g: .8, b: .8, a: 1 },
-            text: { r: .333333, g: .333333, b: .333333, a: 1 }
-        }
+        coordinate: { shape: '#4A8FE3FF', text: '#FFFFFFFF' },
+        overlay: { shape: '#FF55004C', text: '#FFFFFFFF' },
+        size: { shape: '#FF5500FF', text: '#FFFFFFFF' },
+        spacing: { shape: '#50E3C2FF', text: '#FFFFFFFF' },
+        property: { shape: '#F5A623FF', text: '#FFFFFFFF' },
+        note: { shape: '#FFFCDCFF', border: '#CCCCCCFF', text: '#555555FF' }
     }
