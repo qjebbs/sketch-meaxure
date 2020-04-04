@@ -1,9 +1,8 @@
 import { initLanguage } from "./language";
 import * as path from '@skpm/path';
-import { extend } from "../api/helper";
 import { ConfigsMaster } from "../api/config";
-import { logger } from "../api/logger";
 import { sketch } from "../sketch";
+import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 
 interface RunningConfig {
     order: string;
@@ -11,7 +10,7 @@ interface RunningConfig {
     exportOption: boolean;
     colors: any;
     sizes: any;
-    placement: Alignment | VerticalAlignment; //property placement
+    placement: LayerAlignment | LayerVerticalAlignment; //property placement
 }
 
 interface Context {

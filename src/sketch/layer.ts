@@ -1,5 +1,6 @@
 import { sketch } from ".";
 import { alignLayers, alignLayersByPosition } from "./alignment";
+import { LayerAlignment, LayerVerticalAlignment } from "./alignment";
 
 declare module 'sketch/sketch' {
     namespace _Sketch {
@@ -9,8 +10,12 @@ declare module 'sketch/sketch' {
             hasClippingMask: boolean;
             CSSAttributes: string[];
             allSubLayers(): Layer[];
-            alignTo(layer: Layer, horizontal?: { from: Alignment, to: Alignment }, vertical?: { from: VerticalAlignment, to: VerticalAlignment }): void;
-            alignToByPostion(layer: Layer, position: Alignment | VerticalAlignment): void;
+            alignTo(
+                layer: Layer,
+                horizontal?: { from: LayerAlignment, to: LayerAlignment } | boolean,
+                vertical?: { from: LayerVerticalAlignment, to: LayerVerticalAlignment } | boolean
+            ): void;
+            alignToByPostion(layer: Layer, position: LayerAlignment | LayerVerticalAlignment): void;
         }
     }
 }
@@ -20,7 +25,13 @@ export function extendLayer() {
     Object.defineProperty(target, "frameInfluence", {
         get: function () {
             // TODO: frameInfluence should base on its parent
-            let artboardRect = (this as Layer).getParentArtboard().sketchObject.absoluteRect().rect();
+            let root: Artboard | Page;
+            if ((this as Layer).type == sketch.Types.Artboard || (this as Layer).type == sketch.Types.Page) {
+                root = this;
+            } else {
+                root = (this as Layer).getParentArtboard() || (this as Layer).getParentPage();
+            }
+            let artboardRect = root.sketchObject.absoluteRect().rect();
             let influenceCGRect = this.sketchObject.absoluteInfluenceRect();
             return new sketch.Rectangle(
                 influenceCGRect.origin.x - artboardRect.origin.x,
@@ -70,12 +81,12 @@ export function extendLayer() {
     }
     target.alignTo = function (
         layer: Layer,
-        horizontal?: { from: Alignment, to: Alignment },
-        vertical?: { from: VerticalAlignment, to: VerticalAlignment }
+        horizontal?: { from: LayerAlignment, to: LayerAlignment } | boolean,
+        vertical?: { from: LayerVerticalAlignment, to: LayerVerticalAlignment } | boolean
     ) {
         alignLayers(this, layer, horizontal, vertical);
     };
-    target.alignToByPostion = function (layer: Layer, position: Alignment | VerticalAlignment) {
+    target.alignToByPostion = function (layer: Layer, position: LayerAlignment | LayerVerticalAlignment) {
         alignLayersByPosition(this, layer, position);
     };
 }

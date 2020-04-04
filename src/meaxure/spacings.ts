@@ -1,14 +1,13 @@
 import { context } from "../state/context";
-import { isIntersect, find, isIntersectX, isIntersectY } from "../api/helper";
-import { sharedLayerStyle, sharedTextStyle } from "./base";
+import { isIntersect, isIntersectX, isIntersectY } from "../api/helper";
 import { colors } from "../state/common";
 import { SMRect } from "../api/interfaces-deprecated";
 import { drawSize } from "./size";
-import { SMLayer } from "../api/SMLayer";
 import { logger } from "../api/logger";
-import { removeLayer } from "../api/api";
 import { localize } from "../state/language";
 import { sketch } from "../sketch";
+import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { sharedLayerStyle, sharedTextStyle } from "../api/styles";
 
 export function drawSpacings(position?: string) {
     if (context.selection.length != 1 && context.selection.length != 2) {
@@ -17,26 +16,31 @@ export function drawSpacings(position?: string) {
     }
 
     position = position || "";
-    let layers: SMLayer[] = [];
+    let layers: Layer[] = [];
     for (let layer of context.selection.layers) {
-        layers.push(new SMLayer(layer.sketchObject));
+        layers.push(layer);
     }
     distance(layers, position);
 }
 
-function distance(layers: SMLayer[], position: string) {
+function distance(layers: Layer[], position: string) {
     let layerA = layers[0];
-    let layerB = layers.length == 1 ? layerA.current : layers[1];
-    if (layerB.isPage) {
+    let artboard = layerA.getParentArtboard();
+    let layerB = layers.length == 1 ? artboard : layers[1];
+    if (!layerB) {
         sketch.UI.message('Layer not in artboard, skipping...');
         return;
     }
 
-    let artboard = layerA.current;
-    let fromID = new String(layerA.ID).toString();
-    let toID = new String(layerB.ID).toString();
-    let from = context.configs.byInfluence ? layerA.influenceRect : layerA.rect;
-    let to = context.configs.byInfluence ? layerB.influenceRect : layerB.rect;
+    let root = artboard || layerA.getParentPage();
+    let fromID = layerA.id;
+    let toID = layerA.id;
+    let from = context.configs.byInfluence ?
+        layerA.frameInfluence :
+        layerA.frame.changeBasis({ from: layerA.parent, to: artboard });
+    let to = context.configs.byInfluence ?
+        layerB.frameInfluence :
+        layerB.frame.changeBasis({ from: layerB.parent, to: artboard });
 
     switch (position) {
         case "":
@@ -68,18 +72,16 @@ function distance(layers: SMLayer[], position: string) {
     }
 }
 
-function drawHorizontal(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+function drawHorizontal(root: Group, layerName: string, from: SMRect, to: SMRect) {
     let tmp = <SMRect>{};
     if (isIntersectX(from, to)) {
         logger.debug('No horizontal space for selected layers, skipping...');
         return;
     }
-
-    let container = find({
-        key: "(name != NULL) && (name == %@)",
-        match: layerName
-    });
-    if (container) removeLayer(container);
+    sketch.find<Group>(
+        `Group, [name="${layerName}"]`,
+        root
+    ).forEach(g => g.remove());
 
     // make sure from left shape to right
     if (from.x > to.x) [from, to] = swap(from, to);
@@ -87,21 +89,19 @@ function drawHorizontal(artboard: SMLayer, layerName: string, from: SMRect, to: 
     tmp.y = from.y;
     tmp.width = to.x - tmp.x;
     tmp.height = from.height;
-    drawSpacingShape(artboard, tmp, "middle", layerName);
+    drawSpacingShape(root, tmp, LayerVerticalAlignment.middle, layerName);
 }
 
-function drawVertical(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+function drawVertical(root: Group, layerName: string, from: SMRect, to: SMRect) {
     let tmp = <SMRect>{};
     if (isIntersectY(from, to)) {
         logger.debug('No vertical space for selected layers, skipping...');
         return;
     }
-
-    let container = find({
-        key: "(name != NULL) && (name == %@)",
-        match: layerName
-    });
-    if (container) removeLayer(container);
+    sketch.find<Group>(
+        `Group, [name="${layerName}"]`,
+        root
+    ).forEach(g => g.remove());
 
     // make sure from higher shape to lower
     if (from.y > to.y) [from, to] = swap(from, to);
@@ -109,21 +109,19 @@ function drawVertical(artboard: SMLayer, layerName: string, from: SMRect, to: SM
     tmp.y = from.y + from.height;
     tmp.width = from.width;
     tmp.height = to.y - tmp.y;
-    drawSpacingShape(artboard, tmp, "center", layerName);
+    drawSpacingShape(root, tmp, LayerAlignment.center, layerName);
 }
 
-function drawTop(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+function drawTop(root: Group, layerName: string, from: SMRect, to: SMRect) {
     let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
     }
-
-    let container = find({
-        key: "(name != NULL) && (name == %@)",
-        match: layerName
-    });
-    if (container) removeLayer(container);
+    sketch.find<Group>(
+        `Group, [name="${layerName}"]`,
+        root
+    ).forEach(g => g.remove());
 
     // make sure from lower shape to higher
     if (from.y < to.y) [from, to] = swap(from, to);
@@ -131,21 +129,19 @@ function drawTop(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect)
     tmp.y = to.y;
     tmp.width = from.width;
     tmp.height = from.y - to.y;
-    drawSpacingShape(artboard, tmp, "center", layerName);
+    drawSpacingShape(root, tmp, LayerAlignment.center, layerName);
 }
 
-function drawBottom(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+function drawBottom(root: Group, layerName: string, from: SMRect, to: SMRect) {
     let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
     }
-
-    let container = find({
-        key: "(name != NULL) && (name == %@)",
-        match: layerName
-    });
-    if (container) removeLayer(container);
+    sketch.find<Group>(
+        `Group, [name="${layerName}"]`,
+        root
+    ).forEach(g => g.remove());
 
     // make sure from higher bottom shape to lower
     if (from.y + from.height > to.y + to.height) [from, to] = swap(from, to);
@@ -153,21 +149,19 @@ function drawBottom(artboard: SMLayer, layerName: string, from: SMRect, to: SMRe
     tmp.y = from.y + from.height;
     tmp.width = from.width;
     tmp.height = to.y + to.height - from.y - from.height;
-    drawSpacingShape(artboard, tmp, "center", layerName);
+    drawSpacingShape(root, tmp, LayerAlignment.center, layerName);
 }
 
-function drawLeft(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+function drawLeft(root: Group, layerName: string, from: SMRect, to: SMRect) {
     let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
     }
-
-    let container = find({
-        key: "(name != NULL) && (name == %@)",
-        match: layerName
-    });
-    if (container) removeLayer(container);
+    sketch.find<Group>(
+        `Group, [name="${layerName}"]`,
+        root
+    ).forEach(g => g.remove());
 
     // make sure from right shape to left
     if (from.x < to.x) [from, to] = swap(from, to);
@@ -175,21 +169,19 @@ function drawLeft(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect
     tmp.y = from.y;
     tmp.width = from.x - to.x;
     tmp.height = from.height;
-    drawSpacingShape(artboard, tmp, "middle", layerName);
+    drawSpacingShape(root, tmp, LayerVerticalAlignment.middle, layerName);
 }
 
-function drawRight(artboard: SMLayer, layerName: string, from: SMRect, to: SMRect) {
+function drawRight(root: Group, layerName: string, from: SMRect, to: SMRect) {
     let tmp = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
     }
-
-    let container = find({
-        key: "(name != NULL) && (name == %@)",
-        match: layerName
-    });
-    if (container) removeLayer(container);
+    sketch.find<Group>(
+        `Group, [name="${layerName}"]`,
+        root
+    ).forEach(g => g.remove());
 
     // make sure from left shape (by right border) to right
     if (from.x + from.width > to.x + to.width) [from, to] = swap(from, to);
@@ -197,17 +189,19 @@ function drawRight(artboard: SMLayer, layerName: string, from: SMRect, to: SMRec
     tmp.y = from.y;
     tmp.width = to.x + to.width - from.x - from.width;
     tmp.height = from.height;
-    drawSpacingShape(artboard, tmp, "middle", layerName);
+    drawSpacingShape(root, tmp, LayerVerticalAlignment.middle, layerName);
 }
 
-function drawSpacingShape(container: SMLayer, frame: SMRect, drawSizePosition: string, layerName: string) {
-    let tempShape = container.newShape({
-        layerName: "temp"
-    });
-    tempShape.rect = frame;
-    drawSize(tempShape, drawSizePosition, layerName, {
-        shape: sharedLayerStyle("Sketch Measure / Spacing", colors.spacing.shape),
-        text: sharedTextStyle("Sketch Measure / Spacing", colors.spacing.text)
+function drawSpacingShape(
+    root: Group, frame: SMRect,
+    drawSizePosition: LayerAlignment | LayerVerticalAlignment, layerName: string
+) {
+    let tempShape = new sketch.ShapePath({ parent: root })
+    tempShape.frame = new sketch.Rectangle(frame.x, frame.y, frame.width, frame.height);
+    drawSize(tempShape, drawSizePosition, {
+        name: layerName,
+        background: sharedLayerStyle(context.document, "Sketch Measure / Spacing", colors.spacing.shape),
+        foreground: sharedTextStyle(context.document, "Sketch Measure / Spacing", colors.spacing.text)
     });
     tempShape.remove();
 }

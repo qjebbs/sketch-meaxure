@@ -1,5 +1,96 @@
 import { sketch } from "../sketch";
+import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 
+export function createMeter(
+    size: number,
+    options?: {
+        name?: string,
+        parent?: Group,
+        background?: SharedStyle,
+        isHorizontal?: boolean;
+    }
+): Group {
+    if (!options || options.isHorizontal) {
+        return createMeterHorizontal(size, options);
+    }
+    return createMeterVertical(size, options);
+}
+function createMeterHorizontal(
+    size: number,
+    options?: {
+        name?: string,
+        parent?: Group,
+        background?: SharedStyle,
+    }
+): Group {
+    if (size <= 0) return;
+    options = Object.assign({}, options);
+    let container = new sketch.Group({ name: options.name, parent: options.parent });
+    let start = new sketch.ShapePath({ name: 'start', parent: container });
+    let body = new sketch.ShapePath({ name: 'body', parent: container });
+    start.frame.width = 1;
+    start.frame.height = 5;
+    body.frame.width = size;
+    body.frame.height = 1;
+
+    if (options.background) {
+        start.sharedStyle = options.background;
+        start.style = options.background.style;
+        body.sharedStyle = options.background;
+        body.style = options.background.style;
+    }
+    let end = start.duplicate();
+    start.alignTo(
+        body,
+        { from: LayerAlignment.left, to: LayerAlignment.left },
+        { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle }
+    )
+    end.alignTo(
+        body,
+        { from: LayerAlignment.right, to: LayerAlignment.right },
+        { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle }
+    )
+    container.adjustToFit();
+    return container;
+}
+function createMeterVertical(
+    size: number,
+    options?: {
+        name?: string,
+        parent?: Group,
+        background?: SharedStyle,
+    }
+): Group {
+    if (size <= 0) return;
+    options = Object.assign({}, options);
+    let container = new sketch.Group({ name: options.name, parent: options.parent });
+    let start = new sketch.ShapePath({ name: 'start', parent: container });
+    let body = new sketch.ShapePath({ name: 'body', parent: container });
+    start.frame.width = 5;
+    start.frame.height = 1;
+    body.frame.width = 1;
+    body.frame.height = size;
+
+    if (options.background) {
+        start.sharedStyle = options.background;
+        start.style = options.background.style;
+        body.sharedStyle = options.background;
+        body.style = options.background.style;
+    }
+    let end = start.duplicate();
+    start.alignTo(
+        body,
+        { from: LayerAlignment.center, to: LayerAlignment.center },
+        { from: LayerVerticalAlignment.top, to: LayerVerticalAlignment.top }
+    )
+    end.alignTo(
+        body,
+        { from: LayerAlignment.center, to: LayerAlignment.center },
+        { from: LayerVerticalAlignment.bottom, to: LayerVerticalAlignment.bottom }
+    )
+    container.adjustToFit();
+    return container;
+}
 export function createLabel(
     content: string,
     options?: {
@@ -31,13 +122,12 @@ export function createLabel(
 
     text.alignTo(
         box,
-        { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-        { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+        { from: LayerAlignment.center, to: LayerAlignment.center },
+        { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
     )
     container.adjustToFit();
     return container;
 }
-
 export function createBubble(
     content: string,
     options?: {
@@ -46,7 +136,7 @@ export function createBubble(
         foreground?: SharedStyle,
         background?: SharedStyle,
         padding?: number,
-        bubblePosition?: Alignment | VerticalAlignment,
+        bubblePosition?: LayerAlignment | LayerVerticalAlignment,
     }
 ): Group {
 
@@ -68,35 +158,35 @@ export function createBubble(
         background: options.background,
         padding: options.padding,
     });
-    let placement = options.bubblePosition || sketch.Text.Alignment.right;
+    let placement = options.bubblePosition || LayerAlignment.right;
 
     switch (placement) {
-        case sketch.Text.VerticalAlignment.top:
+        case LayerVerticalAlignment.top:
             arrow.alignTo(
                 label,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.bottom },
+                { from: LayerAlignment.center, to: LayerAlignment.center },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.bottom },
             )
             break;
-        case sketch.Text.Alignment.right:
+        case LayerAlignment.right:
             arrow.alignTo(
                 label,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.left },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+                { from: LayerAlignment.center, to: LayerAlignment.left },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
             break;
-        case sketch.Text.VerticalAlignment.bottom:
+        case LayerVerticalAlignment.bottom:
             arrow.alignTo(
                 label,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.top },
+                { from: LayerAlignment.center, to: LayerAlignment.center },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.top },
             )
             break;
-        case sketch.Text.Alignment.left:
+        case LayerAlignment.left:
             arrow.alignTo(
                 label,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.right },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+                { from: LayerAlignment.center, to: LayerAlignment.right },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
             break;
         default:

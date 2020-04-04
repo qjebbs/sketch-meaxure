@@ -113,7 +113,7 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
             }
         }
     }
-    if (context.artboard) data.current.push(toJSString(context.artboard.objectID()));
+    if (context.artboard) data.current.push(context.artboard.id);
 
     for (let page of context.document.pages) {
         let pageData = <PageInfo>{};

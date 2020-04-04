@@ -3,7 +3,7 @@ import { logger } from "../api/logger";
 import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "..";
 import { localize } from "../state/language";
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../state/keepAround";
-import { sketch } from "../sketch";
+import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 
 const keepAroundID = uuidv4();
 function getImage(name: string, state?: string) {
@@ -180,13 +180,13 @@ export function markToolbar() {
     controls.push(
         addButton(
             makeRect(), "Label on top", "properties-top", "normal",
-            () => (context.runningConfig.placement = sketch.Text.VerticalAlignment.top) && commandProperties(null)
+            () => (context.runningConfig.placement = LayerVerticalAlignment.top) && commandProperties(null)
         )
     );
     controls.push(
         addButton(
             makeRect(), "Label on right", "properties-right", "normal",
-            () => (context.runningConfig.placement = sketch.Text.Alignment.right) && commandProperties(null)
+            () => (context.runningConfig.placement = LayerAlignment.right) && commandProperties(null)
         )
     );
     controls.push(
@@ -198,13 +198,13 @@ export function markToolbar() {
     controls.push(
         addButton(
             makeRect(), "Label on bottom", "properties-bottom", "normal",
-            () => (context.runningConfig.placement = sketch.Text.VerticalAlignment.bottom) && commandProperties(null)
+            () => (context.runningConfig.placement = LayerVerticalAlignment.bottom) && commandProperties(null)
         )
     );
     controls.push(
         addButton(
             makeRect(), "Label on left", "properties-left", "normal",
-            () => (context.runningConfig.placement = sketch.Text.Alignment.left) && commandProperties(null)
+            () => (context.runningConfig.placement = LayerAlignment.left) && commandProperties(null)
         )
     );
     newLine();

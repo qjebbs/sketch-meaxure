@@ -1,13 +1,25 @@
-import { sketch } from "..";
+export enum LayerAlignment {
+    left = 'left',
+    right = 'right',
+    center = 'center'
+}
+export enum LayerVerticalAlignment {
+    top = 'top',
+    bottom = 'bottom',
+    middle = 'middle'
+}
 
 export function alignLayers(
     from: Layer,
     to: Layer,
-    horizontal: { from: Alignment, to: Alignment },
-    vertical: { from: VerticalAlignment, to: VerticalAlignment }
+    horizontal: { from: LayerAlignment, to: LayerAlignment } | boolean,
+    vertical: { from: LayerVerticalAlignment, to: LayerVerticalAlignment } | boolean
 ): void {
-    if (horizontal) horizontal = Object.assign({ from: sketch.Text.Alignment.left, to: sketch.Text.Alignment.left }, horizontal)
-    if (vertical) vertical = Object.assign({ from: sketch.Text.VerticalAlignment.top, to: sketch.Text.VerticalAlignment.top }, vertical)
+    // TODO: align rotated layers
+    let hAligh: { from: LayerAlignment, to: LayerAlignment };
+    let vAligh: { from: LayerVerticalAlignment, to: LayerVerticalAlignment };
+    if (horizontal) hAligh = Object.assign({ from: LayerAlignment.left, to: LayerAlignment.left }, horizontal)
+    if (vertical) vAligh = Object.assign({ from: LayerVerticalAlignment.top, to: LayerVerticalAlignment.top }, vertical)
     if (!horizontal && !vertical) return;
     let root = from.getParentArtboard() || from.getParentPage();
     let rootTo = to.getParentArtboard() || to.getParentPage();
@@ -20,21 +32,21 @@ export function alignLayers(
 
     let offsetX = 0;
     let offsetY = 0;
-    if (horizontal) {
+    if (hAligh) {
         // left-to-left offset
         offsetX = frameTo.x - frameFrom.x;
-        if (horizontal.from == sketch.Text.Alignment.center) offsetX -= frameFrom.width / 2;
-        if (horizontal.from == sketch.Text.Alignment.right) offsetX -= frameFrom.width;
-        if (horizontal.to == sketch.Text.Alignment.center) offsetX += frameTo.width / 2;
-        if (horizontal.to == sketch.Text.Alignment.right) offsetX += frameTo.width;
+        if (hAligh.from == LayerAlignment.center) offsetX -= frameFrom.width / 2;
+        if (hAligh.from == LayerAlignment.right) offsetX -= frameFrom.width;
+        if (hAligh.to == LayerAlignment.center) offsetX += frameTo.width / 2;
+        if (hAligh.to == LayerAlignment.right) offsetX += frameTo.width;
     }
     if (vertical) {
         // top-to-top offset
         offsetY = frameTo.y - frameFrom.y;
-        if (vertical.from == sketch.Text.VerticalAlignment.center) offsetY -= frameFrom.height / 2;
-        if (vertical.from == sketch.Text.VerticalAlignment.bottom) offsetY -= frameFrom.height;
-        if (vertical.to == sketch.Text.VerticalAlignment.center) offsetY += frameTo.height / 2;
-        if (vertical.to == sketch.Text.VerticalAlignment.bottom) offsetY += frameTo.height;
+        if (vAligh.from == LayerVerticalAlignment.middle) offsetY -= frameFrom.height / 2;
+        if (vAligh.from == LayerVerticalAlignment.bottom) offsetY -= frameFrom.height;
+        if (vAligh.to == LayerVerticalAlignment.middle) offsetY += frameTo.height / 2;
+        if (vAligh.to == LayerVerticalAlignment.bottom) offsetY += frameTo.height;
     }
     from.frame.offset(offsetX, offsetY);
 }
@@ -42,43 +54,43 @@ export function alignLayers(
 export function alignLayersByPosition(
     from: Layer,
     to: Layer,
-    position: Alignment | VerticalAlignment,
+    position: LayerAlignment | LayerVerticalAlignment,
 ): void {
     switch (position) {
-        case sketch.Text.Alignment.center:
-        case sketch.Text.VerticalAlignment.center:
+        case LayerAlignment.center:
+        case LayerVerticalAlignment.middle:
             from.alignTo(
                 to,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+                { from: LayerAlignment.center, to: LayerAlignment.center },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
             break;
-        case sketch.Text.Alignment.left:
+        case LayerAlignment.left:
             from.alignTo(
                 to,
-                { from: sketch.Text.Alignment.right, to: sketch.Text.Alignment.left },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+                { from: LayerAlignment.right, to: LayerAlignment.left },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
             break;
-        case sketch.Text.Alignment.right:
+        case LayerAlignment.right:
             from.alignTo(
                 to,
-                { from: sketch.Text.Alignment.left, to: sketch.Text.Alignment.right },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+                { from: LayerAlignment.left, to: LayerAlignment.right },
+                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
             break;
-        case sketch.Text.VerticalAlignment.top:
+        case LayerVerticalAlignment.top:
             from.alignTo(
                 to,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.bottom, to: sketch.Text.VerticalAlignment.top },
+                { from: LayerAlignment.center, to: LayerAlignment.center },
+                { from: LayerVerticalAlignment.bottom, to: LayerVerticalAlignment.top },
             )
             break;
-        case sketch.Text.VerticalAlignment.bottom:
+        case LayerVerticalAlignment.bottom:
             from.alignTo(
                 to,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.top, to: sketch.Text.VerticalAlignment.bottom },
+                { from: LayerAlignment.center, to: LayerAlignment.center },
+                { from: LayerVerticalAlignment.top, to: LayerVerticalAlignment.bottom },
             )
             break;
         default:

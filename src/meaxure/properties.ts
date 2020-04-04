@@ -7,6 +7,7 @@ import { sketch } from "../sketch";
 import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "../api/styles";
 import { FillData, SMShadow } from "../api/interfaces";
 import { createBubble } from "./common";
+import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 
 export async function markProperties() {
     let selection = context.selection;
@@ -36,25 +37,26 @@ export function liteProperties() {
     for (let target of selection) {
         properties({
             target: target,
-            placement: sketch.Text.Alignment.right,
+            placement: LayerAlignment.right,
             properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "font-face", "character", "line-height", "paragraph", "style-name"]
         });
     }
 }
 
-function properties(options: { target: Layer, placement: Alignment | VerticalAlignment, properties?: string[], content?: string }) {
+function properties(options: { target: Layer, placement: LayerAlignment | LayerVerticalAlignment, properties?: string[], content?: string }) {
     options = Object.assign({
         placement: "top",
         properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph", "style-name"]
     }, options);
-    let placement = options.placement;
     let target = options.target;
 
     let name = "#properties-" + target.id;
     let root = context.current;
-    sketch.find<Group>(
+
+    let artboard = target.getParentArtboard();
+    if (artboard) sketch.find<Group>(
         `Group, [name="${name}"]`,
-        root
+        artboard
     ).forEach(g => g.remove());
 
     let bubble = createBubble(
