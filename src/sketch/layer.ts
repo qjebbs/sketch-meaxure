@@ -1,5 +1,5 @@
 import { sketch } from ".";
-import { alignLayers } from "./alignment";
+import { alignLayers, alignLayersByPosition } from "./alignment";
 
 declare module 'sketch/sketch' {
     namespace _Sketch {
@@ -10,6 +10,7 @@ declare module 'sketch/sketch' {
             CSSAttributes: string[];
             allSubLayers(): Layer[];
             alignTo(layer: Layer, horizontal?: { from: Alignment, to: Alignment }, vertical?: { from: VerticalAlignment, to: VerticalAlignment }): void;
+            alignToByPostion(layer: Layer, position: Alignment | VerticalAlignment): void;
         }
     }
 }
@@ -73,5 +74,8 @@ export function extendLayer() {
         vertical?: { from: VerticalAlignment, to: VerticalAlignment }
     ) {
         alignLayers(this, layer, horizontal, vertical);
+    };
+    target.alignToByPostion = function (layer: Layer, position: Alignment | VerticalAlignment) {
+        alignLayersByPosition(this, layer, position);
     };
 }

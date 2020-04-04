@@ -38,3 +38,50 @@ export function alignLayers(
     }
     from.frame.offset(offsetX, offsetY);
 }
+
+export function alignLayersByPosition(
+    from: Layer,
+    to: Layer,
+    position: Alignment | VerticalAlignment,
+): void {
+    switch (position) {
+        case sketch.Text.Alignment.center:
+        case sketch.Text.VerticalAlignment.center:
+            from.alignTo(
+                to,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+            )
+            break;
+        case sketch.Text.Alignment.left:
+            from.alignTo(
+                to,
+                { from: sketch.Text.Alignment.right, to: sketch.Text.Alignment.left },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+            )
+            break;
+        case sketch.Text.Alignment.right:
+            from.alignTo(
+                to,
+                { from: sketch.Text.Alignment.left, to: sketch.Text.Alignment.right },
+                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
+            )
+            break;
+        case sketch.Text.VerticalAlignment.top:
+            from.alignTo(
+                to,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.bottom, to: sketch.Text.VerticalAlignment.top },
+            )
+            break;
+        case sketch.Text.VerticalAlignment.bottom:
+            from.alignTo(
+                to,
+                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
+                { from: sketch.Text.VerticalAlignment.top, to: sketch.Text.VerticalAlignment.bottom },
+            )
+            break;
+        default:
+            break;
+    }
+}

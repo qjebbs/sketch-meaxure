@@ -6,6 +6,7 @@ import { colors } from "../state/common";
 import { sketch } from "../sketch";
 import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "../api/styles";
 import { FillData, SMShadow } from "../api/interfaces";
+import { createBubble } from "./common";
 
 export async function markProperties() {
     let selection = context.selection;
@@ -35,13 +36,13 @@ export function liteProperties() {
     for (let target of selection) {
         properties({
             target: target,
-            placement: "right",
+            placement: sketch.Text.Alignment.right,
             properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "font-face", "character", "line-height", "paragraph", "style-name"]
         });
     }
 }
 
-function properties(options: { target: Layer, placement: string, properties?: string[], content?: string }) {
+function properties(options: { target: Layer, placement: Alignment | VerticalAlignment, properties?: string[], content?: string }) {
     options = Object.assign({
         placement: "top",
         properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph", "style-name"]
@@ -56,16 +57,17 @@ function properties(options: { target: Layer, placement: string, properties?: st
         root
     ).forEach(g => g.remove());
 
-    let container = new sketch.Group({ name: name, parent: root });
-    setLabel({
-        container: container,
-        target: target,
-        textStyle: sharedTextStyle(context.document, "Sketch MeaXure / Property", colors.property.text),
-        layerStyle: sharedLayerStyle(context.document, "Sketch MeaXure / Property", colors.property.shape),
-        text: options.content || getProperties(target, options.properties),
-        placement: placement
-    });
-    // container.fixGeometryWithOptions(0);
+    let bubble = createBubble(
+        options.content || getProperties(target, options.properties),
+        {
+            name: name,
+            parent: root,
+            foreground: sharedTextStyle(context.document, "Sketch MeaXure / Property", colors.property.text),
+            background: sharedLayerStyle(context.document, "Sketch MeaXure / Property", colors.property.shape),
+            bubblePosition: options.placement,
+        }
+    )
+    bubble.alignToByPostion(target, options.placement)
 }
 
 function getProperties(target: Layer, properties: string[]): string {
@@ -136,99 +138,6 @@ function getProperties(target: Layer, properties: string[]): string {
         }
     });
     return elements.filter(e => !!e).join('\n');
-}
-
-function setLabel(options: { target: Layer, text: string, textStyle?: SharedStyle, layerStyle?: SharedStyle, placement?: string, container?: Group, }) {
-    options = Object.assign({
-        text: "Label",
-        container: context.current,
-    }, options);
-    if (!options.target) return;
-    let container = options.container;
-    let target = options.target;
-    let placement = options.placement || 'right';
-
-    let arrow = new sketch.ShapePath({ name: 'label-arrow', parent: container });
-    let box = new sketch.ShapePath({ name: 'label-box', parent: container });
-    let text = new sketch.Text({ name: 'label-text', text: options.text, parent: container });
-    arrow.sharedStyle = options.layerStyle;
-    box.sharedStyle = options.layerStyle;
-    text.sharedStyle = options.textStyle;
-    arrow.style = options.layerStyle.style;
-    box.style = options.layerStyle.style;
-    text.style = options.textStyle.style;
-    // set radius
-    box.points.forEach(p => p.cornerRadius = 2);
-
-    // update frame parameters except postion
-    let artboard = target.getParentArtboard();
-    let textRect = text.frame.changeBasis({ from: text, to: box });
-    arrow.frame.width = 6;
-    arrow.frame.height = 6;
-    box.frame.width = textRect.width + 8;
-    box.frame.height = textRect.height + 8;
-    arrow.transform.rotation = 45;
-
-    text.alignTo(
-        box,
-        { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-        { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
-    )
-
-    switch (placement) {
-        case "top":
-            arrow.alignTo(
-                box,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.bottom },
-            )
-            container.adjustToFit();
-            container.alignTo(
-                target,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.bottom, to: sketch.Text.VerticalAlignment.top }
-            )
-            break;
-        case "right":
-            arrow.alignTo(
-                box,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.left },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
-            )
-            container.adjustToFit();
-            container.alignTo(
-                target,
-                { from: sketch.Text.Alignment.left, to: sketch.Text.Alignment.right },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center }
-            )
-            break;
-        case "bottom":
-            arrow.alignTo(
-                box,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.top },
-            )
-            container.adjustToFit();
-            container.alignTo(
-                target,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.center },
-                { from: sketch.Text.VerticalAlignment.top, to: sketch.Text.VerticalAlignment.bottom }
-            )
-            break;
-        case "left":
-            arrow.alignTo(
-                box,
-                { from: sketch.Text.Alignment.center, to: sketch.Text.Alignment.right },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center },
-            )
-            container.adjustToFit();
-            container.alignTo(
-                target,
-                { from: sketch.Text.Alignment.right, to: sketch.Text.Alignment.left },
-                { from: sketch.Text.VerticalAlignment.center, to: sketch.Text.VerticalAlignment.center }
-            )
-            break;
-    }
 }
 
 function fillTypeContent(fillJSON: FillData) {

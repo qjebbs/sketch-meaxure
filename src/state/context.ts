@@ -11,7 +11,7 @@ interface RunningConfig {
     exportOption: boolean;
     colors: any;
     sizes: any;
-    placement: string; //property placement
+    placement: Alignment | VerticalAlignment; //property placement
 }
 
 interface Context {
