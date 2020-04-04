@@ -1,6 +1,6 @@
-import { SMExportable, LayerData, SMExportFormat } from "../../api/interfaces";
+import { SMExportable, LayerData, SMExportFormat } from "../interfaces";
 import { assetsPath } from ".";
-import { context } from "../../state/context";
+import { context } from "../common/context";
 import { exportImage } from "./files";
 
 let slices = [];

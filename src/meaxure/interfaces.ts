@@ -1,5 +1,3 @@
-import { SMRect } from "./interfaces-deprecated";
-
 export interface LayerStates {
     isVisible: boolean,
     isLocked: boolean,
@@ -8,7 +6,12 @@ export interface LayerStates {
     isEmptyText: boolean,
     isInShapeGroup: boolean,
 }
-
+export interface SMRect {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
 export interface SMColor {
     r: number;
     g: number;
@@ -26,7 +29,7 @@ export interface BorderData {
     color: SMColor,
     gradient: Gradient,
 }
-export interface FillData {
+export interface SMFillData {
     fillType: FillType,
     color: SMColor,
     gradient: Gradient,
@@ -43,7 +46,7 @@ export interface LayerData {
     rotation: number,
     radius: number[],
     borders: BorderData[],
-    fills: FillData[],
+    fills: SMFillData[],
     shadows: SMShadow[],
     opacity: number,
     styleName: string,

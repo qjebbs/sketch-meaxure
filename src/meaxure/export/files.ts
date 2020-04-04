@@ -1,8 +1,7 @@
-import { extend } from "../../api/helper";
-import { toJSString } from "../../api/api";
-import { SMExportFormat } from "../../api/interfaces";
+import { SMExportFormat } from "../interfaces";
 import { sketch } from "../../sketch";
-import { context } from "../../state/context";
+import { context } from "../common/context";
+import { toJSString } from "../helpers/helper";
 
 export function exportImage(layer: Layer, format: SMExportFormat, path: string, name: string) {
     let document = context.sketchObject.document;
@@ -36,7 +35,7 @@ export function exportImage2(layer: Layer, format: SMExportFormat, path: string,
     // cannot use sketch.export because it's option.output is a directory, 
     // we don't have a chance to specify the filename,
     // the filename is unpredictable.
-    sketch.export(layer,{
+    sketch.export(layer, {
         output: savePath,
         formats: format.format,
         scales: format.scale.toString(),
@@ -45,12 +44,12 @@ export function exportImage2(layer: Layer, format: SMExportFormat, path: string,
 }
 
 export function writeFile(options) {
-    
-    options = extend(options, {
+
+    options = Object.assign({
         content: "Type something!",
         path: toJSString(NSTemporaryDirectory()),
         fileName: "temp.txt"
-    })
+    }, options)
     let content = NSString.stringWithString(options.content),
         savePathName = [];
 

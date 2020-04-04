@@ -1,9 +1,9 @@
-import { context } from "../state/context";
-import { logger } from "../api/logger";
-import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "..";
-import { localize } from "../state/language";
-import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../state/keepAround";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { context } from "../common/context";
+import { logger } from "../common/logger";
+import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "../..";
+import { localize } from "../common/language";
+import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../common/keepAround";
+import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
 
 const keepAroundID = uuidv4();
 function getImage(name: string, state?: string) {

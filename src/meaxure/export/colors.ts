@@ -1,5 +1,5 @@
-import { SMColor } from "../../api/interfaces";
-import { parseColor } from "../../api/styles";
+import { SMColor } from "../interfaces";
+import { parseColor } from "../helpers/styles";
 
 export function getDocumentColors(document: Document): { name: string, color: SMColor }[] {
     return document.colors.map(colorAsset => ({

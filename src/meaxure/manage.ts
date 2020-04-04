@@ -1,6 +1,5 @@
-import { context } from "../state/context";
-import { is, removeLayer } from "../api/api";
-import { regexNames } from "../state/common";
+import { context } from "./common/context";
+import { regexNames } from "./common/common";
 import { sketch } from "../sketch";
 
 export function clearAllMarks() {

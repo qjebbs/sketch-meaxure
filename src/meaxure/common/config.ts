@@ -1,5 +1,4 @@
-import { logger } from "./logger";
-import { deepEqual } from "./helper";
+import { deepEqual } from "../helpers/helper";
 
 export class ConfigsMaster {
     private _prefix = "SMX3Configs";

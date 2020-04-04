@@ -1,7 +1,7 @@
-import { SMRect } from "../../api/interfaces-deprecated";
+import { SMRect } from "../interfaces";
 import { sketch } from "../../sketch";
-import { logger } from "../../api/logger";
-import { LayerData } from "../../api/interfaces";
+import { logger } from "../common/logger";
+import { LayerData } from "../interfaces";
 
 interface MaskStackData {
     mask: Layer,

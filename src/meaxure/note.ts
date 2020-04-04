@@ -1,9 +1,9 @@
-import { localize } from "../state/language";
-import { colors } from "../state/common";
-import { context } from "../state/context";
+import { localize } from "./common/language";
+import { colors } from "./common/common";
+import { context } from "./common/context";
 import { sketch } from "../sketch";
-import { createLabel } from "./common";
-import { sharedLayerStyle, sharedTextStyle } from "../api/styles";
+import { createLabel } from "./helpers/elements";
+import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 
 export function markNote() {
     let selection = context.selection;

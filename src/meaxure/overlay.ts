@@ -1,8 +1,8 @@
-import { localize } from "../state/language";
-import { colors } from "../state/common";
-import { context } from "../state/context";
+import { localize } from "./common/language";
+import { colors } from "./common/common";
+import { context } from "./common/context";
 import { sketch } from "../sketch";
-import { sharedLayerStyle } from "../api/styles";
+import { sharedLayerStyle } from "./helpers/styles";
 export function markOverlays() {
     let selection = context.selection;
     if (selection.length <= 0) {

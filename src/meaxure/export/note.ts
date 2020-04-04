@@ -1,7 +1,6 @@
-import { SMNote } from "../../api/interfaces";
+import { SMNote } from "../interfaces";
 import { sketch } from "../../sketch";
-import { toHTMLEncode } from "../../api/helper";
-import { emojiToEntities } from "../../api/api";
+import { toHTMLEncode, emojiToEntities } from "../helpers/helper";
 
 export function makeNote(layer: Layer, artboard: Artboard): SMNote {
     if (!layer || layer.type != sketch.Types.Group || ! /#note-/.test(layer.name)) return undefined;

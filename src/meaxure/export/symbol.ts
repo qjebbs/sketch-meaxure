@@ -1,4 +1,4 @@
-import { LayerData, ArtboardData } from "../../api/interfaces";
+import { LayerData, ArtboardData } from "../interfaces";
 import { tempCreatedLayers } from ".";
 import { getLayerData } from "./layerData";
 

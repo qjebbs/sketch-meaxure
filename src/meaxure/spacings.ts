@@ -1,13 +1,13 @@
-import { context } from "../state/context";
-import { isIntersect, isIntersectX, isIntersectY } from "../api/helper";
-import { colors } from "../state/common";
-import { SMRect } from "../api/interfaces-deprecated";
+import { context } from "./common/context";
+import { isIntersect, isIntersectX, isIntersectY } from "./helpers/helper";
+import { colors } from "./common/common";
+import { SMRect } from "./interfaces";
 import { drawSize } from "./size";
-import { logger } from "../api/logger";
-import { localize } from "../state/language";
+import { logger } from "./common/logger";
+import { localize } from "./common/language";
 import { sketch } from "../sketch";
 import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
-import { sharedLayerStyle, sharedTextStyle } from "../api/styles";
+import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 
 export function drawSpacings(position?: string) {
     if (context.selection.length != 1 && context.selection.length != 2) {
@@ -200,8 +200,8 @@ function drawSpacingShape(
     tempShape.frame = new sketch.Rectangle(frame.x, frame.y, frame.width, frame.height);
     drawSize(tempShape, drawSizePosition, {
         name: layerName,
-        background: sharedLayerStyle(context.document, "Sketch Measure / Spacing", colors.spacing.shape),
-        foreground: sharedTextStyle(context.document, "Sketch Measure / Spacing", colors.spacing.text)
+        background: sharedLayerStyle(context.document, "Sketch MeaXure / Spacing", colors.spacing.shape),
+        foreground: sharedTextStyle(context.document, "Sketch MeaXure / Spacing", colors.spacing.text)
     });
     tempShape.remove();
 }

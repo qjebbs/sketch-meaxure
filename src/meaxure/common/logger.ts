@@ -1,4 +1,4 @@
-import { sketch } from "../sketch";
+import { sketch } from "../../sketch";
 
 export enum LOGGER_LEVEL {
     DEBUG = 1,

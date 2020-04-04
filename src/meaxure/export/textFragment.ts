@@ -1,4 +1,4 @@
-import { ArtboardData } from "../../api/interfaces"; import { sketch } from "../../sketch";
+import { ArtboardData } from "../interfaces"; import { sketch } from "../../sketch";
 import { tempCreatedLayers } from ".";
 import { getLayerData } from "./layerData";
 import { TextFragment } from "../../sketch/text";

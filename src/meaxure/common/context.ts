@@ -1,8 +1,8 @@
 import { initLanguage } from "./language";
 import * as path from '@skpm/path';
-import { ConfigsMaster } from "../api/config";
-import { sketch } from "../sketch";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { ConfigsMaster } from "./config";
+import { sketch } from "../../sketch";
+import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
 
 interface RunningConfig {
     order: string;

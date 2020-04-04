@@ -1,6 +1,6 @@
-import { context } from '../state/context';
-import { createWebviewPanel, WebviewPanel } from '../webviewPanel';
-import { logger } from '../api/logger';
+import { context } from '../common/context';
+import { createWebviewPanel, WebviewPanel } from '../../webviewPanel';
+import { logger } from '../common/logger';
 
 export function propertiesPanel() {
     let identifier = 'co.jebbs.sketch-meaxure.properties';

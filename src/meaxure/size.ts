@@ -1,11 +1,11 @@
-import { context } from "../state/context";
-import { lengthUnit } from "./base";
-import { colors } from "../state/common";
-import { localize } from "../state/language";
+import { context } from "./common/context";
+import { colors } from "./common/common";
+import { localize } from "./common/language";
 import { sketch } from "../sketch";
-import { sharedLayerStyle, sharedTextStyle } from "../api/styles";
-import { createLabel, createMeter } from "./common";
+import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
+import { createLabel, createMeter } from "./helpers/elements";
 import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { lengthUnit } from "./helpers/helper";
 
 export function drawSizes(position: LayerAlignment | LayerVerticalAlignment) {
     if (context.selection.length <= 0) {

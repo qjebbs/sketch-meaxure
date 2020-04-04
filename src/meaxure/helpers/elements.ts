@@ -1,5 +1,5 @@
-import { sketch } from "../sketch";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { sketch } from "../../sketch";
+import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
 
 export function createMeter(
     size: number,

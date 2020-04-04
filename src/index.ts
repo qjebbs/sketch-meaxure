@@ -1,8 +1,8 @@
-import { settingsPanel } from "./panels/settingsPanel";
-import { updateContext } from "./state/context";
-import { logger } from "./api/logger";
-import { markToolbar } from "./panels/toolbar";
-import { openURL } from "./api/helper";
+import { settingsPanel } from "./meaxure/panels/settingsPanel";
+import { updateContext } from "./meaxure/common/context";
+import { logger } from "./meaxure/common/logger";
+import { markToolbar } from "./meaxure/panels/toolbar";
+import { openURL } from "./meaxure/helpers/helper";
 import { exportSpecification } from "./meaxure/export";
 import { markNote } from "./meaxure/note";
 import { liteProperties, markProperties } from "./meaxure/properties";

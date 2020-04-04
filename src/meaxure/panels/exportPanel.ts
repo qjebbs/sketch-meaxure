@@ -1,9 +1,5 @@
-import { context } from "../state/context";
-import { find, tik } from "../api/helper";
-import { toJSString } from "../api/api";
-import { createWebviewPanel } from "../webviewPanel";
-import { logger } from "../api/logger";
-import { sketch } from "../sketch";
+import { context } from "../common/context";
+import { createWebviewPanel } from "../../webviewPanel";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
 interface PageInfo {
@@ -100,17 +96,9 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
         reverse: false,
     };
 
-    if ( context.sketchObject.selection.count() > 0) {
-        let selectionArtboards = find({
-            key: "(class != NULL) && (class == %@)",
-            match: MSArtboardGroup
-        },  context.sketchObject.selection, true);
-        if (selectionArtboards.count() > 0) {
-            let artboard;
-            selectionArtboards = selectionArtboards.objectEnumerator();
-            while (artboard = selectionArtboards.nextObject()) {
-                data.selection.push(toJSString(artboard.objectID()));
-            }
+    if (context.selection.length > 0) {
+        for (let artboard of context.page.layers) {
+            if (artboard.selected) data.selection.push(artboard.id);
         }
     }
     if (context.artboard) data.current.push(context.artboard.id);

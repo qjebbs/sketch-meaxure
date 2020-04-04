@@ -1,6 +1,6 @@
-import { BorderData, FillData, SMShadow } from "./interfaces";
-import { SMColor } from "./interfaces";
-import { sketch } from "../sketch";
+import { BorderData, SMFillData, SMShadow } from "../interfaces";
+import { SMColor } from "../interfaces";
+import { sketch } from "../../sketch";
 
 
 export function sharedTextStyle(
@@ -80,12 +80,12 @@ export function getBordersFromStyle(style: Style): BorderData[] {
     }
     return bordersData;
 }
-export function getFillsFromStyle(style: Style): FillData[] {
-    let fillsData: FillData[] = [];
+export function getFillsFromStyle(style: Style): SMFillData[] {
+    let fillsData: SMFillData[] = [];
     for (let fill of style.fills) {
         if (!fill.enabled) continue;
         let fillType = fill.fillType,
-            fillData = <FillData>{
+            fillData = <SMFillData>{
                 fillType: fillType,
                 color: <SMColor>{},
                 gradient: <Gradient>{}

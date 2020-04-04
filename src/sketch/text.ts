@@ -1,5 +1,4 @@
 import { sketch } from ".";
-import { toJSNumber, toJSString } from "../api/api";
 
 export interface TextFragment {
     length: number,

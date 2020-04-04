@@ -1,12 +1,12 @@
-import { localize } from "../state/language";
-import { convertUnit } from "../api/helper";
-import { propertiesPanel } from "../panels/propertiesPanel";
-import { context } from "../state/context";
-import { colors } from "../state/common";
+import { localize } from "./common/language";
+import { convertUnit } from "./helpers/helper";
+import { propertiesPanel } from "./panels/propertiesPanel";
+import { context } from "./common/context";
+import { colors } from "./common/common";
 import { sketch } from "../sketch";
-import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "../api/styles";
-import { FillData, SMShadow } from "../api/interfaces";
-import { createBubble } from "./common";
+import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "./helpers/styles";
+import { SMFillData, SMShadow } from "./interfaces";
+import { createBubble } from "./helpers/elements";
 import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 
 export async function markProperties() {
@@ -142,7 +142,7 @@ function getProperties(target: Layer, properties: string[]): string {
     return elements.filter(e => !!e).join('\n');
 }
 
-function fillTypeContent(fillJSON: FillData) {
+function fillTypeContent(fillJSON: SMFillData) {
     if (fillJSON.fillType == "Color") {
         return fillJSON.color[context.configs.format];
     }

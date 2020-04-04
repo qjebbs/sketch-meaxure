@@ -1,4 +1,4 @@
-import { logger } from "../api/logger";
+import { logger } from "./logger";
 
 let globalShouldKeepAround = false;
 let requested: { [key: string]: boolean } = {};

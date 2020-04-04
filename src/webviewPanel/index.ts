@@ -1,6 +1,6 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
-import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from '../state/keepAround';
-import { logger } from '../api/logger';
+import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from '../meaxure/common/keepAround';
+import { logger } from '../meaxure/common/logger';
 import { meaxure, wrapWebViewScripts } from './webviewScripts';
 
 export interface WebviewPanelOptions {
@@ -15,7 +15,6 @@ interface Webview {
     windowScriptObject(): any;
     mainFrameURL();
 }
-
 
 interface PanelMessageBase<T> {
     __MESSAGE_TYPE__: string;

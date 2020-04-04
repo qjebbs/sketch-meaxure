@@ -1,14 +1,13 @@
-import { ArtboardData, LayerData, SMType, LayerStates } from "../../api/interfaces";
+import { ArtboardData, LayerData, SMType, LayerStates } from "../interfaces";
 import { sketch } from "../../sketch";
-import { toHTMLEncode } from "../../api/helper";
-import { emojiToEntities } from "../../api/api";
+import { toHTMLEncode, emojiToEntities } from "../helpers/helper";
 import { getTextFragment } from "./textFragment";
 import { updateMaskStackBeforeLayer, applyMasks, updateMaskStackAfterLayer } from "./mask";
-import { getLayerRadius, getBordersFromStyle, getFillsFromStyle, getShadowsFromStyle, parseColor } from "../../api/styles";
-import { SMRect } from "../../api/interfaces-deprecated";
+import { getLayerRadius, getBordersFromStyle, getFillsFromStyle, getShadowsFromStyle, parseColor } from "../helpers/styles";
+import { SMRect } from "../interfaces";
 import { getSlice } from "./slice";
 import { makeNote } from "./note";
-import { regexNames } from "../../state/common";
+import { regexNames } from "../common/common";
 import { getSymbol } from "./symbol";
 
 export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
