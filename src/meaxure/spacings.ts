@@ -6,7 +6,7 @@ import { drawSize } from "./size";
 import { logger } from "./common/logger";
 import { localize } from "./common/language";
 import { sketch } from "../sketch";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 
 export function drawSpacings(position?: string) {
@@ -89,7 +89,7 @@ function drawHorizontal(root: Group, layerName: string, from: SMRect, to: SMRect
     tmp.y = from.y;
     tmp.width = to.x - tmp.x;
     tmp.height = from.height;
-    drawSpacingShape(root, tmp, LayerVerticalAlignment.middle, layerName);
+    drawSpacingShape(root, tmp, EdgeVertical.middle, layerName);
 }
 
 function drawVertical(root: Group, layerName: string, from: SMRect, to: SMRect) {
@@ -109,7 +109,7 @@ function drawVertical(root: Group, layerName: string, from: SMRect, to: SMRect) 
     tmp.y = from.y + from.height;
     tmp.width = from.width;
     tmp.height = to.y - tmp.y;
-    drawSpacingShape(root, tmp, LayerAlignment.center, layerName);
+    drawSpacingShape(root, tmp, Edge.center, layerName);
 }
 
 function drawTop(root: Group, layerName: string, from: SMRect, to: SMRect) {
@@ -129,7 +129,7 @@ function drawTop(root: Group, layerName: string, from: SMRect, to: SMRect) {
     tmp.y = to.y;
     tmp.width = from.width;
     tmp.height = from.y - to.y;
-    drawSpacingShape(root, tmp, LayerAlignment.center, layerName);
+    drawSpacingShape(root, tmp, Edge.center, layerName);
 }
 
 function drawBottom(root: Group, layerName: string, from: SMRect, to: SMRect) {
@@ -149,7 +149,7 @@ function drawBottom(root: Group, layerName: string, from: SMRect, to: SMRect) {
     tmp.y = from.y + from.height;
     tmp.width = from.width;
     tmp.height = to.y + to.height - from.y - from.height;
-    drawSpacingShape(root, tmp, LayerAlignment.center, layerName);
+    drawSpacingShape(root, tmp, Edge.center, layerName);
 }
 
 function drawLeft(root: Group, layerName: string, from: SMRect, to: SMRect) {
@@ -169,7 +169,7 @@ function drawLeft(root: Group, layerName: string, from: SMRect, to: SMRect) {
     tmp.y = from.y;
     tmp.width = from.x - to.x;
     tmp.height = from.height;
-    drawSpacingShape(root, tmp, LayerVerticalAlignment.middle, layerName);
+    drawSpacingShape(root, tmp, EdgeVertical.middle, layerName);
 }
 
 function drawRight(root: Group, layerName: string, from: SMRect, to: SMRect) {
@@ -189,12 +189,12 @@ function drawRight(root: Group, layerName: string, from: SMRect, to: SMRect) {
     tmp.y = from.y;
     tmp.width = to.x + to.width - from.x - from.width;
     tmp.height = from.height;
-    drawSpacingShape(root, tmp, LayerVerticalAlignment.middle, layerName);
+    drawSpacingShape(root, tmp, EdgeVertical.middle, layerName);
 }
 
 function drawSpacingShape(
     root: Group, frame: SMRect,
-    drawSizePosition: LayerAlignment | LayerVerticalAlignment, layerName: string
+    drawSizePosition: Edge | EdgeVertical, layerName: string
 ) {
     let tempShape = new sketch.ShapePath({ parent: root })
     tempShape.frame = new sketch.Rectangle(frame.x, frame.y, frame.width, frame.height);

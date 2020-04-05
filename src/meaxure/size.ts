@@ -4,16 +4,16 @@ import { localize } from "./common/language";
 import { sketch } from "../sketch";
 import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 import { createLabel, createMeter } from "./helpers/elements";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { lengthUnit } from "./helpers/helper";
-import { ResizingConstraint } from "../sketch/resizingConstraint";
+import { ResizingConstraint } from "../sketch/layer/resizingConstraint";
 
-export function drawSizes(position: LayerAlignment | LayerVerticalAlignment) {
+export function drawSizes(position: Edge | EdgeVertical) {
     if (context.selection.length <= 0) {
         sketch.UI.message(localize("Select any layer to mark!"));
         return false;
     }
-    position = position || LayerVerticalAlignment.top;
+    position = position || EdgeVertical.top;
     for (let layer of context.selection.layers) {
         drawSize(layer, position, {
             background: sharedLayerStyle(context.document, "Sketch MeaXure / Size", colors.size.shape),
@@ -24,16 +24,16 @@ export function drawSizes(position: LayerAlignment | LayerVerticalAlignment) {
 
 export function drawSize(
     layer: Layer,
-    position: LayerAlignment | LayerVerticalAlignment,
+    position: Edge | EdgeVertical,
     options: {
         background: SharedStyle,
         foreground: SharedStyle,
         name?: string,
     }
 ): void {
-    let sizeType = position === LayerVerticalAlignment.top ||
-        position === LayerVerticalAlignment.middle ||
-        position === LayerVerticalAlignment.bottom ?
+    let sizeType = position === EdgeVertical.top ||
+        position === EdgeVertical.middle ||
+        position === EdgeVertical.bottom ?
         "width" : "height";
     options.name = options.name || "#" + sizeType + "-" + position + "-" + layer.id;
     let artboard = layer.getParentArtboard();
@@ -67,7 +67,7 @@ export function drawSize(
         background: options.background
     })
     meter.alignToByPostion(layer, position)
-    label.alignToByPostion(meter, LayerAlignment.center);
+    label.alignToByPostion(meter, Edge.center);
     label.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
     if (sizeType == 'width') {
         meter.resizingConstraint = ResizingConstraint.left &

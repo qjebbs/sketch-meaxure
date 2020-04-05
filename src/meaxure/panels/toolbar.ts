@@ -3,7 +3,7 @@ import { logger } from "../common/logger";
 import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "../..";
 import { localize } from "../common/language";
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../common/keepAround";
-import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
+import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 
 const keepAroundID = uuidv4();
 function getImage(name: string, state?: string) {
@@ -180,13 +180,13 @@ export function markToolbar() {
     controls.push(
         addButton(
             makeRect(), "Label on top", "properties-top", "normal",
-            () => (context.runningConfig.placement = LayerVerticalAlignment.top) && commandProperties(null)
+            () => (context.runningConfig.placement = EdgeVertical.top) && commandProperties(null)
         )
     );
     controls.push(
         addButton(
             makeRect(), "Label on right", "properties-right", "normal",
-            () => (context.runningConfig.placement = LayerAlignment.right) && commandProperties(null)
+            () => (context.runningConfig.placement = Edge.right) && commandProperties(null)
         )
     );
     controls.push(
@@ -198,13 +198,13 @@ export function markToolbar() {
     controls.push(
         addButton(
             makeRect(), "Label on bottom", "properties-bottom", "normal",
-            () => (context.runningConfig.placement = LayerVerticalAlignment.bottom) && commandProperties(null)
+            () => (context.runningConfig.placement = EdgeVertical.bottom) && commandProperties(null)
         )
     );
     controls.push(
         addButton(
             makeRect(), "Label on left", "properties-left", "normal",
-            () => (context.runningConfig.placement = LayerAlignment.left) && commandProperties(null)
+            () => (context.runningConfig.placement = Edge.left) && commandProperties(null)
         )
     );
     newLine();

@@ -3,7 +3,7 @@ import { colors } from "./common/common";
 import { context } from "./common/context";
 import { sketch } from "../sketch";
 import { sharedLayerStyle } from "./helpers/styles";
-import { ResizingConstraint } from "../sketch/resizingConstraint";
+import { ResizingConstraint } from "../sketch/layer/resizingConstraint";
 export function markOverlays() {
     let selection = context.selection;
     if (selection.length <= 0) {

@@ -1,7 +1,7 @@
 import { ArtboardData } from "../interfaces"; import { sketch } from "../../sketch";
 import { tempCreatedLayers } from ".";
 import { getLayerData } from "./layerData";
-import { TextFragment } from "../../sketch/text";
+import { TextFragment } from "../../sketch/text/textFragment";
 
 export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardData) {
     if (layer.type != sketch.Types.Text) return;

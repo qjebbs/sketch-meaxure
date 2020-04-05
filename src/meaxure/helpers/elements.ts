@@ -1,7 +1,7 @@
 import { sketch } from "../../sketch";
-import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
+import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 import { TextBehaviour } from "../../sketch/text";
-import { ResizingConstraint } from "../../sketch/resizingConstraint";
+import { ResizingConstraint } from "../../sketch/layer/resizingConstraint";
 
 export function createMeter(
     size: number,
@@ -44,13 +44,13 @@ function createMeterHorizontal(
     let end = start.duplicate();
     start.alignTo(
         body,
-        { from: LayerAlignment.left, to: LayerAlignment.left },
-        { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle }
+        { from: Edge.left, to: Edge.left },
+        { from: EdgeVertical.middle, to: EdgeVertical.middle }
     )
     end.alignTo(
         body,
-        { from: LayerAlignment.right, to: LayerAlignment.right },
-        { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle }
+        { from: Edge.right, to: Edge.right },
+        { from: EdgeVertical.middle, to: EdgeVertical.middle }
     )
     start.resizingConstraint = ResizingConstraint.left &
         ResizingConstraint.width &
@@ -91,13 +91,13 @@ function createMeterVertical(
     let end = start.duplicate();
     start.alignTo(
         body,
-        { from: LayerAlignment.center, to: LayerAlignment.center },
-        { from: LayerVerticalAlignment.top, to: LayerVerticalAlignment.top }
+        { from: Edge.center, to: Edge.center },
+        { from: EdgeVertical.top, to: EdgeVertical.top }
     )
     end.alignTo(
         body,
-        { from: LayerAlignment.center, to: LayerAlignment.center },
-        { from: LayerVerticalAlignment.bottom, to: LayerVerticalAlignment.bottom }
+        { from: Edge.center, to: Edge.center },
+        { from: EdgeVertical.bottom, to: EdgeVertical.bottom }
     )
     start.resizingConstraint = ResizingConstraint.top &
         ResizingConstraint.width &
@@ -147,8 +147,8 @@ export function createLabel(
 
     text.alignTo(
         box,
-        { from: LayerAlignment.center, to: LayerAlignment.center },
-        { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
+        { from: Edge.center, to: Edge.center },
+        { from: EdgeVertical.middle, to: EdgeVertical.middle },
     )
     container.adjustToFit();
     return container;
@@ -161,7 +161,7 @@ export function createBubble(
         foreground?: SharedStyle,
         background?: SharedStyle,
         padding?: number,
-        bubblePosition?: LayerAlignment | LayerVerticalAlignment,
+        bubblePosition?: Edge | EdgeVertical,
     }
 ): Group {
 
@@ -184,38 +184,38 @@ export function createBubble(
         padding: options.padding,
     });
     let arrowConstraint: ResizingConstraint;
-    let placement = options.bubblePosition || LayerAlignment.right;
+    let placement = options.bubblePosition || Edge.right;
 
     switch (placement) {
-        case LayerVerticalAlignment.top:
+        case EdgeVertical.top:
             arrow.alignTo(
                 label,
-                { from: LayerAlignment.center, to: LayerAlignment.center },
-                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.bottom },
+                { from: Edge.center, to: Edge.center },
+                { from: EdgeVertical.middle, to: EdgeVertical.bottom },
             )
             arrowConstraint = ResizingConstraint.bottom;
             break;
-        case LayerAlignment.right:
+        case Edge.right:
             arrow.alignTo(
                 label,
-                { from: LayerAlignment.center, to: LayerAlignment.left },
-                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
+                { from: Edge.center, to: Edge.left },
+                { from: EdgeVertical.middle, to: EdgeVertical.middle },
             )
             arrowConstraint = ResizingConstraint.left;
             break;
-        case LayerVerticalAlignment.bottom:
+        case EdgeVertical.bottom:
             arrow.alignTo(
                 label,
-                { from: LayerAlignment.center, to: LayerAlignment.center },
-                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.top },
+                { from: Edge.center, to: Edge.center },
+                { from: EdgeVertical.middle, to: EdgeVertical.top },
             )
             arrowConstraint = ResizingConstraint.top;
             break;
-        case LayerAlignment.left:
+        case Edge.left:
             arrow.alignTo(
                 label,
-                { from: LayerAlignment.center, to: LayerAlignment.right },
-                { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
+                { from: Edge.center, to: Edge.right },
+                { from: EdgeVertical.middle, to: EdgeVertical.middle },
             )
             arrowConstraint = ResizingConstraint.right;
             break;

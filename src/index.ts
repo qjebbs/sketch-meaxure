@@ -12,7 +12,7 @@ import { drawSizes } from "./meaxure/size";
 import { drawSpacings } from "./meaxure/spacings";
 import { toggleHidden, toggleLocked, clearAllMarks } from "./meaxure/manage";
 import { sketch } from "./sketch";
-import { LayerVerticalAlignment, LayerAlignment } from "./sketch/alignment";
+import { EdgeVertical, Edge } from "./sketch/layer/alignment";
 
 function runAndCatch(fn: Function, context, ...args) {
     try {
@@ -35,12 +35,12 @@ export function commandSettings(context?) { runAndCatch(settingsPanel, context);
 export function commandToolbar(context) { runAndCatch(markToolbar, context); }
 export function commandOverlays(context?) { runAndCatch(markOverlays, context); }
 export function commandSizes(context?) { commandSizeTop(context); commandSizeRight(context); }
-export function commandSizeTop(context?) { runAndCatch(drawSizes, context, LayerVerticalAlignment.top); }
-export function commandSizeMiddle(context?) { runAndCatch(drawSizes, context, LayerVerticalAlignment.middle); }
-export function commandSizeBottom(context?) { runAndCatch(drawSizes, context, LayerVerticalAlignment.bottom); }
-export function commandSizeLeft(context?) { runAndCatch(drawSizes, context, LayerAlignment.left); }
-export function commandSizeCenter(context?) { runAndCatch(drawSizes, context, LayerAlignment.center); }
-export function commandSizeRight(context?) { runAndCatch(drawSizes, context, LayerAlignment.right); }
+export function commandSizeTop(context?) { runAndCatch(drawSizes, context, EdgeVertical.top); }
+export function commandSizeMiddle(context?) { runAndCatch(drawSizes, context, EdgeVertical.middle); }
+export function commandSizeBottom(context?) { runAndCatch(drawSizes, context, EdgeVertical.bottom); }
+export function commandSizeLeft(context?) { runAndCatch(drawSizes, context, Edge.left); }
+export function commandSizeCenter(context?) { runAndCatch(drawSizes, context, Edge.center); }
+export function commandSizeRight(context?) { runAndCatch(drawSizes, context, Edge.right); }
 export function commandSpacings(context?) { runAndCatch(drawSpacings, context); }
 export function commandSpacingVertical(context?) { runAndCatch(drawSpacings, context, "vertical"); }
 export function commandSpacingHorizontal(context?) { runAndCatch(drawSpacings, context, "horizontal"); }

@@ -7,7 +7,7 @@ import { sketch } from "../sketch";
 import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "./helpers/styles";
 import { SMFillData, SMShadow } from "./interfaces";
 import { createBubble } from "./helpers/elements";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 
 export async function markProperties() {
     let selection = context.selection;
@@ -37,13 +37,13 @@ export function liteProperties() {
     for (let target of selection) {
         properties({
             target: target,
-            placement: LayerAlignment.right,
+            placement: Edge.right,
             properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "font-face", "character", "line-height", "paragraph", "style-name"]
         });
     }
 }
 
-function properties(options: { target: Layer, placement: LayerAlignment | LayerVerticalAlignment, properties?: string[], content?: string }) {
+function properties(options: { target: Layer, placement: Edge | EdgeVertical, properties?: string[], content?: string }) {
     options = Object.assign({
         placement: "top",
         properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph", "style-name"]

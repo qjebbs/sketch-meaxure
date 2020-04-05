@@ -3,10 +3,10 @@ import { context } from "./common/context";
 import { localize } from "./common/language";
 import { sketch } from "../sketch";
 import { createLabel } from "./helpers/elements";
-import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
+import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 import { lengthUnit } from "./helpers/helper";
-import { ResizingConstraint } from "../sketch/resizingConstraint";
+import { ResizingConstraint } from "../sketch/layer/resizingConstraint";
 
 export function drawCoordinate() {
     if (context.selection.length <= 0) {
@@ -41,7 +41,7 @@ function coordinateLayer(layer: Layer) {
     crossX.style = layerStyle.style;
     let crossY = crossX.duplicate();
     crossY.transform.rotation = 90;
-    crossY.alignToByPostion(crossX, LayerAlignment.center);
+    crossY.alignToByPostion(crossX, Edge.center);
     cross.adjustToFit();
 
     let posX = lengthUnit(layerRect.x - artboardRect.x);
@@ -54,8 +54,8 @@ function coordinateLayer(layer: Layer) {
         background: layerStyle
     });
     label.alignTo(cross,
-        { from: LayerAlignment.left, to: LayerAlignment.center },
-        { from: LayerVerticalAlignment.top, to: LayerVerticalAlignment.middle }
+        { from: Edge.left, to: Edge.center },
+        { from: EdgeVertical.top, to: EdgeVertical.middle }
     );
     label.frame.offset(2, 2);
 

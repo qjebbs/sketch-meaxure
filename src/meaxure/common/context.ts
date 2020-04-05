@@ -2,7 +2,7 @@ import { initLanguage } from "./language";
 import * as path from '@skpm/path';
 import { ConfigsMaster } from "./config";
 import { sketch } from "../../sketch";
-import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
+import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 
 interface RunningConfig {
     order: string;
@@ -10,7 +10,7 @@ interface RunningConfig {
     exportOption: boolean;
     colors: any;
     sizes: any;
-    placement: LayerAlignment | LayerVerticalAlignment; //property placement
+    placement: Edge | EdgeVertical; //property placement
 }
 
 interface Context {

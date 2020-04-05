@@ -1,6 +1,6 @@
-import { sketch } from ".";
+import { sketch } from "..";
 import { alignLayers, alignLayersByPosition } from "./alignment";
-import { LayerAlignment, LayerVerticalAlignment } from "./alignment";
+import { Edge, EdgeVertical } from "./alignment";
 import { getResizingConstraint, setResizingConstraint } from "./resizingConstraint";
 
 declare module 'sketch/sketch' {
@@ -14,10 +14,10 @@ declare module 'sketch/sketch' {
             allSubLayers(): Layer[];
             alignTo(
                 layer: Layer,
-                horizontal?: { from: LayerAlignment, to: LayerAlignment } | boolean,
-                vertical?: { from: LayerVerticalAlignment, to: LayerVerticalAlignment } | boolean
+                horizontal?: { from: Edge, to: Edge } | boolean,
+                vertical?: { from: EdgeVertical, to: EdgeVertical } | boolean
             ): void;
-            alignToByPostion(layer: Layer, position: LayerAlignment | LayerVerticalAlignment): void;
+            alignToByPostion(layer: Layer, position: Edge | EdgeVertical): void;
         }
     }
 }
@@ -91,12 +91,12 @@ export function extendLayer() {
     }
     target.alignTo = function (
         layer: Layer,
-        horizontal?: { from: LayerAlignment, to: LayerAlignment } | boolean,
-        vertical?: { from: LayerVerticalAlignment, to: LayerVerticalAlignment } | boolean
+        horizontal?: { from: Edge, to: Edge } | boolean,
+        vertical?: { from: EdgeVertical, to: EdgeVertical } | boolean
     ) {
         alignLayers(this, layer, horizontal, vertical);
     };
-    target.alignToByPostion = function (layer: Layer, position: LayerAlignment | LayerVerticalAlignment) {
+    target.alignToByPostion = function (layer: Layer, position: Edge | EdgeVertical) {
         alignLayersByPosition(this, layer, position);
     };
 }
