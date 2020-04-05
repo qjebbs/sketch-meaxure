@@ -25,7 +25,7 @@ export async function exportSpecification() {
     let results = await exportPanel();
     if (!results) return;
     if (results.selectionArtboards.length <= 0) return false;
-    let document = sketch.Document.fromNative(context.document);
+    let document = context.document;
     savePath = sketch.UI.savePanel(
         localize("Export spec"),
         localize("Export to:"),
