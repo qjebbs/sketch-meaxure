@@ -1,5 +1,7 @@
 import { sketch } from "../../sketch";
 import { LayerAlignment, LayerVerticalAlignment } from "../../sketch/alignment";
+import { TextBehaviour } from "../../sketch/text";
+import { ResizingConstraint } from "../../sketch/resizingConstraint";
 
 export function createMeter(
     size: number,
@@ -50,6 +52,15 @@ function createMeterHorizontal(
         { from: LayerAlignment.right, to: LayerAlignment.right },
         { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle }
     )
+    start.resizingConstraint = ResizingConstraint.left &
+        ResizingConstraint.width &
+        ResizingConstraint.height
+    end.resizingConstraint = ResizingConstraint.right &
+        ResizingConstraint.width &
+        ResizingConstraint.height
+    body.resizingConstraint = ResizingConstraint.left &
+        ResizingConstraint.right &
+        ResizingConstraint.height
     container.adjustToFit();
     return container;
 }
@@ -88,6 +99,15 @@ function createMeterVertical(
         { from: LayerAlignment.center, to: LayerAlignment.center },
         { from: LayerVerticalAlignment.bottom, to: LayerVerticalAlignment.bottom }
     )
+    start.resizingConstraint = ResizingConstraint.top &
+        ResizingConstraint.width &
+        ResizingConstraint.height
+    end.resizingConstraint = ResizingConstraint.bottom &
+        ResizingConstraint.width &
+        ResizingConstraint.height
+    body.resizingConstraint = ResizingConstraint.top &
+        ResizingConstraint.bottom &
+        ResizingConstraint.width
     container.adjustToFit();
     return container;
 }
@@ -113,6 +133,11 @@ export function createLabel(
         box.sharedStyle = options.background;
         box.style = options.background.style;
     }
+    text.textBehaviour = TextBehaviour.fixedSize;
+    text.resizingConstraint = ResizingConstraint.top &
+        ResizingConstraint.bottom &
+        ResizingConstraint.left &
+        ResizingConstraint.right;
     // set radius
     box.points.forEach(p => p.cornerRadius = 2);
 
@@ -158,6 +183,7 @@ export function createBubble(
         background: options.background,
         padding: options.padding,
     });
+    let arrowConstraint: ResizingConstraint;
     let placement = options.bubblePosition || LayerAlignment.right;
 
     switch (placement) {
@@ -167,6 +193,7 @@ export function createBubble(
                 { from: LayerAlignment.center, to: LayerAlignment.center },
                 { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.bottom },
             )
+            arrowConstraint = ResizingConstraint.bottom;
             break;
         case LayerAlignment.right:
             arrow.alignTo(
@@ -174,6 +201,7 @@ export function createBubble(
                 { from: LayerAlignment.center, to: LayerAlignment.left },
                 { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
+            arrowConstraint = ResizingConstraint.left;
             break;
         case LayerVerticalAlignment.bottom:
             arrow.alignTo(
@@ -181,6 +209,7 @@ export function createBubble(
                 { from: LayerAlignment.center, to: LayerAlignment.center },
                 { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.top },
             )
+            arrowConstraint = ResizingConstraint.top;
             break;
         case LayerAlignment.left:
             arrow.alignTo(
@@ -188,10 +217,18 @@ export function createBubble(
                 { from: LayerAlignment.center, to: LayerAlignment.right },
                 { from: LayerVerticalAlignment.middle, to: LayerVerticalAlignment.middle },
             )
+            arrowConstraint = ResizingConstraint.right;
             break;
         default:
             break;
     }
+    arrow.resizingConstraint = arrowConstraint &
+        ResizingConstraint.width &
+        ResizingConstraint.height;
+    label.resizingConstraint = ResizingConstraint.top &
+        ResizingConstraint.bottom &
+        ResizingConstraint.left &
+        ResizingConstraint.right;
     container.adjustToFit();
     return container;
 }

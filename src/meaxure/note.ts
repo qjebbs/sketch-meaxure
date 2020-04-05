@@ -29,5 +29,7 @@ function note(target: Text) {
         background: background,
     })
     note.alignTo(target, true, true);
+    if (note.frame.width > 100) note.frame.width = 100;
+    if (note.frame.height > 100) note.frame.height = 100;
     target.remove();
 }

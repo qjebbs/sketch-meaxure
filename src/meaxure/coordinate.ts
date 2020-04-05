@@ -6,6 +6,7 @@ import { createLabel } from "./helpers/elements";
 import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 import { lengthUnit } from "./helpers/helper";
+import { ResizingConstraint } from "../sketch/resizingConstraint";
 
 export function drawCoordinate() {
     if (context.selection.length <= 0) {
@@ -57,6 +58,13 @@ function coordinateLayer(layer: Layer) {
         { from: LayerVerticalAlignment.top, to: LayerVerticalAlignment.middle }
     );
     label.frame.offset(2, 2);
+
+    cross.resizingConstraint = ResizingConstraint.width &
+        ResizingConstraint.height &
+        ResizingConstraint.left &
+        ResizingConstraint.top;
+    label.resizingConstraint = cross.resizingConstraint;
+
     container.adjustToFit();
     container.frame.x = layerRect.x - 8;
     container.frame.y = layerRect.y - 8;

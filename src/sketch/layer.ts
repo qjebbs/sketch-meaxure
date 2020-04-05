@@ -1,6 +1,7 @@
 import { sketch } from ".";
 import { alignLayers, alignLayersByPosition } from "./alignment";
 import { LayerAlignment, LayerVerticalAlignment } from "./alignment";
+import { getResizingConstraint, setResizingConstraint } from "./resizingConstraint";
 
 declare module 'sketch/sketch' {
     namespace _Sketch {
@@ -9,6 +10,7 @@ declare module 'sketch/sketch' {
             shouldBreakMaskChain: boolean;
             hasClippingMask: boolean;
             CSSAttributes: string[];
+            resizingConstraint: number;
             allSubLayers(): Layer[];
             alignTo(
                 layer: Layer,
@@ -60,6 +62,14 @@ export function extendLayer() {
                 css.push(attribute);
             }
             return css;
+        }
+    });
+    Object.defineProperty(target, "resizingConstraint", {
+        get: function (): number {
+            return getResizingConstraint(this);
+        },
+        set: function (value: number) {
+            setResizingConstraint(this, value);
         }
     });
     target.allSubLayers = function (): Layer[] {

@@ -6,6 +6,7 @@ import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 import { createLabel, createMeter } from "./helpers/elements";
 import { LayerAlignment, LayerVerticalAlignment } from "../sketch/alignment";
 import { lengthUnit } from "./helpers/helper";
+import { ResizingConstraint } from "../sketch/resizingConstraint";
 
 export function drawSizes(position: LayerAlignment | LayerVerticalAlignment) {
     if (context.selection.length <= 0) {
@@ -67,6 +68,16 @@ export function drawSize(
     })
     meter.alignToByPostion(layer, position)
     label.alignToByPostion(meter, LayerAlignment.center);
+    label.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
+    if (sizeType == 'width') {
+        meter.resizingConstraint = ResizingConstraint.left &
+            ResizingConstraint.right &
+            ResizingConstraint.height
+    } else {
+        meter.resizingConstraint = ResizingConstraint.top &
+            ResizingConstraint.bottom &
+            ResizingConstraint.width
+    }
     container.adjustToFit();
 }
 

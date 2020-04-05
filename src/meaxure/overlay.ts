@@ -3,6 +3,7 @@ import { colors } from "./common/common";
 import { context } from "./common/context";
 import { sketch } from "../sketch";
 import { sharedLayerStyle } from "./helpers/styles";
+import { ResizingConstraint } from "../sketch/resizingConstraint";
 export function markOverlays() {
     let selection = context.selection;
     if (selection.length <= 0) {
@@ -29,5 +30,9 @@ function overlay(target: Layer) {
     overlay.frame = target.frame;
     overlay.sharedStyle = overlayStyle;
     overlay.style = overlayStyle.style;
+    overlay.resizingConstraint = ResizingConstraint.top &
+        ResizingConstraint.bottom &
+        ResizingConstraint.left &
+        ResizingConstraint.right;
     container.adjustToFit();
 }
