@@ -3,6 +3,7 @@ import * as path from '@skpm/path';
 import { ConfigsMaster } from "./config";
 import { sketch } from "../../sketch";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
+import { MeaxureStyles } from "../meaxureStyles";
 
 interface RunningConfig {
     order: string;
@@ -31,6 +32,7 @@ interface SMContext {
     configs: ConfigsMaster;
     runningConfig: RunningConfig;
     languageData: string;
+    meaxureStyles: MeaxureStyles;
 }
 
 export let context: SMContext = undefined;
@@ -62,6 +64,7 @@ export function updateContext(ctx?: Context) {
         context.artboard = sketch.Artboard.fromNative(context.page.sketchObject.currentArtboard());
         context.current = context.artboard || context.page;
         context.selection = context.document.selectedLayers;
+        context.meaxureStyles = new MeaxureStyles(context.document);
     }
     return context;
 }

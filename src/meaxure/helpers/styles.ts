@@ -2,57 +2,6 @@ import { BorderData, SMFillData, SMShadow } from "../interfaces";
 import { SMColor } from "../interfaces";
 import { sketch } from "../../sketch";
 
-
-export function sharedTextStyle(
-    document: Document,
-    name: string,
-    color: string,
-    // alignment?: number
-): SharedStyle {
-    let sharedStyles = document.sharedTextStyles;
-    let sharedStyle = sharedStyles.find(s => s.name == name);
-    if (!sharedStyle) {
-        let text = new sketch.Text({ text: 'temp' });
-        let style = text.style;
-        // style.alignment = alignment;
-        style.textColor = color;
-        style.fontSize = 12;
-        sharedStyle = sketch.SharedStyle.fromStyle({ name: name, document: document, style: style });
-        text.remove();
-    }
-    return sharedStyle;
-
-}
-
-export function sharedLayerStyle(document: Document, name, color: string, borderColor?: string): SharedStyle {
-    let sharedStyle = document.sharedLayerStyles.find(s => s.name == name);
-
-    if (!sharedStyle) {
-        let tmp = new sketch.ShapePath({});
-        let style = tmp.style;
-        sketch.Style
-        style.fills = [
-            <Fill>{
-                enabled: true,
-                fillType: sketch.Style.FillType.Color,
-                color: color,
-            }
-        ];
-        if (borderColor) {
-            style.borders = [
-                <Border>{
-                    enabled: true,
-                    color: borderColor,
-                    thickness: 1,
-                    position: sketch.Style.BorderPosition.Inside,
-                }
-            ]
-        }
-        sharedStyle = sketch.SharedStyle.fromStyle({ name: name, document: document, style: style });
-    }
-    return sharedStyle;
-}
-
 export function getBordersFromStyle(style: Style): BorderData[] {
     let bordersData: BorderData[] = [];
     for (let border of style.borders) {

@@ -2,9 +2,8 @@ import { localize } from "./common/language";
 import { convertUnit } from "./helpers/helper";
 import { propertiesPanel } from "./panels/propertiesPanel";
 import { context } from "./common/context";
-import { colors } from "./common/common";
 import { sketch } from "../sketch";
-import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle, sharedTextStyle, sharedLayerStyle } from "./helpers/styles";
+import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle } from "./helpers/styles";
 import { SMFillData, SMShadow } from "./interfaces";
 import { createBubble } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
@@ -64,8 +63,8 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
         {
             name: name,
             parent: root,
-            foreground: sharedTextStyle(context.document, "Sketch MeaXure / Property", colors.property.text),
-            background: sharedLayerStyle(context.document, "Sketch MeaXure / Property", colors.property.shape),
+            foreground: context.meaxureStyles.property.foreground,
+            background: context.meaxureStyles.property.background,
             bubblePosition: options.placement,
         }
     )

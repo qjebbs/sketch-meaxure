@@ -1,9 +1,7 @@
 import { localize } from "./common/language";
-import { colors } from "./common/common";
 import { context } from "./common/context";
 import { sketch } from "../sketch";
 import { createLabel } from "./helpers/elements";
-import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 
 export function markNote() {
     let selection = context.selection;
@@ -17,8 +15,8 @@ export function markNote() {
     }
 }
 function note(target: Text) {
-    let background = sharedLayerStyle(context.document, "Sketch MeaXure / Note", colors.note.shape, colors.note.border);
-    let foreground = sharedTextStyle(context.document, "Sketch MeaXure / Note", colors.note.text);
+    let background = context.meaxureStyles.note.background;
+    let foreground = context.meaxureStyles.note.foreground;
     let root = target.getParentArtboard() || target.getParentPage();
     let name = "#note-" + new Date().getTime();
 

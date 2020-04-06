@@ -1,8 +1,6 @@
 import { context } from "./common/context";
-import { colors } from "./common/common";
 import { localize } from "./common/language";
 import { sketch } from "../sketch";
-import { sharedLayerStyle, sharedTextStyle } from "./helpers/styles";
 import { createLabel, createMeter } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { lengthUnit } from "./helpers/helper";
@@ -16,8 +14,8 @@ export function drawSizes(position: Edge | EdgeVertical) {
     position = position || EdgeVertical.top;
     for (let layer of context.selection.layers) {
         drawSize(layer, position, {
-            background: sharedLayerStyle(context.document, "Sketch MeaXure / Size", colors.size.shape),
-            foreground: sharedTextStyle(context.document, "Sketch MeaXure / Size", colors.size.text)
+            background: context.meaxureStyles.size.background,
+            foreground: context.meaxureStyles.size.foreground
         });
     }
 }
