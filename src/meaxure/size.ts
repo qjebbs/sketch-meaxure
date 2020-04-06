@@ -74,7 +74,11 @@ export function drawSizeForFrame(
         foreground: options.foreground,
         background: options.background
     })
-    meter.alignToByPostion(frame, position)
+    meter.alignToByPostion(
+        // expand the frame so that the meter offsets to target by 1px;
+        new sketch.Rectangle(frame.x - 1, frame.y - 1, frame.width + 2, frame.height + 2),
+        position
+    );
     label.alignToByPostion(meter, Edge.center);
     label.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
     if (isHorizontal) {
