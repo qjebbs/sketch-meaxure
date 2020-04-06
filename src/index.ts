@@ -5,7 +5,7 @@ import { markToolbar } from "./meaxure/panels/toolbar";
 import { openURL } from "./meaxure/helpers/helper";
 import { exportSpecification } from "./meaxure/export";
 import { markNote } from "./meaxure/note";
-import { liteProperties, markProperties } from "./meaxure/properties";
+import { markPropertiesAll } from "./meaxure/properties";
 import { markOverlays } from "./meaxure/overlay";
 import { drawCoordinate } from "./meaxure/coordinate";
 import { drawSizes } from "./meaxure/size";
@@ -13,22 +13,6 @@ import { drawSpacings } from "./meaxure/spacings";
 import { toggleHidden, toggleLocked, clearAllMarks } from "./meaxure/manage";
 import { sketch } from "./sketch";
 import { EdgeVertical, Edge } from "./sketch/layer/alignment";
-
-function runAndCatch(fn: Function, context, ...args) {
-    try {
-        updateContext(context);
-        let returns = fn(...args);
-        if (returns instanceof Promise) {
-            returns.catch(error => showError(error))
-        }
-    } catch (error) {
-        showError(error);
-    }
-    function showError(error) {
-        logger.error(error);
-        sketch.UI.message(error);
-    }
-}
 
 export function commandInit(context) { updateContext(context); return false; }
 export function commandSettings(context?) { runAndCatch(settingsPanel, context); }
@@ -48,17 +32,7 @@ export function commandSpacingTop(context?) { runAndCatch(drawSpacings, context,
 export function commandSpacingBottom(context?) { runAndCatch(drawSpacings, context, "bottom"); }
 export function commandSpacingLeft(context?) { runAndCatch(drawSpacings, context, "left"); }
 export function commandSpacingRight(context?) { runAndCatch(drawSpacings, context, "right"); }
-export function commandProperties(context?) {
-    runAndCatch(() => {
-        // call from UI, or alt key pressed
-        if (!context || NSEvent.modifierFlags() == NSAlternateKeyMask) {
-            markProperties();
-        } else {
-            liteProperties();
-        }
-    }, context);
-
-}
+export function commandProperties(context?) { runAndCatch(markPropertiesAll, context); }
 export function commandNote(context?) { runAndCatch(markNote, context); }
 export function commandCoordinate(context?) { runAndCatch(drawCoordinate, context); }
 export function commandHidden(context?) { runAndCatch(toggleHidden, context); }
@@ -67,3 +41,19 @@ export function commandClear(context?) { runAndCatch(clearAllMarks, context); }
 export function commandExport(context?) { runAndCatch(exportSpecification, context); }
 export function linkFeedback(context?) { runAndCatch(openURL, context, "https://github.com/qjebbs/sketch-meaxure/issues"); }
 export function linkHome(context?) { runAndCatch(openURL, context, "https://github.com/qjebbs/sketch-meaxure"); }
+
+function runAndCatch(fn: Function, context, ...args) {
+    try {
+        updateContext(context);
+        let returns = fn(...args);
+        if (returns instanceof Promise) {
+            returns.catch(error => showError(error))
+        }
+    } catch (error) {
+        showError(error);
+    }
+    function showError(error) {
+        logger.error(error);
+        sketch.UI.message(error);
+    }
+}

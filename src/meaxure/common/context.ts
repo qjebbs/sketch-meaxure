@@ -5,20 +5,10 @@ import { sketch } from "../../sketch";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 import { MeaxureStyles } from "../meaxureStyles";
 
-interface RunningConfig {
-    order: string;
-    exportInfluenceRect: boolean;
-    exportOption: boolean;
-    colors: any;
-    sizes: any;
-    placement: Edge | EdgeVertical; //property placement
-}
-
 interface Context {
     document: any;
     selection: any;
     scriptPath: string;
-    api(): any;
 }
 
 interface SMContext {
@@ -30,7 +20,6 @@ interface SMContext {
     artboard: Artboard;
     current: Artboard | Page;
     configs: ConfigsMaster;
-    runningConfig: RunningConfig;
     languageData: string;
     meaxureStyles: MeaxureStyles;
 }
@@ -72,5 +61,4 @@ export function updateContext(ctx?: Context) {
 function initContextRunOnce() {
     context.resourcesRoot = path.resourcePath("");
     context.languageData = initLanguage();
-    context.runningConfig = <RunningConfig>{};
 }

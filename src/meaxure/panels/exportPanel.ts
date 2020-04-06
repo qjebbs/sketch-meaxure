@@ -59,7 +59,6 @@ export function exportPanel(): Promise<ExportConfig> {
                 }
             }
         }
-        context.runningConfig.order = rdata.order;
         resolve(<ExportConfig>{
             selectionArtboards: exportArtboards,
             allCount: layersCount,

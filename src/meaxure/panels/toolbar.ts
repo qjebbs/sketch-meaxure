@@ -1,9 +1,10 @@
 import { context } from "../common/context";
 import { logger } from "../common/logger";
-import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "../..";
+import { commandCoordinate, commandOverlays, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "../..";
 import { localize } from "../common/language";
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../../webviewPanel/keepAround";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
+import { markProperties } from "../properties";
 
 const keepAroundID = uuidv4();
 function getImage(name: string, state?: string) {
@@ -180,13 +181,13 @@ export function markToolbar() {
     controls.push(
         addButton(
             makeRect(), "Label on top", "properties-top", "normal",
-            () => (context.runningConfig.placement = EdgeVertical.top) && commandProperties(null)
+            () => markProperties(EdgeVertical.top)
         )
     );
     controls.push(
         addButton(
             makeRect(), "Label on right", "properties-right", "normal",
-            () => (context.runningConfig.placement = Edge.right) && commandProperties(null)
+            () => markProperties(Edge.right)
         )
     );
     controls.push(
@@ -198,13 +199,13 @@ export function markToolbar() {
     controls.push(
         addButton(
             makeRect(), "Label on bottom", "properties-bottom", "normal",
-            () => (context.runningConfig.placement = EdgeVertical.bottom) && commandProperties(null)
+            () => markProperties(EdgeVertical.bottom)
         )
     );
     controls.push(
         addButton(
             makeRect(), "Label on left", "properties-left", "normal",
-            () => (context.runningConfig.placement = Edge.left) && commandProperties(null)
+            () => markProperties(Edge.left)
         )
     );
     newLine();

@@ -8,7 +8,7 @@ import { SMFillData, SMShadow } from "./interfaces";
 import { createBubble } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 
-export async function markProperties() {
+export async function markProperties(position: Edge | EdgeVertical) {
     let selection = context.selection;
     if (selection.length <= 0) {
         sketch.UI.message(localize("Select a layer to mark!"));
@@ -19,13 +19,13 @@ export async function markProperties() {
     for (let target of selection.layers) {
         properties({
             target: target,
-            placement: context.runningConfig.placement,
+            placement: position,
             properties: context.configs.properties
         });
     }
 }
 
-export function liteProperties() {
+export function markPropertiesAll() {
     let selection = context.selection.layers;
 
     if (selection.length <= 0) {
