@@ -1,5 +1,3 @@
-import { logger } from "./logger";
-
 let globalShouldKeepAround = false;
 let requested: { [key: string]: boolean } = {};
 
@@ -8,7 +6,6 @@ export function coscriptKeepAround(requestID) {
     if (!globalShouldKeepAround) {
         coscript.setShouldKeepAround(true);
         globalShouldKeepAround = true;
-        logger.debug('coscript.setShouldKeepAround(true)')
     }
     requested[requestID] = true;
 }
@@ -21,7 +18,6 @@ export function coscriptNotKeepAround(requestID) {
     if (!Object.keys(requested).length && globalShouldKeepAround) {
         coscript.setShouldKeepAround(false);
         globalShouldKeepAround = false;
-        logger.debug('coscript.setShouldKeepAround(false)')
     }
 }
 

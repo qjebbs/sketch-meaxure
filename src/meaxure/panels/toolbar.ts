@@ -2,7 +2,7 @@ import { context } from "../common/context";
 import { logger } from "../common/logger";
 import { commandCoordinate, commandOverlays, commandProperties, commandSettings, commandHidden, commandLocked, commandClear, commandSizeMiddle, commandSizeTop, commandSizeBottom, commandSizeLeft, commandSizeCenter, commandSizeRight, commandSpacingVertical, commandSpacingHorizontal, commandSpacingTop, commandSpacingBottom, commandSpacingLeft, commandSpacingRight, commandNote, commandExport } from "../..";
 import { localize } from "../common/language";
-import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../common/keepAround";
+import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../../webviewPanel/keepAround";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 
 const keepAroundID = uuidv4();

@@ -1,5 +1,5 @@
 import { MochaJSDelegate } from './MochaJSDelegate';
-import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from '../meaxure/common/keepAround';
+import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from './keepAround';
 import { logger } from '../meaxure/common/logger';
 import { meaxure, wrapWebViewScripts } from './webviewScripts';
 
