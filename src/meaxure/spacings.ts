@@ -1,7 +1,7 @@
 import { context } from "./common/context";
 import { isIntersect, isIntersectX, isIntersectY } from "./helpers/helper";
 import { SMRect } from "./interfaces";
-import { drawSize } from "./size";
+import { drawSizeForFrame } from "./size";
 import { logger } from "./common/logger";
 import { localize } from "./common/language";
 import { sketch } from "../sketch";
@@ -35,35 +35,35 @@ function distance(layers: Layer[], position: string) {
     let toID = layerA.id;
     let from = context.configs.byInfluence ?
         layerA.frameInfluence :
-        layerA.frame.changeBasis({ from: layerA.parent, to: artboard });
+        layerA.frame.changeBasis({ from: layerA.parent, to: root });
     let to = context.configs.byInfluence ?
         layerB.frameInfluence :
-        layerB.frame.changeBasis({ from: layerB.parent, to: artboard });
+        layerB.frame.changeBasis({ from: layerB.parent, to: root });
 
     switch (position) {
         case "":
         case "horizontal":
-            drawHorizontal(artboard, "#spacing-horizontal-" + fromID + "-" + toID, from, to);
+            drawHorizontal(root, "#spacing-horizontal-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "vertical":
-            drawVertical(artboard, "#spacing-vertical-" + fromID + "-" + toID, from, to);
+            drawVertical(root, "#spacing-vertical-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "top":
-            drawTop(artboard, "#spacing-top-" + fromID + "-" + toID, from, to);
+            drawTop(root, "#spacing-top-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "bottom":
-            drawBottom(artboard, "#spacing-bottom-" + fromID + "-" + toID, from, to);
+            drawBottom(root, "#spacing-bottom-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "left":
-            drawLeft(artboard, "#spacing-left-" + fromID + "-" + toID, from, to);
+            drawLeft(root, "#spacing-left-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "right":
-            drawRight(artboard, "#spacing-right-" + fromID + "-" + toID, from, to);
+            drawRight(root, "#spacing-right-" + fromID + "-" + toID, from, to);
             if (position) return;
         default:
             break;
@@ -71,7 +71,7 @@ function distance(layers: Layer[], position: string) {
 }
 
 function drawHorizontal(root: Group, layerName: string, from: SMRect, to: SMRect) {
-    let tmp = <SMRect>{};
+    let rect = <SMRect>{};
     if (isIntersectX(from, to)) {
         logger.debug('No horizontal space for selected layers, skipping...');
         return;
@@ -83,15 +83,15 @@ function drawHorizontal(root: Group, layerName: string, from: SMRect, to: SMRect
 
     // make sure from left shape to right
     if (from.x > to.x) [from, to] = swap(from, to);
-    tmp.x = from.x + from.width;
-    tmp.y = from.y;
-    tmp.width = to.x - tmp.x;
-    tmp.height = from.height;
-    drawSpacingShape(root, tmp, EdgeVertical.middle, layerName);
+    rect.x = from.x + from.width;
+    rect.y = from.y;
+    rect.width = to.x - rect.x;
+    rect.height = from.height;
+    drawSpacingShape(layerName, rect, EdgeVertical.middle, root)
 }
 
 function drawVertical(root: Group, layerName: string, from: SMRect, to: SMRect) {
-    let tmp = <SMRect>{};
+    let rect = <SMRect>{};
     if (isIntersectY(from, to)) {
         logger.debug('No vertical space for selected layers, skipping...');
         return;
@@ -103,15 +103,15 @@ function drawVertical(root: Group, layerName: string, from: SMRect, to: SMRect) 
 
     // make sure from higher shape to lower
     if (from.y > to.y) [from, to] = swap(from, to);
-    tmp.x = from.x;
-    tmp.y = from.y + from.height;
-    tmp.width = from.width;
-    tmp.height = to.y - tmp.y;
-    drawSpacingShape(root, tmp, Edge.center, layerName);
+    rect.x = from.x;
+    rect.y = from.y + from.height;
+    rect.width = from.width;
+    rect.height = to.y - rect.y;
+    drawSpacingShape(layerName, rect, Edge.center, root)
 }
 
 function drawTop(root: Group, layerName: string, from: SMRect, to: SMRect) {
-    let tmp = <SMRect>{};
+    let rect = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -123,15 +123,15 @@ function drawTop(root: Group, layerName: string, from: SMRect, to: SMRect) {
 
     // make sure from lower shape to higher
     if (from.y < to.y) [from, to] = swap(from, to);
-    tmp.x = from.x;
-    tmp.y = to.y;
-    tmp.width = from.width;
-    tmp.height = from.y - to.y;
-    drawSpacingShape(root, tmp, Edge.center, layerName);
+    rect.x = from.x;
+    rect.y = to.y;
+    rect.width = from.width;
+    rect.height = from.y - to.y;
+    drawSpacingShape(layerName, rect, Edge.center, root)
 }
 
 function drawBottom(root: Group, layerName: string, from: SMRect, to: SMRect) {
-    let tmp = <SMRect>{};
+    let rect = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -143,15 +143,15 @@ function drawBottom(root: Group, layerName: string, from: SMRect, to: SMRect) {
 
     // make sure from higher bottom shape to lower
     if (from.y + from.height > to.y + to.height) [from, to] = swap(from, to);
-    tmp.x = from.x;
-    tmp.y = from.y + from.height;
-    tmp.width = from.width;
-    tmp.height = to.y + to.height - from.y - from.height;
-    drawSpacingShape(root, tmp, Edge.center, layerName);
+    rect.x = from.x;
+    rect.y = from.y + from.height;
+    rect.width = from.width;
+    rect.height = to.y + to.height - from.y - from.height;
+    drawSpacingShape(layerName, rect, Edge.center, root)
 }
 
 function drawLeft(root: Group, layerName: string, from: SMRect, to: SMRect) {
-    let tmp = <SMRect>{};
+    let rect = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -163,15 +163,15 @@ function drawLeft(root: Group, layerName: string, from: SMRect, to: SMRect) {
 
     // make sure from right shape to left
     if (from.x < to.x) [from, to] = swap(from, to);
-    tmp.x = to.x;
-    tmp.y = from.y;
-    tmp.width = from.x - to.x;
-    tmp.height = from.height;
-    drawSpacingShape(root, tmp, EdgeVertical.middle, layerName);
+    rect.x = to.x;
+    rect.y = from.y;
+    rect.width = from.x - to.x;
+    rect.height = from.height;
+    drawSpacingShape(layerName, rect, EdgeVertical.middle, root)
 }
 
 function drawRight(root: Group, layerName: string, from: SMRect, to: SMRect) {
-    let tmp = <SMRect>{};
+    let rect = <SMRect>{};
     if (!isIntersect(from, to)) {
         logger.debug('No intersection for selected layers, skipping...');
         return;
@@ -183,25 +183,26 @@ function drawRight(root: Group, layerName: string, from: SMRect, to: SMRect) {
 
     // make sure from left shape (by right border) to right
     if (from.x + from.width > to.x + to.width) [from, to] = swap(from, to);
-    tmp.x = from.x + from.width;
-    tmp.y = from.y;
-    tmp.width = to.x + to.width - from.x - from.width;
-    tmp.height = from.height;
-    drawSpacingShape(root, tmp, EdgeVertical.middle, layerName);
+    rect.x = from.x + from.width;
+    rect.y = from.y;
+    rect.width = to.x + to.width - from.x - from.width;
+    rect.height = from.height;
+    drawSpacingShape(layerName, rect, EdgeVertical.middle, root)
 }
 
 function drawSpacingShape(
-    root: Group, frame: SMRect,
-    drawSizePosition: Edge | EdgeVertical, layerName: string
+    name: string,
+    rect: SMRect,
+    drawSizePosition: Edge | EdgeVertical,
+    root: Group
 ) {
-    let tempShape = new sketch.ShapePath({ parent: root })
-    tempShape.frame = new sketch.Rectangle(frame.x, frame.y, frame.width, frame.height);
-    drawSize(tempShape, drawSizePosition, {
-        name: layerName,
+    let frame = new sketch.Rectangle(rect.x, rect.y, rect.width, rect.height);
+    drawSizeForFrame(frame, drawSizePosition, {
+        name: name,
+        parent: root,
         background: context.meaxureStyles.spacing.background,
-        foreground: context.meaxureStyles.spacing.foreground
+        foreground: context.meaxureStyles.spacing.foreground,
     });
-    tempShape.remove();
 }
 
 function swap<T>(a: T, b: T): [T, T] {

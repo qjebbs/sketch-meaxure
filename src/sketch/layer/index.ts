@@ -13,11 +13,11 @@ declare module 'sketch/sketch' {
             resizingConstraint: number;
             allSubLayers(): Layer[];
             alignTo(
-                layer: Layer,
+                target: Layer | Rectangle,
                 horizontal?: { from: Edge, to: Edge } | boolean,
                 vertical?: { from: EdgeVertical, to: EdgeVertical } | boolean
             ): void;
-            alignToByPostion(layer: Layer, position: Edge | EdgeVertical): void;
+            alignToByPostion(target: Layer | Rectangle, position: Edge | EdgeVertical): void;
         }
     }
 }
@@ -90,13 +90,13 @@ export function extendLayer() {
         return layers;
     }
     target.alignTo = function (
-        layer: Layer,
+        target: Layer | Rectangle,
         horizontal?: { from: Edge, to: Edge } | boolean,
         vertical?: { from: EdgeVertical, to: EdgeVertical } | boolean
     ) {
-        alignLayers(this, layer, horizontal, vertical);
+        alignLayers(this, target, horizontal, vertical);
     };
-    target.alignToByPostion = function (layer: Layer, position: Edge | EdgeVertical) {
-        alignLayersByPosition(this, layer, position);
+    target.alignToByPostion = function (target: Layer | Rectangle, position: Edge | EdgeVertical) {
+        alignLayersByPosition(this, target, position);
     };
 }

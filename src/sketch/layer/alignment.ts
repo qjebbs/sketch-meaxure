@@ -1,3 +1,5 @@
+import { sketch } from "..";
+
 export enum Edge {
     left = 'left',
     right = 'right',
@@ -11,7 +13,7 @@ export enum EdgeVertical {
 
 export function alignLayers(
     from: Layer,
-    to: Layer,
+    to: Layer | Rectangle,
     horizontal: { from: Edge, to: Edge } | boolean,
     vertical: { from: EdgeVertical, to: EdgeVertical } | boolean
 ): void {
@@ -22,13 +24,15 @@ export function alignLayers(
     if (horizontal) hAligh = Object.assign({ from: Edge.left, to: Edge.left }, horizontal)
     if (vertical) vAligh = Object.assign({ from: EdgeVertical.top, to: EdgeVertical.top }, vertical)
     let root = from.getParentArtboard() || from.getParentPage();
-    let rootTo = to.getParentArtboard() || to.getParentPage();
-    if (root.id !== rootTo.id) {
-        // logger.debug(`from in ${root.name} while to in ${rootTo}, skipping`);
-        return;
+    if (to instanceof sketch.Layer) {
+        let rootTo = to.getParentArtboard() || to.getParentPage();
+        if (root.id !== rootTo.id) {
+            // logger.debug(`from in ${root.name} while to in ${rootTo}, skipping`);
+            return;
+        }
     }
     let frameFrom = from.frame.changeBasis({ from: from.parent, to: root });
-    let frameTo = to.frame.changeBasis({ from: to.parent, to: root });
+    let frameTo = (to instanceof sketch.Layer) ? to.frame.changeBasis({ from: to.parent, to: root }) : to;
 
     let offsetX = 0;
     let offsetY = 0;
@@ -53,7 +57,7 @@ export function alignLayers(
 
 export function alignLayersByPosition(
     from: Layer,
-    to: Layer,
+    to: Layer | Rectangle,
     position: Edge | EdgeVertical,
 ): void {
     switch (position) {
