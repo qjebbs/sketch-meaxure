@@ -1,8 +1,5 @@
-import { initLanguage } from "./language";
-import * as path from '@skpm/path';
-import { ConfigsMaster } from "./config";
 import { sketch } from "../../sketch";
-import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
+import { ConfigsMaster } from "./config";
 import { MeaxureStyles } from "../meaxureStyles";
 
 interface Context {
@@ -15,12 +12,9 @@ interface SMContext {
     sketchObject: Context;
     document: Document;
     selection: Selection;
-    resourcesRoot: string;
     page: Page;
     artboard: Artboard;
-    current: Artboard | Page;
     configs: ConfigsMaster;
-    languageData: string;
     meaxureStyles: MeaxureStyles;
 }
 
@@ -32,8 +26,7 @@ export function updateContext(ctx?: Context) {
     // initialized the context
     if (!context && ctx) {
         // logger.debug("initContextRunOnce");
-        context = <SMContext>{};
-        initContextRunOnce()
+        initContextRunOnce();
     }
 
     // logger.debug("Update context");
@@ -51,7 +44,6 @@ export function updateContext(ctx?: Context) {
         // properties always need to update
         context.page = context.document.selectedPage;
         context.artboard = sketch.Artboard.fromNative(context.page.sketchObject.currentArtboard());
-        context.current = context.artboard || context.page;
         context.selection = context.document.selectedLayers;
         context.meaxureStyles = new MeaxureStyles(context.document);
     }
@@ -59,6 +51,5 @@ export function updateContext(ctx?: Context) {
 }
 
 function initContextRunOnce() {
-    context.resourcesRoot = path.resourcePath("");
-    context.languageData = initLanguage();
+    context = <SMContext>{};
 }

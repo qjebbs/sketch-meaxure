@@ -5,13 +5,14 @@ import { localize } from "../common/language";
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from "../../webviewPanel/keepAround";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 import { markProperties } from "../properties";
+import { getResourcePath } from "../helpers/helper";
 
 const keepAroundID = uuidv4();
 function getImage(name: string, state?: string) {
     let highDPI = NSScreen.mainScreen().backingScaleFactor() > 1;
     state = state || "normal";
     let size = highDPI ? "@2x" : "";
-    let iconPath = context.resourcesRoot + "/panel/icons/";
+    let iconPath = getResourcePath() + "/panel/icons/";
     let img = NSURL.fileURLWithPath("" + iconPath + name + "-" + state + size + ".png");
     return NSImage.alloc().initWithContentsOfURL(img)
 }

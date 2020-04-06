@@ -1,30 +1,35 @@
-import { context } from "./context";
+import { getResourcePath } from "../helpers/helper";
 
-let I18N = {};
-let webI18N = {
+let currentLang = '';
+let I18N: { [key: string]: string } = {};
+let aliases = {
     "zh-Hans": "zh-cn",
     "zh-Hant": "zh-tw"
 }
-let macOSVersion = NSDictionary.dictionaryWithContentsOfFile("/System/Library/CoreServices/SystemVersion.plist").objectForKey("ProductVersion") + "";
-let lang = NSUserDefaults.standardUserDefaults().objectForKey("AppleLanguages").objectAtIndex(0);
 
-export function initLanguage(): string {
-    lang = (macOSVersion >= "10.12") ? lang.split("-").slice(0, -1).join("-") : lang;
-    let langFile = context.resourcesRoot + "/i18n/" + lang + ".json";
-    if (!NSFileManager.defaultManager().fileExistsAtPath(langFile)) {
-        return "";
-    }
-    let language = "";
-    language = NSString.stringWithContentsOfFile_encoding_error(langFile, 4, nil);
-    I18N[lang] = JSON.parse(language);
-    return `I18N['${webI18N[lang]}'] = ${language}`;
+export function getLanguageScript(): string {
+    if (!currentLang) initialize();
+    return `I18N['${aliases[currentLang]}'] = ${JSON.stringify(I18N[currentLang])}`;
 }
 
 export function localize(str, data?) {
-    str = (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
+    if (!currentLang) initialize();
+    str = (I18N[currentLang] && I18N[currentLang][str]) ? I18N[currentLang][str] : str;
     let idx = -1;
     return str.replace(/\%\@/gi, function () {
         idx++;
         return data[idx];
     });
+}
+
+function initialize() {
+    let macOSVersion = NSDictionary.dictionaryWithContentsOfFile("/System/Library/CoreServices/SystemVersion.plist").objectForKey("ProductVersion") + "";
+    let sysLanguage = NSUserDefaults.standardUserDefaults().objectForKey("AppleLanguages").objectAtIndex(0);
+    currentLang = (macOSVersion >= "10.12") ? sysLanguage.split("-").slice(0, -1).join("-") : sysLanguage;
+    let langFile = getResourcePath() + "/i18n/" + currentLang + ".json";
+    if (!NSFileManager.defaultManager().fileExistsAtPath(langFile)) {
+        return "";
+    }
+    let language = NSString.stringWithContentsOfFile_encoding_error(langFile, 4, nil) as string;
+    I18N[currentLang] = JSON.parse(language);
 }

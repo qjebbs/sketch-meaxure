@@ -1,6 +1,8 @@
 import { context } from '../common/context';
 import { createWebviewPanel, WebviewPanel } from '../../webviewPanel';
 import { logger } from '../common/logger';
+import { getResourcePath } from '../helpers/helper';
+import { getLanguageScript } from '../common/language';
 
 interface SettingData {
     language?: string;
@@ -14,7 +16,7 @@ export function settingsPanel() {
     if (WebviewPanel.exists(identifier)) return false;
 
     let data: any = {};
-    data.language = context.languageData;
+    data.language = getLanguageScript();
     if (context.configs) {
         data.scale = context.configs.scale;
         data.units = context.configs.units;
@@ -22,7 +24,7 @@ export function settingsPanel() {
     }
     let panel = createWebviewPanel({
         identifier: identifier,
-        url: context.resourcesRoot + "/panel/settings.html",
+        url: getResourcePath() + "/panel/settings.html",
         width: 240,
         height: 316,
     });

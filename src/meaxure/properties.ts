@@ -50,9 +50,9 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
     let target = options.target;
 
     let name = "#properties-" + target.id;
-    let root = context.current;
 
     let artboard = target.getParentArtboard();
+    let root = artboard || target.getParentPage();
     if (artboard) sketch.find<Group>(
         `Group, [name="${name}"]`,
         artboard

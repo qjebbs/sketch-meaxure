@@ -1,9 +1,9 @@
 import { exportPanel } from "../panels/exportPanel";
 import { sketch } from "../../sketch";
-import { localize } from "../common/language";
+import { localize, getLanguageScript } from "../common/language";
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
-import { toHTMLEncode, tik, toSlug, emojiToEntities } from "../helpers/helper";
+import { toHTMLEncode, tik, toSlug, emojiToEntities, getResourcePath } from "../helpers/helper";
 import { writeFile, buildTemplate, exportImage } from "./files";
 import { logger } from "../common/logger";
 import { ExportData, ArtboardData } from "../interfaces";
@@ -41,7 +41,7 @@ export async function exportSpecification() {
     clearMaskStack();
     clearSliceCache();
     let processingPanel = createWebviewPanel({
-        url: context.resourcesRoot + "/panel/processing.html",
+        url: getResourcePath() + "/panel/processing.html",
         width: 304,
         height: 104,
     });
@@ -55,7 +55,7 @@ export async function exportSpecification() {
         exporting = false;
         processingPanel.close();
     }
-    let template = NSString.stringWithContentsOfFile_encoding_error(context.resourcesRoot + "/template.html", 4, nil);
+    let template = NSString.stringWithContentsOfFile_encoding_error(getResourcePath() + "/template.html", 4, nil);
     let data: ExportData = {
         scale: context.configs.scale,
         unit: context.configs.units,
@@ -115,7 +115,7 @@ export async function exportSpecification() {
     if (results.advancedMode) {
         writeFile({
             content: buildTemplate(template, {
-                lang: context.languageData,
+                lang: getLanguageScript(),
                 data: JSON.stringify(data)
             }),
             path: savePath,
@@ -174,7 +174,7 @@ function exportArtboard(artboard: Artboard, data: ArtboardData, savePath: string
 
     writeFile({
         content: buildTemplate(template, {
-            lang: context.languageData,
+            lang: getLanguageScript(),
             data: JSON.stringify(newData)
         }),
         path: savePath,

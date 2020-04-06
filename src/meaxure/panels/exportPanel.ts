@@ -1,5 +1,7 @@
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
+import { getResourcePath } from "../helpers/helper";
+import { getLanguageScript } from "../common/language";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
 interface PageInfo {
@@ -41,7 +43,7 @@ export function exportPanel(): Promise<ExportConfig> {
     let [data, allArtboards] = prepareExportData();
     let panel = createWebviewPanel({
         identifier: 'co.jebbs.sketch-meaxure.export',
-        url: context.resourcesRoot + "/panel/export.html",
+        url: getResourcePath() + "/panel/export.html",
         width: 320,
         height: 597,
     });
@@ -85,7 +87,7 @@ export function exportPanel(): Promise<ExportConfig> {
 function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
     let allArtboards: { [key: string]: Artboard } = {};
     let data = <ExportData>{
-        language: context.languageData,
+        language: getLanguageScript(),
         selection: [],
         current: [],
         pages: [],

@@ -1,5 +1,6 @@
 import { context } from "../common/context";
 import { SMRect } from "../interfaces";
+import * as path from '@skpm/path';
 
 export function convertUnit(value: number | number[], isText?: boolean, percentageType?: "width" | "height") {
     if (value instanceof Array) {
@@ -54,6 +55,10 @@ export function isIntersectY(a: SMRect, b: SMRect) {
     return (a.y >= b.y && a.y <= b.y + b.height) || //top board of a in y range of b
         (a.y + a.height >= b.y && a.y + a.height <= b.y + b.height) || //bottom board of a in y range of b
         (a.y < b.y && a.y + a.height > b.y + b.height); // y range of a includes b's
+}
+
+export function getResourcePath(): string {
+    return path.resourcePath("")
 }
 
 export function toHTMLEncode(str) {
