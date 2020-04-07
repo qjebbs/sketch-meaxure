@@ -7,7 +7,7 @@ import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, get
 import { SMFillData, SMShadow } from "./interfaces";
 import { createBubble } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
-import { applyTintToSMColor } from "./export/tint";
+import { applyTintToSMColor, applyTintToSMGradient } from "./export/tint";
 
 export async function markProperties(position: Edge | EdgeVertical) {
     let selection = context.selection;
@@ -97,15 +97,18 @@ function getProperties(target: Layer, properties: string[]): string {
                     if (tint) color = applyTintToSMColor(color, tint.color);
                     return "color: " + color[context.configs.format];
                 } else {
-                    let fillsJSON = getFillsFromStyle(targetStyle);
-                    if (fillsJSON.length <= 0) return undefined;
+                    let fills = getFillsFromStyle(targetStyle);
+                    if (fills.length <= 0) return undefined;
                     // TODO: support multiple fills
-                    let fillJSON = fillsJSON.pop();
+                    let fill = fills.pop();
                     if (tint) {
-                        fillJSON.fillType = sketch.Style.FillType.Color;
-                        fillJSON.color = applyTintToSMColor(fillJSON.color, tint.color);
+                        if (fill.fillType == sketch.Style.FillType.Color) {
+                            fill.color = applyTintToSMColor(fill.color, tint.color);
+                        } else if (fill.fillType == sketch.Style.FillType.Gradient) {
+                            fill.gradient = applyTintToSMGradient(fill.gradient, tint.color);
+                        }
                     }
-                    return "fill: " + fillTypeContent(fillJSON);
+                    return "fill: " + fillTypeContent(fill);
                 }
             case "border":
                 let bordersJSON = getBordersFromStyle(targetStyle);
@@ -172,9 +175,9 @@ function fillTypeContent(fillJSON: SMFillData) {
         let fc = [];
         fc.push(fillJSON.gradient.type)
         fillJSON.gradient.colorStops.forEach(function (stop) {
-            fc.push(" * " + stop.color);
+            fc.push(" " + Math.round(stop.position * 100) + "%: " + stop.color[context.configs.format]);
         });
-        return fc.join("\r\n");
+        return fc.join("\n");
     }
 }
 function shadowContent(shadow: SMShadow) {

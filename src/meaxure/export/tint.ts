@@ -1,4 +1,4 @@
-import { SMColor } from "../interfaces";
+import { SMColor, SMGradient } from "../interfaces";
 import { sketch } from "../../sketch";
 import { logger } from "../common/logger";
 import { LayerData } from "../interfaces";
@@ -39,7 +39,15 @@ export function applyTint(layer: Layer, layerData: LayerData) {
     // caculate intersection of layer and tint, as the clipped frame of the layer
     let tintFill = tint.style.fills.filter(f => f.enabled)[0];
     layerData.fills.forEach(
-        fill => fill.color = applyTintToSMColor(fill.color, tintFill.color)
+        fill => {
+            if (fill.fillType == sketch.Style.FillType.Color) {
+                fill.color = applyTintToSMColor(fill.color, tintFill.color);
+                return;
+            } else if (fill.fillType == sketch.Style.FillType.Gradient) {
+                fill.gradient = applyTintToSMGradient(fill.gradient, tintFill.color);
+                return;
+            }
+        }
     );
     layerData.color = applyTintToSMColor(layerData.color, tintFill.color)
 }
@@ -53,4 +61,11 @@ export function applyTintToSMColor(color: SMColor, tintColor: string): SMColor {
     color = parseColor(appliedColor);
     // logger.debug(`applied: ${color["rgba-hex"]}`);
     return color;
+}
+export function applyTintToSMGradient(gradient: SMGradient, tintColor: string): SMGradient {
+    if (!gradient) return gradient;
+    gradient.colorStops.forEach(stop => {
+        stop.color = applyTintToSMColor(stop.color, tintColor);
+    })
+    return gradient;
 }

@@ -33,13 +33,12 @@ export function getFillsFromStyle(style: Style): SMFillData[] {
     let fillsData: SMFillData[] = [];
     for (let fill of style.fills) {
         if (!fill.enabled) continue;
-        let fillType = fill.fillType,
-            fillData = <SMFillData>{
-                fillType: fillType,
-                color: <SMColor>{},
-                gradient: <SMGradient>{}
-            };
-
+        let fillType = fill.fillType;
+        let fillData = <SMFillData>{
+            fillType: fillType,
+            color: <SMColor>{},
+            gradient: <SMGradient>{}
+        };
         switch (fillType) {
             case sketch.Style.FillType.Color:
                 fillData.color = parseColor(fill.color);
@@ -47,7 +46,6 @@ export function getFillsFromStyle(style: Style): SMFillData[] {
             case sketch.Style.FillType.Gradient:
                 fillData.gradient = parseGradient(fill.gradient);
                 break;
-
             default:
                 continue;
         }
