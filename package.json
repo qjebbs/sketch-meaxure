@@ -17,8 +17,8 @@
   },
   "scripts": {
     "build": "skpm-build",
-    "watch": "skpm-build --watch",
-    "start": "skpm-build --watch --run",
+    "watch": "export DEBUG=1; skpm-build --watch",
+    "start": "export DEBUG=1; skpm-build --watch --run",
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {

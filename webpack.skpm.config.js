@@ -1,5 +1,7 @@
 'use strict';
+let fs = require('fs');
 let path = require('path');
+let process = require('process');
 /**
  * Function that mutates original webpack config.
  * Supports asynchronous changes when promise is returned.
@@ -10,6 +12,17 @@ let path = require('path');
 module.exports = function (config, isPluginCommand) {
     /** you can change config here **/
     if (!isPluginCommand) return;
+    let debug = !!process.env.DEBUG;
+    if (!debug) {
+        let dir = 'sketch-meaxure.sketchplugin/Contents/Sketch';
+        fs.readdirSync(dir).forEach(file => {
+            if (file.endsWith('.js.map')) {
+                console.log('remove js map file', file);
+                fs.unlinkSync(path.resolve(dir, file));
+            }
+        })
+    }
+    config.mode = debug ? 'development' : 'production';
     config.entry = {
         mark: './src/index.ts',
     };
