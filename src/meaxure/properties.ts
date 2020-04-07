@@ -7,6 +7,7 @@ import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, get
 import { SMFillData, SMShadow } from "./interfaces";
 import { createBubble } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
+import { applyTintToSMColor } from "./export/tint";
 
 export async function markProperties(position: Edge | EdgeVertical) {
     let selection = context.selection;
@@ -71,18 +72,39 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
     bubble.alignToByPostion(target, options.placement)
 }
 
+function findTint(layer: Layer): Fill {
+    let tint: Fill;
+    let parent = layer.parent;
+    while (parent && parent.type !== sketch.Types.Artboard && parent.type !== sketch.Types.Page) {
+        if (parent.style && parent.style.fills && parent.style.fills.length) {
+            let fills = parent.style.fills.filter(f => f.enabled);
+            if (!fills.length) continue;
+            tint = fills[0];
+        }
+        parent = parent.parent;
+    }
+    return tint;
+}
+
 function getProperties(target: Layer, properties: string[]): string {
     let targetStyle = target.style;
     let elements = properties.map((property) => {
         switch (property) {
             case "color":
+                let tint = findTint(target);
                 if (target.type == sketch.Types.Text) {
                     let color = parseColor(targetStyle.textColor);
+                    if (tint) color = applyTintToSMColor(color, tint.color);
                     return "color: " + color[context.configs.format];
                 } else {
                     let fillsJSON = getFillsFromStyle(targetStyle);
                     if (fillsJSON.length <= 0) return undefined;
+                    // TODO: support multiple fills
                     let fillJSON = fillsJSON.pop();
+                    if (tint) {
+                        fillJSON.fillType = sketch.Style.FillType.Color;
+                        fillJSON.color = applyTintToSMColor(fillJSON.color, tint.color);
+                    }
                     return "fill: " + fillTypeContent(fillJSON);
                 }
             case "border":

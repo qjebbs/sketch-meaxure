@@ -43,7 +43,7 @@ export function applyTint(layer: Layer, layerData: LayerData) {
     );
     layerData.color = applyTintToSMColor(layerData.color, tintFill.color)
 }
-function applyTintToSMColor(color: SMColor, tintColor: string): SMColor {
+export function applyTintToSMColor(color: SMColor, tintColor: string): SMColor {
     if (!color) return color;
     // logger.debug(`current: ${color}, tint: ${tintColor}`);
     let tintAlpha = parseInt(tintColor.substr(7, 2), 16);
