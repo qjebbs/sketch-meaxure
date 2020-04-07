@@ -170,8 +170,8 @@ function fillTypeContent(fillJSON: SMFillData) {
 
     if (fillJSON.fillType == "Gradient") {
         let fc = [];
-        fc.push(fillJSON.gradient.gradientType)
-        fillJSON.gradient.stops.forEach(function (stop) {
+        fc.push(fillJSON.gradient.type)
+        fillJSON.gradient.colorStops.forEach(function (stop) {
             fc.push(" * " + stop.color);
         });
         return fc.join("\r\n");

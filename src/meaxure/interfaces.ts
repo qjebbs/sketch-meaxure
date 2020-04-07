@@ -28,12 +28,34 @@ export interface BorderData {
     position: BorderPosition,
     thickness: number,
     color: SMColor,
-    gradient: Gradient,
+    gradient: SMGradient,
+}
+export interface SMGradientStop {
+    position: number,
+    color: SMColor,
+}
+export interface SMGradient {
+    /** The type of the Gradient. */
+    type: GradientType;
+    /** The position of the start of the Gradient */
+    from: Point;
+    /** The position of the end of the Gradient. */
+    to: Point;
+    /**
+     * When the gradient is Radial, the from and 
+     * to points makes one axis of the ellipse of 
+     * the gradient while the aspect ratio 
+     * determine the length of the orthogonal 
+     * axis (aspectRatio === 1 means that it’s a circle).
+     */
+    aspectRatio: number;
+    /** The different stops of the Gradient */
+    colorStops: SMGradientStop[];
 }
 export interface SMFillData {
     fillType: FillType,
     color: SMColor,
-    gradient: Gradient,
+    gradient: SMGradient,
 }
 
 export type SMType = "text" | "symbol" | "slice" | "shape";

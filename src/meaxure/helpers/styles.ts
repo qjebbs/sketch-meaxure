@@ -1,4 +1,4 @@
-import { BorderData, SMFillData, SMShadow } from "../interfaces";
+import { BorderData, SMFillData, SMShadow, SMGradient, SMGradientStop } from "../interfaces";
 import { SMColor } from "../interfaces";
 import { sketch } from "../../sketch";
 
@@ -11,8 +11,8 @@ export function getBordersFromStyle(style: Style): BorderData[] {
             fillType: fillType,
             position: border.position,
             thickness: border.thickness,
-            color: <SMColor>{},
-            gradient: <Gradient>{},
+            color: undefined,
+            gradient: undefined,
         };
 
         switch (fillType) {
@@ -20,7 +20,7 @@ export function getBordersFromStyle(style: Style): BorderData[] {
                 borderData.color = parseColor(border.color);
                 break;
             case sketch.Style.FillType.Gradient:
-                borderData.gradient = border.gradient;
+                borderData.gradient = parseGradient(border.gradient);
                 break;
             default:
                 continue;
@@ -37,7 +37,7 @@ export function getFillsFromStyle(style: Style): SMFillData[] {
             fillData = <SMFillData>{
                 fillType: fillType,
                 color: <SMColor>{},
-                gradient: <Gradient>{}
+                gradient: <SMGradient>{}
             };
 
         switch (fillType) {
@@ -45,7 +45,7 @@ export function getFillsFromStyle(style: Style): SMFillData[] {
                 fillData.color = parseColor(fill.color);
                 break;
             case sketch.Style.FillType.Gradient:
-                fillData.gradient = fill.gradient;
+                fillData.gradient = parseGradient(fill.gradient);
                 break;
 
             default:
@@ -100,6 +100,22 @@ export function parseColor(rgbaHex: string): SMColor {
         ].join(" ") + ")"
     };
 }
+
+export function parseGradient(gradient: Gradient): SMGradient {
+    return <SMGradient>{
+        type: gradient.gradientType,
+        from: gradient.from,
+        to: gradient.to,
+        colorStops: gradient.stops.map(s => {
+            return <SMGradientStop>{
+                position: s.position,
+                color: parseColor(s.color)
+            }
+        }),
+        aspectRatio: gradient.aspectRatio,
+    }
+}
+
 export function getLayerRadius(layer: Layer): number[] {
     if (layer.type == sketch.Types.ShapePath) {
         return (layer as ShapePath).radius;
