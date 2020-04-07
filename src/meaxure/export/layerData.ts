@@ -9,6 +9,7 @@ import { getSlice } from "./slice";
 import { makeNote } from "./note";
 import { regexNames } from "../common/common";
 import { getSymbol } from "./symbol";
+import { updateTintStackAfterLayer, applyTint } from "./tint";
 
 export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
 
@@ -29,6 +30,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         layerStates.isMeaXure ||
         layerStates.isInShapeGroup) {
         updateMaskStackAfterLayer(layer);
+        updateTintStackAfterLayer(layer);
         return;
     }
 
@@ -47,6 +49,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     };
     getLayerStyles(layer, layerType, layerData);
     applyMasks(layer, layerData);
+    applyTint(layer, layerData);
     getSlice(layer, layerData, symbolLayer);
     data.layers.push(layerData);
     if (layerData.type == "symbol") {
@@ -54,6 +57,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     }
     getTextFragment(artboard, layer as Text, data);
     updateMaskStackAfterLayer(layer);
+    updateTintStackAfterLayer(layer);
 }
 function getSMType(layer: Layer): SMType {
     if (layer.type == sketch.Types.Text) return "text";

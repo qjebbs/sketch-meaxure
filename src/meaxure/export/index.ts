@@ -11,6 +11,7 @@ import { getLayerData } from "./layerData";
 import { clearSliceCache, getCollectedSlices } from "./slice";
 import { clearMaskStack } from "./mask";
 import { getDocumentColors } from "./colors";
+import { clearTintStack } from "./tint";
 
 export let tempCreatedLayers: Layer[] = [];
 export let savePath: string;
@@ -39,6 +40,7 @@ export async function exportSpecification() {
     exporting = true;
     let stopWatch = tik();
     clearMaskStack();
+    clearTintStack();
     clearSliceCache();
     let processingPanel = createWebviewPanel({
         url: getResourcePath() + "/panel/processing.html",

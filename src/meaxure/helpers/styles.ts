@@ -72,12 +72,12 @@ export function getShadowsFromStyle(style: Style): SMShadow[] {
     );
 }
 
-export function parseColor(color: string): SMColor {
-    let red = parseInt(color.substr(1, 2), 16);
-    let green = parseInt(color.substr(3, 2), 16);
-    let blue = parseInt(color.substr(5, 2), 16);
-    let alpha = parseInt(color.substr(7, 2), 16);
-    let colorUpperCase = color.toUpperCase();
+export function parseColor(rgbaHex: string): SMColor {
+    let red = parseInt(rgbaHex.substr(1, 2), 16);
+    let green = parseInt(rgbaHex.substr(3, 2), 16);
+    let blue = parseInt(rgbaHex.substr(5, 2), 16);
+    let alpha = parseInt(rgbaHex.substr(7, 2), 16);
+    let colorUpperCase = rgbaHex.toUpperCase();
     return {
         r: red,
         g: green,
@@ -85,6 +85,7 @@ export function parseColor(color: string): SMColor {
         a: alpha,
         "color-hex": colorUpperCase.substr(0, 7) + " " + Math.round(alpha / 255 * 100) + "%",
         "argb-hex": "#" + alpha.toString(16).toUpperCase() + colorUpperCase.substr(1, 6).replace("#", ""),
+        "rgba-hex": rgbaHex.toLocaleUpperCase(),
         "css-rgba": "rgba(" + [
             red,
             green,

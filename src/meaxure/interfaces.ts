@@ -19,6 +19,7 @@ export interface SMColor {
     a: number;
     "color-hex": string;
     "argb-hex": string;
+    "rgba-hex": string;
     "css-rgba": string;
     "ui-color": string;
 }
