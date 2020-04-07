@@ -31,12 +31,14 @@ interface PanelClientMessage<T> extends PanelMessageBase<T> {
 }
 
 export function createWebviewPanel(options: WebviewPanelOptions): WebviewPanel {
-    return new WebviewPanel(options);
+    let panel = new WebviewPanel(options);
+    if (!panel.panel) return undefined;
+    return panel;
 }
 
 const BACKGROUND_COLOR = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
 const BACKGROUND_COLOR_TITLE = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1);
-export class WebviewPanel {
+class WebviewPanel {
     private _panel: any;
     private _webview: Webview;
     private _options: WebviewPanelOptions;
@@ -48,18 +50,11 @@ export class WebviewPanel {
     private _messageListeners: { [key: string]: (data: any) => any } = {};
     private _replyListeners: { [key: string]: (success: boolean, data: any) => void } = {};
 
-    /**
-     * If the panel with specific identifier exists
-     * @param identifier 
-     */
-    static exists(identifier: string): boolean {
-        return !!NSThread.mainThread().threadDictionary()[identifier];
-    }
     constructor(options: WebviewPanelOptions) {
         if (options.identifier) {
             this._threadDictionary = NSThread.mainThread().threadDictionary();
             if (this._threadDictionary[options.identifier]) {
-                return this._threadDictionary[options.identifier];
+                return undefined;
             }
         }
         this._keepAroundID = uuidv4();
@@ -78,6 +73,12 @@ export class WebviewPanel {
         if (this._options.identifier) {
             this._threadDictionary[this._options.identifier] = this;
         }
+    }
+    get panel(): any {
+        return this._panel;
+    }
+    get webview(): any {
+        return this._webview;
     }
     /**
      * close the panel

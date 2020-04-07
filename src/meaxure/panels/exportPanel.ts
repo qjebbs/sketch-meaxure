@@ -40,13 +40,15 @@ interface ExportConfig {
 }
 
 export function exportPanel(): Promise<ExportConfig> {
-    let [data, allArtboards] = prepareExportData();
     let panel = createWebviewPanel({
         identifier: 'co.jebbs.sketch-meaxure.export',
         url: getResourcePath() + "/panel/export.html",
         width: 320,
         height: 597,
     });
+    if (!panel) return undefined;
+
+    let [data, allArtboards] = prepareExportData();
     function onSubmit(rdata: ExportData, resolve: (boolean) => void) {
         let exportArtboards: Artboard[] = [];
         let layersCount = 0;
