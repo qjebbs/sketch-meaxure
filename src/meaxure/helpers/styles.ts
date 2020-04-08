@@ -123,3 +123,26 @@ export function getLayerRadius(layer: Layer): number[] {
     }
     return undefined;
 }
+
+/**
+ * Combine multiple colors into an equivalent one. Works with rgba hex-strings (`#000000ff` is opaque black).
+ * @param colors colors to merge
+ */
+function mergeColors(...colors: string[]): string {
+    let currentAlpha = 255;
+    let red = 0,
+        green = 0,
+        blue = 0;
+    for (let color of colors) {
+        let a = parseInt(color.substr(7, 2), 16);
+        currentAlpha = currentAlpha * a / 255;
+        red = red * (1 - currentAlpha / 255) + parseInt(color.substr(1, 2), 16) * currentAlpha / 255;
+        green = green * (1 - currentAlpha / 255) + parseInt(color.substr(3, 2), 16) * currentAlpha / 255;
+        blue = blue * (1 - currentAlpha / 255) + parseInt(color.substr(5, 2), 16) * currentAlpha / 255;
+    }
+    blue = Math.round(blue);
+    green = Math.round(green);
+    red = Math.round(red);
+    currentAlpha = Math.round(currentAlpha);
+    return `#${red.toString(16)}${green.toString(16)}${blue.toString(16)}${currentAlpha.toString(16)}`.toUpperCase();
+}
