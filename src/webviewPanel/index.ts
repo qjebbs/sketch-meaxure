@@ -178,15 +178,28 @@ class WebviewPanel {
         this._closeListener = _tryCatchListener(callback);
     }
     private _createPanel(): any {
-        let frame = NSMakeRect(0, 0, this._options.width, (this._options.height + 32));
+        const TITLE_HEIGHT = 24;
+        let frame = NSMakeRect(0, 0, this._options.width, (this._options.height + TITLE_HEIGHT));
         let panel = NSPanel.alloc().init();
-        panel.setTitleVisibility(NSWindowTitleHidden);
+        // panel.setTitleVisibility(NSWindowTitleHidden);
         panel.setTitlebarAppearsTransparent(true);
         panel.standardWindowButton(NSWindowCloseButton).setHidden(this._options.hideCloseButton);
         panel.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
         panel.standardWindowButton(NSWindowZoomButton).setHidden(true);
         panel.setFrame_display(frame, false);
         panel.setBackgroundColor(BACKGROUND_COLOR);
+
+        let contentView = panel.contentView();
+        let titlebarView = contentView.superview().titlebarViewController().view();
+        let titlebarContainerView = titlebarView.superview();
+        titlebarContainerView.setFrame(NSMakeRect(0, this._options.height, this._options.width, TITLE_HEIGHT));
+        titlebarView.setFrameSize(NSMakeSize(this._options.width, TITLE_HEIGHT));
+        titlebarView.setTransparent(true);
+        titlebarView.setBackgroundColor(BACKGROUND_COLOR_TITLE);
+        titlebarContainerView.superview().setBackgroundColor(BACKGROUND_COLOR_TITLE);
+
+        let closeButton = panel.standardWindowButton(NSWindowCloseButton);
+        closeButton.setFrameOrigin(NSMakePoint(8, 4));
         // https://github.com/skpm/sketch-module-web-view/blob/master/lib/set-delegates.js#L97
         let delegate = new MochaJSDelegate({
             'windowWillClose:': (sender) => {
@@ -253,14 +266,6 @@ class WebviewPanel {
     }
     private _initPanelViews(panel, webView) {
         let contentView = panel.contentView();
-        let titlebarView = contentView.superview().titlebarViewController().view();
-        let titlebarContainerView = titlebarView.superview();
-        titlebarContainerView.setFrame(NSMakeRect(0, this._options.height, this._options.width, 32));
-        titlebarView.setFrameSize(NSMakeSize(this._options.width, 32));
-        titlebarView.setTransparent(true);
-        titlebarView.setBackgroundColor(BACKGROUND_COLOR_TITLE);
-        titlebarContainerView.superview().setBackgroundColor(BACKGROUND_COLOR_TITLE);
-
         contentView.setWantsLayer(true);
         contentView.layer().setFrame(contentView.frame());
         contentView.layer().setCornerRadius(6);
