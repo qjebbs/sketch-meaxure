@@ -84,18 +84,24 @@ class WebviewPanel {
      * close the panel
      */
     close() {
-        if (this._closeListener) {
-            this._closeListener();
-        }
         if (this._isModal) {
             this._panel.orderOut(nil);
             NSApp.stopModal();
-        } else {
-            this._panel.close();
-            coscriptNotKeepAround(this._keepAroundID);
+            return;
         }
+        this._panel.close();
+        // afterClose will be called by windowWillClose delegte
+        // this.afterClose() 
+    }
+    private afterClose() {
         if (this._options.identifier) {
             this._threadDictionary.removeObjectForKey(this._options.identifier);
+        }
+        if (this._closeListener) {
+            this._closeListener();
+        }
+        if (!this._isModal) {
+            coscriptNotKeepAround(this._keepAroundID);
         }
     }
     /**
@@ -181,13 +187,13 @@ class WebviewPanel {
         panel.standardWindowButton(NSWindowZoomButton).setHidden(true);
         panel.setFrame_display(frame, false);
         panel.setBackgroundColor(BACKGROUND_COLOR);
-
-        let closeButton = panel.standardWindowButton(NSWindowCloseButton);
-        closeButton.setFrameOrigin(NSMakePoint(8, 8));
-        closeButton.setCOSJSTargetFunction((sender) => {
-            this.close();
+        // https://github.com/skpm/sketch-module-web-view/blob/master/lib/set-delegates.js#L97
+        let delegate = new MochaJSDelegate({
+            'windowWillClose:': (sender) => {
+                this.afterClose();
+            },
         });
-        closeButton.setAction("callAction:");
+        panel.setDelegate(delegate.getClassInstance())
 
         return panel;
     }
