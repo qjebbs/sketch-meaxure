@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g fill="none" fill-rule="evenodd" transform="translate(6 8)">
+    <rect width="2" height="4" x="5" y="6" fill="#3384F5" fill-rule="nonzero"/>
+    <rect width="2" height="4" x="14" y="6" fill="#3384F5" fill-rule="nonzero"/>
+    <rect width="9" height="2" x="6" y="7" fill="#3384F5" fill-rule="nonzero"/>
+    <path fill="#BBB" d="M2,14 L2,2 L0,2 L0,0 L4,0 L4,16 L0,16 L0,14 L2,14 Z"/>
+    <path fill="#BBB" d="M19,14 L19,2 L17,2 L17,0 L21,0 L21,16 L17,16 L17,14 L19,14 Z" transform="matrix(-1 0 0 1 38 0)"/>
+  </g>
+</svg>

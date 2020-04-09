@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g fill="none" fill-rule="evenodd" transform="translate(8 7)">
+    <path fill="#BBB" d="M8,23 L8,11 L6,11 L6,9 L10,9 L10,25 L6,25 L6,23 L8,23 Z" transform="matrix(0 -1 -1 0 25 25)"/>
+    <path fill="#3384F5" fill-rule="nonzero" d="M16,1.15463195e-14 L16,11 L10.827,11 L8,13.8284271 L5.172,11 L0,11 L0,1.15463195e-14 L16,1.15463195e-14 Z M13,7 L3,7 L3,8 L13,8 L13,7 Z M13,5 L3,5 L3,6 L13,6 L13,5 Z M13,3 L3,3 L3,4 L13,4 L13,3 Z"/>
+  </g>
+</svg>

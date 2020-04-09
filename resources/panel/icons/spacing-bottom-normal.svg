@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g fill="none" fill-rule="evenodd" transform="translate(7 7)">
+    <g fill="#3384F5" fill-rule="nonzero" transform="translate(7 5)">
+      <rect width="2" height="9" x="1" y="2"/>
+      <rect width="4" height="2" y="9"/>
+      <rect width="4" height="2"/>
+    </g>
+    <path fill="#BBB" d="M9,8 L9,-4 L7,-4 L7,-6 L11,-6 L11,10 L7,10 L7,8 L9,8 Z" transform="rotate(90 9 2)"/>
+    <g fill="#BBB" transform="translate(0 17)">
+      <rect width="2" height="2" x="4"/>
+      <rect width="2" height="2"/>
+      <rect width="2" height="2" x="8"/>
+      <rect width="2" height="2" x="12"/>
+      <rect width="2" height="2" x="16"/>
+    </g>
+  </g>
+</svg>

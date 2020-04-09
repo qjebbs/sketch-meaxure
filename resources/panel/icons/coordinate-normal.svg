@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="#BBB" d="M24,8 L24,24 L8,24 L8,14 L10,14 L10,22 L22,22 L22,10 L14,10 L14,8 L24,8 Z"/>
+    <g fill="#3384F5" fill-rule="nonzero" transform="translate(5 5)">
+      <rect width="2" height="8" x="3"/>
+      <rect width="8" height="2" y="3"/>
+    </g>
+  </g>
+</svg>

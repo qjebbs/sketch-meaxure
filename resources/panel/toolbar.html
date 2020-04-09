@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Toolbar - Sketch MeaXure</title>
+
+    <link href="assets/css/normalize.css" rel="stylesheet">
+    <link href="assets/css/app.css" rel="stylesheet">
+    <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="assets/js/common.js"></script>
+    <style>
+        .toolbar {
+            width: 104px;
+            padding: 12px;
+            margin: auto;
+        }
+
+        label {
+            line-height: 20px;
+        }
+
+        .toolbar .section {
+            margin: 0 0 12px 0;
+        }
+
+        .command {
+            width: 32px;
+            height: 32px;
+            background-size: 32px;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-color: #333;
+            margin: 2px 0 2px 0;
+            cursor: pointer;
+            border: 1px solid #444;
+            border-radius: 2px;
+        }
+
+        .command.small {
+            width: 24px;
+            height: 24px;
+            background-size: 24px;
+            background-color: transparent;
+            border: none;
+        }
+
+        .command:hover {
+            background-color: #444;
+        }
+
+        .command:active {
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toolbar">
+        <div class="section">
+            <button class="command" data-action="coordinate" title="Coordinate"
+                style="background-image: url(icons/coordinate-normal.svg);"></button>
+            <button class="command" data-action="overlay" title="Overlay"
+                style="background-image: url(icons/overlay-normal.svg);"></button>
+        </div>
+        <div class="section">
+            <button class="command" data-action="size" data-options="top" title="Top Width"
+                style="background-image: url(icons/width-top-normal.svg);"></button>
+                <button class="command" data-action="size" data-options="middle" title="Middle Width"
+                    style="background-image: url(icons/width-middle-normal.svg);"></button>
+            <button class="command" data-action="size" data-options="bottom" title="Bottom Width"
+                style="background-image: url(icons/width-bottom-normal.svg);"></button>
+            <button class="command" data-action="size" data-options="left" title="Left Width"
+                style="background-image: url(icons/height-left-normal.svg);"></button>
+                <button class="command" data-action="size" data-options="center" title="Center Width"
+                    style="background-image: url(icons/height-center-normal.svg);"></button>
+            <button class="command" data-action="size" data-options="right" title="Right Width"
+                style="background-image: url(icons/height-right-normal.svg);"></button>
+        </div>
+        <div class="section">
+            <button class="command" data-action="spacing" data-options="horizontal" title="Horizontal Distance"
+                style="background-image: url(icons/horizontal-distance-normal.svg);"></button>
+            <button class="command" data-action="spacing" data-options="top" title="Top Spacing"
+                style="background-image: url(icons/spacing-top-normal.svg);"></button>
+            <button class="command" data-action="spacing" data-options="bottom" title="Bottom Spacing"
+                style="background-image: url(icons/spacing-bottom-normal.svg);"></button>
+                <button class="command" data-action="spacing" data-options="vertical" title="Verticaly Distance"
+                    style="background-image: url(icons/vertical-distance-normal.svg);"></button>
+            <button class="command" data-action="spacing" data-options="left" title="Left Spacing"
+                style="background-image: url(icons/spacing-left-normal.svg);"></button>
+            <button class="command" data-action="spacing" data-options="right" title="Right Spacing"
+                style="background-image: url(icons/spacing-right-normal.svg);"></button>
+        </div>
+        <div class="section">
+            <button class="command" data-action="properties" data-options="top" title="Label on top"
+                style="background-image: url(icons/properties-top-normal.svg);"></button>
+            <button class="command" data-action="properties" data-options="left" title="Label on left"
+                style="background-image: url(icons/properties-left-normal.svg);"></button>
+                <button class="command" data-action="note" title="Make Note"
+                    style="background-image: url(icons/create-note-normal.svg);"></button>
+            <button class="command" data-action="properties" data-options="bottom" title="Label on bottom"
+                style="background-image: url(icons/properties-bottom-normal.svg);"></button>
+            <button class="command" data-action="properties" data-options="right" title="Label on right"
+                style="background-image: url(icons/properties-right-normal.svg);"></button>
+        </div>
+        <div class="section">
+            <div>
+                <label title="Sizing by influence">
+                    <div class="checkbox">
+                        <input id="byPercentage" type="checkbox" name="byPercentage" value="1">
+                        <label for="byPercentage"></label>
+                    </div>
+                    <span>Percentage</span>
+
+                </label>
+            </div>
+            <div>
+                <label title="Sizing by percentage">
+                    <div class="checkbox">
+                        <input id="byInfluence" type="checkbox" name="byInfluence" value="1">
+                        <label for="byInfluence"></label>
+                    </div>
+                    Influence
+                </label>
+            </div>
+        </div>
+        <div class="section">
+            <button class="command small" data-action="visibility" title="Toggle Hidden"
+                style="background-image: url(icons/hidden-normal.svg);"></button>
+            <button class="command small" data-action="lock" title="Toggle Locked"
+                style="background-image: url(icons/locked-normal.svg);"></button>
+            <button class="command small" data-action="clear" title="Clean Selected Marks"
+                style="background-image: url(icons/clear-normal.svg);"></button>
+            <button class="command small" data-action="export" title="Export"
+                style="background-image: url(icons/export-normal.svg);"></button>
+            <button class="command small" data-action="settings" title="Settings"
+                style="background-image: url(icons/settings-normal.svg);"></button>
+
+        </div>
+    </div>
+    <script>
+        $('.command').on('click', function () {
+            let options = Object.assign(
+                {
+                    byInfluence: $('input[name=byInfluence]:checked').val() == '1',
+                    byPercentage: $('input[name=byPercentage]:checked').val() == '1',
+                },
+                this.dataset
+            );
+            console.log(options)
+            if (!window.meaxure) return;
+            meaxure.postMessage('command', options);
+        });
+    </script>
+</body>
+
+</html>
