@@ -11,6 +11,7 @@ import { markNote } from '../note';
 import { clearAllMarks, toggleHidden, toggleLocked } from '../manage';
 import { exportSpecification } from '../export';
 import { settingsPanel } from './settingsPanel';
+import { markOverlays } from '../overlay';
 
 interface CommandMessage {
     action: string,
@@ -21,6 +22,7 @@ interface CommandMessage {
 
 const workers = {
     coordinate: drawCoordinate,
+    overlay: markOverlays,
     size: drawSizes,
     spacing: drawSpacings,
     properties: markProperties,
@@ -36,8 +38,8 @@ export function markToolbar() {
     let panel = createWebviewPanel({
         identifier: 'co.jebbs.sketch-meaxure.toolbar',
         url: getResourcePath() + "/panel/toolbar.html",
-        width: 128,
-        height: 444,
+        width: 120,
+        height: 472,
     });
     if (!panel) return undefined;
 
