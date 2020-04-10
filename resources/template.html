@@ -1099,7 +1099,7 @@ var I18N = {},
                     var filePath = path + exportable.path;
                     expHTML.push(
                         '<li>',
-                            '<a href="' + filePath + '" data-format="' + exportable.format.toUpperCase() + '"><img src="' + filePath + '" alt="' + exportable.path + '">' + exportable.path.replace('drawable-', '') + '</a>',
+                            '<a href="' + filePath + '"target="_blank" data-format="' + exportable.format.toUpperCase() + '"><img src="' + filePath + '" alt="' + exportable.path + '">' + exportable.path.replace('drawable-', '') + '</a>',
                         '</li>');
                 });
                 expHTML.push('</ul>')
