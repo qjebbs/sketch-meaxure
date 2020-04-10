@@ -2,6 +2,7 @@ import { MochaJSDelegate } from './MochaJSDelegate';
 import { uuidv4, coscriptKeepAround, coscriptNotKeepAround } from './keepAround';
 import { logger } from '../meaxure/common/logger';
 import { meaxure, wrapWebViewScripts } from './webviewScripts';
+import { dispatchFirstClick } from './dispatchFirstClick';
 
 export interface WebviewPanelOptions {
     identifier?: string,
@@ -9,6 +10,7 @@ export interface WebviewPanelOptions {
     width: number,
     height: number,
     hideCloseButton?: boolean,
+    acceptsFirstMouse?: boolean,
 }
 
 interface Webview {
@@ -38,7 +40,7 @@ export function createWebviewPanel(options: WebviewPanelOptions): WebviewPanel {
 
 const BACKGROUND_COLOR = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
 const BACKGROUND_COLOR_TITLE = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1);
-class WebviewPanel {
+export class WebviewPanel {
     private _panel: any;
     private _webview: Webview;
     private _options: WebviewPanelOptions;
@@ -204,6 +206,11 @@ class WebviewPanel {
         let delegate = new MochaJSDelegate({
             'windowWillClose:': (sender) => {
                 this.afterClose();
+            },
+            'windowDidBecomeKey:': () => {
+                if (!this._options.acceptsFirstMouse) return;
+                let event = this._panel.currentEvent();
+                dispatchFirstClick(this, event);
             },
         });
         panel.setDelegate(delegate.getClassInstance())

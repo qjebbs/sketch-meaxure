@@ -51,6 +51,8 @@ declare const NSForegroundColorAttributeName;
 declare const NSFontAttributeName;
 declare const NSSwitchButton;
 
+declare const NSEventTypeLeftMouseDown
+
 declare namespace WebView {
     function alloc();
 }

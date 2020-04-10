@@ -38,6 +38,7 @@ export function markToolbar() {
     let panel = createWebviewPanel({
         identifier: 'co.jebbs.sketch-meaxure.toolbar',
         url: getResourcePath() + "/panel/toolbar.html",
+        acceptsFirstMouse: true,
         width: 120,
         height: 472,
     });
