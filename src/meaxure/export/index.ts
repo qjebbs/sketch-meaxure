@@ -91,10 +91,6 @@ export async function exportSpecification() {
                 sketch.UI.message('Cancelled by user.');
                 return;
             }
-            processingPanel.postMessage('process', {
-                percentage: Math.round(layerIndex / results.allCount * 100),
-                text: localize("Processing layer %@ of %@", [layerIndex, results.allCount])
-            });
             let taskError: Error;
             await getLayerTask(artboard, layer, data.artboards[i], results.byInfluence)
                 .catch(err => taskError = err);
@@ -103,6 +99,13 @@ export async function exportSpecification() {
                 logger.error(taskError);
                 return;
             }
+            // post messages after an async task, 
+            // so that processingPanel has time to initialize,
+            // or we get a promise reject of reply timeout.
+            processingPanel.postMessage('process', {
+                percentage: Math.round(layerIndex / results.allCount * 100),
+                text: localize("Processing layer %@ of %@", [layerIndex, results.allCount])
+            });
         }
         if (results.advancedMode) {
             exportArtboardAdvanced(artboard, data.artboards[i], savePath, i);
