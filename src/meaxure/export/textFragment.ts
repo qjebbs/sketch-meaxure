@@ -20,6 +20,11 @@ export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardD
     }
     for (let frags of lines) {
         let offsetFragmentsX = 0;
+        if (frags.length == 1 && frags[0].text == '\n') {
+            // if it's a fake line (a new paragraph)
+            offsetFragmentsY += layer.style.paragraphSpacing;
+            continue;
+        }
         let currentLineHeight = layer.style.lineHeight || Math.max(...frags.map(f => f.defaultLineHeight));
         for (let fragment of frags) {
             let subText = new sketch.Text({ text: fragment.text, parent: layer.parent });
@@ -51,6 +56,13 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
         let lineFragments = [];
         for (let element of line.elements) {
             if (!currentFragment) currentFragment = fragments.shift();
+            if (currentFragment.text == '\n') {
+                // currentFragment.text is \n, it creates a new line, which doesn't appear in svg.
+                // so just push a fake line (presents a new paragraph), and shift fragments
+                // currentFragment.text = '';
+                fragmentsByLines.push([currentFragment]);
+                currentFragment = fragments.shift();
+            }
             if (element.length == currentFragment.text.length) {
                 // push and process next fragment
                 lineFragments.push(currentFragment);
