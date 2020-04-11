@@ -1,23 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>Sketch MeaXure</title>
     <link>https://raw.githubusercontent.com/qjebbs/sketch-meaxure/master/appcast.xml</link>
     <description>Make it a fun to create spec for developers and teammates</description>
     <language>en</language>
-		<item>
-			<title>Version 2.9.1</title>
-			<description>
-				<![CDATA[
-					<ul>
-						<li>Fixes, works with latest version up to V63.1</li>
-						<li>Sort artboards by row position</li>
-						<li>Sort artboards by column position</li>
-						<li>Artboard sort setting</li>
-					</ul>
-				]]>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.0.0/sketch-meaxure.sketchplugin.zip" sparkle:version="2.9.2-0"/>
+    </item>
+    <item>
+      <title>Version 3.0.0</title>
+      <description>
+        Fully works with lastest version of Sketch (v64).
+        The latest Tint feature support.
+        Easily resize markers, without concerns to break them. (The resizing constrain feature)
+        Always export masked layers right, while Measure doesn't in some cases.
+        Customize the order of exported artboards.
+        Better display of text fragments.
+        Re-organize functions and panels.
 			</description>
-			<enclosure url="" sparkle:version="2.9.1" type="application/octet-stream" />
-		</item>
+      <enclosure url="" sparkle:version="3.0.0" type="application/octet-stream"/>
+    </item>
   </channel>
 </rss>

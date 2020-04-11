@@ -3,13 +3,17 @@
   "description": "Make it a fun to create spec for developers and teammates",
   "version": "2.9.1",
   "engines": {
-    "sketch": ">=49.0"
+    "sketch": ">=57.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qjebbs/sketch-meaxure.git"
   },
   "skpm": {
     "name": "Sketch MeaXure",
     "manifest": "src/manifest.json",
     "homepage": "https://github.com/qjebbs",
-    "appcast": "https://raw.githubusercontent.com/qjebbs/sketch-meaxure/master/appcast.xml",
+    "appcast": "appcast.xml",
     "main": "sketch-meaxure.sketchplugin",
     "assets": [
       "resources/**/*"
