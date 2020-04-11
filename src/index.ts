@@ -1,3 +1,7 @@
+// Copyright 2020 Jebbs. All rights reserved.
+// Use of this source code is governed by the MIT
+// license that can be found in the LICENSE file.
+
 import { settingsPanel } from "./meaxure/panels/settingsPanel";
 import { updateContext } from "./meaxure/common/context";
 import { logger } from "./meaxure/common/logger";
