@@ -6,6 +6,7 @@ import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
 import { getResourcePath } from "../helpers/helper";
 import { getLanguageScript } from "../common/language";
+import { sketch } from "../../sketch";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
 interface PageInfo {
@@ -105,11 +106,20 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
     };
 
     if (context.selection.length > 0) {
-        for (let artboard of context.page.layers) {
-            if (artboard.selected) data.selection.push(artboard.id);
+        let artboardSet = new Set<string>();
+        for (let layer of context.selection.layers) {
+            if (layer.type == sketch.Types.Artboard) {
+                artboardSet.add(layer.id);
+                continue;
+            }
+            let artboard = layer.getParentArtboard();
+            if (artboard) artboardSet.add(artboard.id);
         }
+        data.selection = Array.from(artboardSet);
     }
-    if (context.artboard) data.current.push(context.artboard.id);
+    if (context.artboard) {
+        data.current.push(context.artboard.id);
+    }
     if (context.document.selectedPage) {
         data.currentPageID = context.document.selectedPage.id;
     }
