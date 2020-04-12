@@ -29,6 +29,7 @@ interface ExportData {
     language: string;
     selection: any[];
     current: any[];
+    currentPageID: string;
     pages: PageInfo[];
     exportOption: boolean;
     exportInfluenceRect: boolean;
@@ -109,6 +110,9 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
         }
     }
     if (context.artboard) data.current.push(context.artboard.id);
+    if (context.document.selectedPage) {
+        data.currentPageID = context.document.selectedPage.id;
+    }
 
     for (let page of context.document.pages) {
         let pageData = <PageInfo>{};

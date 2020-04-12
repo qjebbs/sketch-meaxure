@@ -66,6 +66,7 @@
                 filter(data);
             },
             sendOrderRequest = function () {
+                if (!window.meaxure) return;
                 let order = $('input[name=order]:checked').val();
                 let reverse = $('input[name=reverse]:checked').val() == '1';
                 meaxure.postMessage('sort', {
@@ -219,7 +220,7 @@
                 $.each(data.pages, function (index, page) {
                     var pageIndex = index;
                     if (page.artboards.length > 0) {
-                        artboardsList.push('<div id="page-' + pageIndex + '" class="page-list">');
+                        artboardsList.push('<div id="pid-' + page.objectID + '" class="page-list">');
                         artboardsList.push('<label class="page-item">',
                             '<div class="checkbox">',
                             '<input id="p-' + pageIndex + '" type="checkbox" class="page-' + pageIndex + '" name="pages" value="' + pageIndex + '">',
@@ -374,9 +375,10 @@
                 checkPCheckbox();
                 sendOrderRequest();
                 checkedOption();
-                let checkedItems = $('input[name=artboards]:checked');
-                if (checkedItems.length) {
-                    $('#artboards-list').scrollTop(checkedItems.first().parent().parent().parent().position().top);
+                if (data.currentPageID) {
+                    $('#artboards-list').scrollTop(
+                        $('#pid-' + data.currentPageID).position().top
+                    );
                 }
             }
     </script>
@@ -394,25 +396,26 @@
                 exportOption: 1,
                 order: 'artboard-rows',
                 reverse: false,
-                current: [0],
+                current: ['page-id-1'],
+                currentPageID: 'page-id-1',
                 selection: [4, 7],
                 pages: [{
                     name: 'Page 1',
-                    objectID: '0',
+                    objectID: 'page-id-0',
                     artboards: [
-                        { name: 'Index', objectID: '0' },
-                        { name: 'Video', objectID: '1' },
-                        { name: 'Explore', objectID: '2' },
-                        { name: 'Profile', objectID: '3' }
+                        { name: 'Index', objectID: 'artboard-id-0' },
+                        { name: 'Video', objectID: 'artboard-id-1' },
+                        { name: 'Explore', objectID: 'artboard-id-2' },
+                        { name: 'Profile', objectID: 'artboard-id-3' }
                     ]
                 }, {
                     name: 'Page 2',
-                    objectID: '1',
+                    objectID: 'page-id-1',
                     artboards: [
-                        { name: 'Single content', objectID: '4' },
-                        { name: 'Single Video', objectID: '5' },
-                        { name: 'Search page', objectID: '6' },
-                        { name: 'Settings', objectID: '7' }
+                        { name: 'Single content', objectID: 'artboard-id-4' },
+                        { name: 'Single Video', objectID: 'artboard-id-5' },
+                        { name: 'Search page', objectID: 'artboard-id-6' },
+                        { name: 'Settings', objectID: 'artboard-id-7' }
                     ]
                 }]
             };
