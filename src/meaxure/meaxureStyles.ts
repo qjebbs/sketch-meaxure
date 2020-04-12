@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 import { sketch } from "../sketch";
+import { context } from "./common/context";
 
 let overrides: {
     [key: string]: { foreground: any, background: any }
@@ -123,6 +124,10 @@ function makeBaseLayerStyle(): Style {
     let baseStyle = new sketch.Style();
     baseStyle.fills = [makeFill('#FFFCDCFF')];
     baseStyle.borders = [];
+    baseStyle.opacity = 1;
+    baseStyle.blur = null;
+    baseStyle.shadows = [];
+    baseStyle.innerShadows = [];
     return baseStyle;
 }
 
@@ -134,6 +139,20 @@ function makeBaseTextStyle(): Style {
     baseStyle.verticalAlignment = sketch.Text.VerticalAlignment.center;
     baseStyle.fontSize = 12;
     baseStyle.lineHeight = 12;
+    baseStyle.paragraphSpacing = null;
+    baseStyle.fontFamily = 'Helvetica Neue';
+    baseStyle.fontStyle = null;
+    baseStyle.fontStretch = null;
+    baseStyle.fontWeight = 5;
+    baseStyle.kerning = 0;
+    baseStyle.textUnderline = null;
+    baseStyle.textStrikethrough = null;
     baseStyle.textColor = '#FFFFFFFF';
+    baseStyle.opacity = 1;
+    baseStyle.blur = null;
+    baseStyle.shadows = [];
+    baseStyle.innerShadows = [];
+    baseStyle.textTransform = 'none';
+    
     return baseStyle;
 }
