@@ -376,9 +376,12 @@
                 sendOrderRequest();
                 checkedOption();
                 if (data.currentPageID) {
-                    $('#artboards-list').scrollTop(
-                        $('#pid-' + data.currentPageID).position().top
-                    );
+                    let page = $('#pid-' + data.currentPageID);
+                    if (page.length) {
+                        $('#artboards-list').scrollTop(
+                            page.position().top
+                        );
+                    }
                 }
             }
     </script>

@@ -126,7 +126,7 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
 
     for (let page of context.document.pages) {
         let pageData = <PageInfo>{};
-        let artboards = page.layers as Artboard[];
+        let artboards = page.layers.filter(p => p.type == sketch.Types.Artboard) as Artboard[];
         pageData.name = page.name;
         pageData.objectID = page.id;
         pageData.artboards = [];
