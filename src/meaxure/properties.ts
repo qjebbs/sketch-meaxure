@@ -128,6 +128,7 @@ function getProperties(target: Layer, properties: string[]): string {
                 ) {
                     return "radius: " + convertUnit(getLayerRadius(target));
                 }
+                break;
             case "shadow":
                 let results = [];
                 let shadows = getShadowsFromStyle(targetStyle);
