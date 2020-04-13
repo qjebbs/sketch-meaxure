@@ -37,12 +37,13 @@ export function updateTintStackAfterLayer(layer: Layer) {
 export function applyTint(layer: Layer, layerData: LayerData) {
     // If no active tints, nothing to do
     if (!tintStack.length) return;
+    if (layer.type == sketch.Types.Group) return;
     // the first tint of the stack applied to current layer
     // logger.debug(`${layer.name} has tint from ${tintStack.reduce((p, c) => p += c.name + ',', '')}`)
     let tint = tintStack[0];
     // caculate intersection of layer and tint, as the clipped frame of the layer
     let tintFill = tint.style.fills.filter(f => f.enabled)[0];
-    layerData.fills.forEach(
+    if (layerData.fills) layerData.fills.forEach(
         fill => {
             if (fill.fillType == sketch.Style.FillType.Color) {
                 fill.color = applyTintToSMColor(fill.color, tintFill.color);
@@ -53,7 +54,7 @@ export function applyTint(layer: Layer, layerData: LayerData) {
             }
         }
     );
-    layerData.color = applyTintToSMColor(layerData.color, tintFill.color)
+    if (layerData.color) layerData.color = applyTintToSMColor(layerData.color, tintFill.color)
 }
 export function applyTintToSMColor(color: SMColor, tintColor: string): SMColor {
     if (!color) return color;
