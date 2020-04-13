@@ -62,7 +62,12 @@ export interface SMFillData {
     gradient: SMGradient,
 }
 
-export type SMType = "text" | "symbol" | "slice" | "shape";
+export enum SMType {
+    text = "text",
+    symbol = "symbol",
+    slice = "slice",
+    shape = "shape",
+};
 export interface LayerData {
     // shared
     objectID: string,

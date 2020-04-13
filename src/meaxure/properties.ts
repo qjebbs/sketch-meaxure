@@ -95,6 +95,11 @@ function getProperties(target: Layer, properties: string[]): string {
     let elements = properties.map((property) => {
         switch (property) {
             case "color":
+                // don't mark tint color
+                if (
+                    target.type == sketch.Types.Group ||
+                    target.type == sketch.Types.SymbolInstance
+                ) return undefined;
                 let tint = findTint(target);
                 if (target.type == sketch.Types.Text) {
                     let color = parseColor(targetStyle.textColor);
@@ -122,13 +127,8 @@ function getProperties(target: Layer, properties: string[]): string {
             case "opacity":
                 return "opacity: " + Math.round(targetStyle.opacity * 100) + "%";
             case "radius":
-                if (
-                    target.type == sketch.Types.ShapePath ||
-                    (target.type == sketch.Types.Group && target.layers[0].type == sketch.Types.ShapePath)
-                ) {
-                    return "radius: " + convertUnit(getLayerRadius(target));
-                }
-                break;
+                if (target.type !== sketch.Types.ShapePath) return undefined;
+                return "radius: " + convertUnit(getLayerRadius(target));
             case "shadow":
                 let results = [];
                 let shadows = getShadowsFromStyle(targetStyle);
@@ -159,6 +159,12 @@ function getProperties(target: Layer, properties: string[]): string {
                 if (target.type != sketch.Types.Text) return undefined;
                 return "paragraph: " + convertUnit(targetStyle.paragraphSpacing, true);
             case "style-name":
+                // sharedStyle on group applies as tint, not looks exactly to it
+                // don't mark style name to avoid confusion
+                if (
+                    target.type == sketch.Types.Group ||
+                    target.type == sketch.Types.SymbolInstance
+                ) return undefined;
                 let sharedStyle = (target as Group).sharedStyle;
                 if (sharedStyle) return "style-name: " + sharedStyle.name;
                 break;

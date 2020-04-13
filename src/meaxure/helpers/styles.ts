@@ -122,9 +122,6 @@ export function getLayerRadius(layer: Layer): number[] {
     if (layer.type == sketch.Types.ShapePath) {
         return (layer as ShapePath).radius;
     }
-    if (layer.layers && layer.layers.length && layer.layers[0].type == sketch.Types.ShapePath) {
-        return (layer.layers[0] as ShapePath).radius;
-    }
     return undefined;
 }
 

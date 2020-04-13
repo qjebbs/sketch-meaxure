@@ -64,23 +64,26 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     updateTintStackAfterLayer(layer);
 }
 function getSMType(layer: Layer): SMType {
-    if (layer.type == sketch.Types.Text) return "text";
-    if (layer.type == sketch.Types.SymbolInstance) return "symbol";
-    if (layer.type == sketch.Types.Slice || layer.exportFormats.length > 0) return "slice";
-    return "shape";
+    if (layer.type == sketch.Types.Text) return SMType.text;
+    if (layer.type == sketch.Types.SymbolInstance) return SMType.symbol;
+    if (layer.type == sketch.Types.Slice || layer.exportFormats.length > 0) return SMType.slice;
+    return SMType.shape;
 }
 
 function getLayerStyles(layer: Layer, layerType: SMType, layerData: LayerData) {
-    if (layerType != "slice") {
+    if (layerType != SMType.slice) {
         let layerStyle = layer.style;
-        layerData.rotation = layer.transform.rotation;
-        layerData.radius = getLayerRadius(layer);
-        layerData.borders = getBordersFromStyle(layerStyle);
-        layerData.fills = getFillsFromStyle(layerStyle);
         layerData.shadows = getShadowsFromStyle(layerStyle);
+        layerData.rotation = layer.transform.rotation;
         layerData.opacity = layerStyle.opacity;
-        let sharedStyle = (layer as Group).sharedStyle;
-        layerData.styleName = sharedStyle ? sharedStyle.name : '';
+        if (layer.type !== sketch.Types.Group) {
+            layerData.radius = getLayerRadius(layer);
+            layerData.borders = getBordersFromStyle(layerStyle);
+            // don't show tint fills for group
+            layerData.fills = getFillsFromStyle(layerStyle);
+            let sharedStyle = (layer as ShapePath).sharedStyle;
+            layerData.styleName = sharedStyle ? sharedStyle.name : '';
+        }
     }
     if (layerType == "text") {
         let text = layer as Text;
