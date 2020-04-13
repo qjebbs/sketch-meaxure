@@ -31,19 +31,14 @@ export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardD
         }
         let currentLineHeight = layer.style.lineHeight || Math.max(...frags.map(f => f.defaultLineHeight));
         for (let fragment of frags) {
-            let subText = new sketch.Text({ text: fragment.text, parent: layer.parent });
+            let subText = new sketch.Text({ text: fragment.text, parent: layer.parent, hidden: true });
             tempCreatedLayers.push(subText);
             subText.style = fragment.style;
             subText.style.lineHeight = currentLineHeight;
             subText.frame.x = textFrame.x + offsetFragmentsX;
             subText.frame.y = textFrame.y + offsetFragmentsY;
             offsetFragmentsX += subText.frame.width;
-            getLayerData(
-                artboard,
-                subText,
-                data,
-                false
-            );
+            getLayerData(artboard, subText, data, false);
             subText.remove();
         }
         offsetFragmentsY += currentLineHeight;
