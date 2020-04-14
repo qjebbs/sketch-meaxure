@@ -15,14 +15,17 @@ export function getFragments(layer: Layer): TextFragment[] {
     for (let i = 0; i < fragments.length; i++) {
         let fragment = fragments[i];
         let styleBase = JSON.parse(JSON.stringify(layer.style));
-        let fontFamily = fragment.NSFont.family;
-        let fontSize = fragment.NSFont.attributes.NSFontSizeAttribute;
+        let fontFamily = (fragment.NSFont && fragment.NSFont.family) ? fragment.NSFont.family : layer.style.fontFamily;
+        let fontSize = (fragment.NSFont && fragment.NSFont.attributes && fragment.NSFont.attributes.NSFontSizeAttribute) ?
+            fragment.NSFont.attributes.NSFontSizeAttribute : layer.style.fontSize;
+        let textColor = (fragment.MSAttributedStringColorAttribute && fragment.MSAttributedStringColorAttribute.value) ?
+            `${fragment.MSAttributedStringColorAttribute.value}FF` : '#000000FF';
         results.push(<TextFragment>{
             location: fragment.location,
             length: fragment.length,
             text: fragment.text,
             style: Object.assign(styleBase, <Style>{
-                textColor: `${fragment.MSAttributedStringColorAttribute.value}FF`,
+                textColor: textColor,
                 fontSize: fontSize,
                 fontFamily: fontFamily,
                 textStrikethrough: fragment.NSStrikethrough ? 'single' : null,
