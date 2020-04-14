@@ -12,6 +12,11 @@ const MARK_V1 = /^(OVERLAY|WIDTH|HEIGHT|TOP|RIGHT|BOTTOM|LEFT|VERTICAL|HORIZONTA
 const MARK_V2 = /^#(?:width|height|spacing|coordinate|overlay|properties|note)/;
 
 export async function renameOldMarkers() {
+    if (!sketch.UI.confirm(
+        'Rename Old Markers',
+        'Rename markers created by Sketch Measure, so that this plugin can manage them.' + '\n\n' +
+        'Would you like to continue?'
+    )) return;
     let timer = tik();
     let processingPanel = createWebviewPanel({
         url: getResourcePath() + "/panel/processing.html",
