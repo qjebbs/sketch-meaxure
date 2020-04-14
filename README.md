@@ -22,6 +22,10 @@ Improvements that users can recognize:
 1. Better display of text fragments.
 1. Re-organize functions and panels.
 
+## Notice
+
+If you encounter problems managing (toggle hidden/locked, remove, and export) markers created by Sketch Measure, run the menu `Plugin - Sketch MeaXure - Help - Rename Old Markers`.
+
 ## Installation
 
 - [Download](https://github.com/qjebbs/sketch-meaxure/releases/latest/download/sketch-meaxure.sketchplugin.zip) the latest release of the plugin

@@ -9,20 +9,16 @@
       <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.0.0/sketch-meaxure.sketchplugin.zip" sparkle:version="3.0.0"/>
     </item>
     <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.0.0/sketch-meaxure.sketchplugin.zip" sparkle:version="2.9.2-0"/>
-    </item>
-    <item>
-      <title>Version 3.0.0</title>
+      <title>Version 3.1.0</title>
       <description>
-        Fully works with lastest version of Sketch (v64).
-        The latest Tint feature support.
-        Easily resize markers, without concerns to break them. (The resizing constrain feature)
-        Always export masked layers right, while Measure doesn't in some cases.
-        Customize the order of exported artboards.
-        Better display of text fragments.
-        Re-organize functions and panels.
+        Export panel experience optimize
+        Show only artboards in export panel
+        Export don't cause layer re-arrange, works better with Anima
+        Mark properties optimize
+        Faster toggle hidden/locked of markers
+        Add 'Rename Old Markers', helps to manage exists markers created by Sketch Measure
 			</description>
-      <enclosure url="" sparkle:version="3.0.0" type="application/octet-stream"/>
+      <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
