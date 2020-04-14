@@ -11,7 +11,6 @@ import { getLayerRadius, getBordersFromStyle, getFillsFromStyle, getShadowsFromS
 import { SMRect } from "../interfaces";
 import { getSlice } from "./slice";
 import { makeNote } from "./note";
-import { regexNames } from "../common/common";
 import { getSymbol } from "./symbol";
 import { updateTintStackAfterLayer, applyTint } from "./tint";
 
@@ -132,7 +131,7 @@ function getLayerStates(layer: Layer): LayerStates {
 
     while (layer.type != sketch.Types.Artboard && layer.type != sketch.Types.SymbolMaster) {
         let parent = layer.parent;
-        if (!isMeaXure) isMeaXure = regexNames.test(layer.name);
+        if (!isMeaXure) isMeaXure = layer.name.startsWith('#meaxure-');
         // if parents is shape, this is in shape group
         if (!isInShapeGroup) isInShapeGroup = parent.type == sketch.Types.Shape;
         if (!isVisible) isVisible = !layer.hidden;

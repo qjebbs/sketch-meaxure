@@ -8,6 +8,7 @@ declare const nil;
 declare const NSUUID;
 declare const NSHeight;
 declare const NSObject;
+declare const NSMutableArray
 declare const MOClassDescription;
 declare function NSClassFromString(string);
 declare function NSSelectorFromString(string);

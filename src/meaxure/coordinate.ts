@@ -21,7 +21,7 @@ export function drawCoordinate() {
 }
 function coordinateLayer(layer: Layer) {
     let layerID = layer.id;
-    let layerName = "#coordinate-" + layerID;
+    let layerName = "#meaxure-coordinate-" + layerID;
     let artboard = layer.getParentArtboard();
     if (!artboard) return;
     sketch.find<Group>(

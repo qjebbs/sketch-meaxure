@@ -54,7 +54,7 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
     }, options);
     let target = options.target;
 
-    let name = "#properties-" + target.id;
+    let name = "#meaxure-properties-" + target.id;
 
     let artboard = target.getParentArtboard();
     let root = artboard || target.getParentPage();

@@ -47,27 +47,27 @@ function distance(layers: Layer[], position: string) {
     switch (position) {
         case "":
         case "horizontal":
-            drawHorizontal(root, "#spacing-horizontal-" + fromID + "-" + toID, from, to);
+            drawHorizontal(root, "#meaxure-spacing-horizontal-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "vertical":
-            drawVertical(root, "#spacing-vertical-" + fromID + "-" + toID, from, to);
+            drawVertical(root, "#meaxure-spacing-vertical-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "top":
-            drawTop(root, "#spacing-top-" + fromID + "-" + toID, from, to);
+            drawTop(root, "#meaxure-spacing-top-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "bottom":
-            drawBottom(root, "#spacing-bottom-" + fromID + "-" + toID, from, to);
+            drawBottom(root, "#meaxure-spacing-bottom-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "left":
-            drawLeft(root, "#spacing-left-" + fromID + "-" + toID, from, to);
+            drawLeft(root, "#meaxure-spacing-left-" + fromID + "-" + toID, from, to);
             if (position) return;
         case "":
         case "right":
-            drawRight(root, "#spacing-right-" + fromID + "-" + toID, from, to);
+            drawRight(root, "#meaxure-spacing-right-" + fromID + "-" + toID, from, to);
             if (position) return;
         default:
             break;

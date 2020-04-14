@@ -22,7 +22,7 @@ function note(target: Text) {
     let background = context.meaxureStyles.note.background;
     let foreground = context.meaxureStyles.note.foreground;
     let root = target.getParentArtboard() || target.getParentPage();
-    let name = "#note-" + new Date().getTime();
+    let name = "#meaxure-note-" + new Date().getTime();
 
     let note = createLabel(target.text, {
         name: name,

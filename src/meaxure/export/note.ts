@@ -7,7 +7,7 @@ import { sketch } from "../../sketch";
 import { toHTMLEncode, emojiToEntities } from "../helpers/helper";
 
 export function makeNote(layer: Layer, artboard: Artboard): SMNote {
-    if (!layer || layer.type != sketch.Types.Group || ! /#note-/.test(layer.name)) return undefined;
+    if (!layer || layer.type != sketch.Types.Group || !layer.name.startsWith('#meaxure-')) return undefined;
     let textLayer: Text;
     let layers = layer.allSubLayers();
     for (let layer of layers) {
