@@ -87,6 +87,12 @@
       "script": "mark_bundle.js"
     },
     {
+      "name": "Rename Old Markers",
+      "identifier": "commandRenameOldMarkers",
+      "handler": "commandRenameOldMarkers",
+      "script": "mark_bundle.js"
+    },
+    {
       "name": "Feedback",
       "identifier": "linkFeedback",
       "handler": "linkFeedback",
@@ -131,6 +137,7 @@
       {
         "title": "Help",
         "items": [
+          "commandRenameOldMarkers",
           "linkHome",
           "linkFeedback"
         ]

@@ -17,6 +17,7 @@ import { drawSpacings } from "./meaxure/spacings";
 import { toggleHidden, toggleLocked, clearAllMarks } from "./meaxure/manage";
 import { sketch } from "./sketch";
 import { EdgeVertical, Edge } from "./sketch/layer/alignment";
+import { renameOldMarkers } from "./meaxure/helpers/renameOldMarkers";
 
 export function commandInit(context) { updateContext(context); return false; }
 export function commandSettings(context?) { runAndCatch(settingsPanel, context); }
@@ -43,6 +44,7 @@ export function commandHidden(context?) { runAndCatch(toggleHidden, context); }
 export function commandLocked(context?) { runAndCatch(toggleLocked, context); }
 export function commandClear(context?) { runAndCatch(clearAllMarks, context); }
 export function commandExport(context?) { runAndCatch(exportSpecification, context); }
+export function commandRenameOldMarkers(context?) { runAndCatch(renameOldMarkers, context); }
 export function linkFeedback(context?) { runAndCatch(openURL, context, "https://github.com/qjebbs/sketch-meaxure/issues"); }
 export function linkHome(context?) { runAndCatch(openURL, context, "https://github.com/qjebbs/sketch-meaxure"); }
 
