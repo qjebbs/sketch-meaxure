@@ -15,7 +15,7 @@
       <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.0.0/sketch-meaxure.sketchplugin.zip" sparkle:version="3.0.0"/>
     </item>
     <item>
-      <title>Version 3.1.0</title>
+      <title>Version 3.1.2</title>
       <description>
         Export panel experience optimize
         Show only artboards in export panel
@@ -23,6 +23,7 @@
         Mark properties optimize
         Faster toggle hidden/locked of markers
         Add 'Rename Old Markers', helps to manage exists markers created by Sketch Measure
+        Export: compatible with Sketch Meaxure markers
         Fix some case cannot export text layer, #1
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>

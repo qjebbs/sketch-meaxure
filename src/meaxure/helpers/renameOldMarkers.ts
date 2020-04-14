@@ -37,7 +37,7 @@ export async function renameOldMarkers() {
                 return;
             }
             processingPanel.postMessage('process', {
-                percentage: Math.round((i + 1 + j / page.layers.length) / doc.pages.length * 100),
+                percentage: Math.round((i + (j + 1) / page.layers.length) / doc.pages.length * 100),
                 text: localize("Processing artboard %@ of %@", [i + 1, doc.pages.length])
             });
         }
@@ -48,12 +48,16 @@ export async function renameOldMarkers() {
 function processingArtboard(artboard: Artboard) {
     return new Promise<boolean>((resolve, reject) => {
         for (let layer of artboard.allSubLayers()) {
-            if (layer.type !== sketch.Types.Group) continue;
-            if (renameMarkerV1(layer)) continue;
-            renameMarkerV2(layer)
+            renameIfIsMarker(layer);
         }
         resolve(true);
     });
+}
+
+export function renameIfIsMarker(layer: Layer) {
+    if (layer.type !== sketch.Types.Group) return;
+    if (renameMarkerV1(layer)) return;
+    renameMarkerV2(layer);
 }
 
 function renameMarkerV2(mark: Layer): boolean {

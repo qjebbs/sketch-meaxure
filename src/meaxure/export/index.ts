@@ -16,6 +16,7 @@ import { clearSliceCache, getCollectedSlices } from "./slice";
 import { clearMaskStack } from "./mask";
 import { getDocumentColors } from "./colors";
 import { clearTintStack } from "./tint";
+import { renameIfIsMarker } from "../helpers/renameOldMarkers";
 
 export let tempCreatedLayers: Layer[] = [];
 export let savePath: string;
@@ -95,6 +96,8 @@ export async function exportSpecification() {
                 sketch.UI.message('Cancelled by user.');
                 return;
             }
+            // compatible with meaxure markers
+            renameIfIsMarker(layer);
             let taskError: Error;
             await getLayerTask(artboard, layer, data.artboards[i], results.byInfluence)
                 .catch(err => taskError = err);
