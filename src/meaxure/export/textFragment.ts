@@ -119,14 +119,17 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
         let lineFragments = [];
         for (let element of line.elements) {
             if (!currentFragment) currentFragment = fragments.shift();
-            while (currentFragment.text.startsWith('\n')) {
+            while (
+                currentFragment.text.startsWith('\n') || // new paragraph
+                currentFragment.text.startsWith('\u2028') // a LINE SEPARATOR, new line
+            ) {
                 // if currentFragment.text start with \n, it creates a new line, which doesn't appear in svg.
                 // so just push a null (presents a new paragraph) for it, and split the fragment
                 let leftPart: TextFragment;
-                [leftPart, currentFragment] = splitFragment(currentFragment, '\n');
+                [leftPart, currentFragment] = splitFragment(currentFragment, 1);
                 if (isPrevNewLine) fragmentsByLines.push([]);
                 // push a null to represent a new paragraph
-                fragmentsByLines.push(null);
+                if (leftPart.text === '\n') fragmentsByLines.push(null);
                 if (!currentFragment) currentFragment = fragments.shift();
                 isPrevNewLine = true;
             }
@@ -137,7 +140,7 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
             } else {
                 // element is short than fragment, fragment wrapped
                 let leftPart: TextFragment;
-                [leftPart, currentFragment] = splitFragment(currentFragment, element);
+                [leftPart, currentFragment] = splitFragment(currentFragment, element.length);
                 lineFragments.push(leftPart);
             }
             isPrevNewLine = false;
@@ -146,13 +149,13 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
     }
     return fragmentsByLines;
 }
-function splitFragment(fragment: TextFragment, splitText: string): [TextFragment, TextFragment] {
+function splitFragment(fragment: TextFragment, length: number): [TextFragment, TextFragment] {
     let left = Object.assign({}, fragment);
-    left.length = splitText.length
-    left.text = splitText;
-    fragment.text = fragment.text.substring(left.length)
-    fragment.location += left.length;
-    fragment.length -= left.length;
+    left.length = length
+    left.text = fragment.text.substr(0, length);
+    fragment.text = fragment.text.substring(length);
+    fragment.location += length;
+    fragment.length -= length;
     if (fragment.length < 0) throw new Error('splitFragment: fragment splitted to negtive length');
     if (!fragment.length) fragment = undefined;
     return [left, fragment];
