@@ -78,12 +78,6 @@ export function extendLayer() {
     });
     target.allSubLayers = function (): Layer[] {
         let layers: Layer[] = [];
-        // // fromNative Layers do not have the property 'type'
-        // let layerObject: any;
-        // let layerObjects = this.sketchObject.children().objectEnumerator();
-        // while (layerObject = layerObjects.nextObject()) {
-        //     layers.push(sketch.Layer.fromNative(layerObject))
-        // }
         enumLayers(this);
         function enumLayers(layer: Layer) {
             layers.push(layer)
