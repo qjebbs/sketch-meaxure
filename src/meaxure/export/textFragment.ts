@@ -23,15 +23,20 @@ export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardD
         lines = [fragments];
     }
     for (let frags of lines) {
-        let offsetFragmentsX = 0;
-        if (frags.length == 1 && frags[0].text == '\n') {
-            // if it's a fake line (a new paragraph)
+        if (frags == null) {
+            // it's a new paragraph
             offsetFragmentsY += layer.style.paragraphSpacing;
             continue;
         }
+        let offsetFragmentsX = 0;
         let currentLineHeight = layer.style.lineHeight || Math.max(...frags.map(f => f.defaultLineHeight));
         for (let fragment of frags) {
-            let subText = new sketch.Text({ text: fragment.text, parent: layer.parent, hidden: true });
+            fragment.style.fills.forEach(fill => {
+                // https://github.com/qjebbs/sketch-meaxure/issues/2
+                // https://github.com/sketch-hq/SketchAPI/issues/726
+                if (fill.pattern && fill.pattern.image === null) fill.pattern.image = undefined;
+            });
+            let subText = new sketch.Text({ text: fragment.text, parent: layer.parent });
             tempCreatedLayers.push(subText);
             subText.style = fragment.style;
             subText.style.lineHeight = currentLineHeight;
@@ -51,16 +56,21 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
     let lines = getFragmentLinesFromSVG(svg);
     let fragmentsByLines: TextFragment[][] = [];
     let currentFragment: TextFragment = undefined;
+    let isPrevNewLine: boolean = false;
     for (let line of lines) {
         let lineFragments = [];
         for (let element of line.elements) {
             if (!currentFragment) currentFragment = fragments.shift();
-            if (currentFragment.text == '\n') {
-                // currentFragment.text is \n, it creates a new line, which doesn't appear in svg.
-                // so just push a fake line (presents a new paragraph), and shift fragments
-                // currentFragment.text = '';
-                fragmentsByLines.push([currentFragment]);
-                currentFragment = fragments.shift();
+            while (currentFragment.text.startsWith('\n')) {
+                // if currentFragment.text start with \n, it creates a new line, which doesn't appear in svg.
+                // so just push a null (presents a new paragraph) for it, and split the fragment
+                let leftPart: TextFragment;
+                [leftPart, currentFragment] = splitFragment(currentFragment, '\n');
+                if (isPrevNewLine) fragmentsByLines.push([]);
+                // push a null to represent a new paragraph
+                fragmentsByLines.push(null);
+                if (!currentFragment) currentFragment = fragments.shift();
+                isPrevNewLine = true;
             }
             if (element.length == currentFragment.text.length) {
                 // push and process next fragment
@@ -72,6 +82,7 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
                 [leftPart, currentFragment] = splitFragment(currentFragment, element);
                 lineFragments.push(leftPart);
             }
+            isPrevNewLine = false;
         }
         fragmentsByLines.push(lineFragments);
     }
