@@ -9,12 +9,17 @@ export interface TextFragment {
     style: Style;
     defaultLineHeight: number;
 }
+export function getFragmentsCount(layer: Layer): number {
+    let fragments: any[] = layer.sketchObject.attributedString().treeAsDictionary().value.attributes;
+    return fragments.length;
+}
 export function getFragments(layer: Layer): TextFragment[] {
     let fragments: any[] = layer.sketchObject.attributedString().treeAsDictionary().value.attributes;
     let results: TextFragment[] = [];
+    let styleStr = JSON.stringify(layer.style);
     for (let i = 0; i < fragments.length; i++) {
         let fragment = fragments[i];
-        let styleBase = JSON.parse(JSON.stringify(layer.style));
+        let styleBase = JSON.parse(styleStr);
         let fontFamily = (fragment.NSFont && fragment.NSFont.family) ? fragment.NSFont.family : layer.style.fontFamily;
         let fontSize = (fragment.NSFont && fragment.NSFont.attributes && fragment.NSFont.attributes.NSFontSizeAttribute) ?
             fragment.NSFont.attributes.NSFontSizeAttribute : layer.style.fontSize;

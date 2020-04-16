@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 import { sketch } from "..";
-import { TextFragment, getFragments } from "./textFragment";
+import { TextFragment, getFragments, getFragmentsCount } from "./textFragment";
 
 export enum TextBehaviour {
     autoWidth = 0,
@@ -17,6 +17,7 @@ declare module 'sketch/sketch' {
             isEmpty: boolean;
             textBehaviour: TextBehaviour;
             getFragments(): TextFragment[];
+            getFragmentsCount(): number;
         }
     }
 }
@@ -38,4 +39,5 @@ export function extendText() {
         }
     });
     target.getFragments = function () { return getFragments(this) };
+    target.getFragmentsCount = function () { return getFragmentsCount(this) }
 }

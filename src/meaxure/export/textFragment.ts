@@ -9,9 +9,8 @@ import { TextFragment } from "../../sketch/text/textFragment";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 
 export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardData) {
-    if (layer.type != sketch.Types.Text) return;
+    if (layer.type != sketch.Types.Text || layer.getFragmentsCount() < 2) return;
     let fragments = layer.getFragments();
-    if (fragments.length < 2) return;
 
     let offsetFragmentsY = 0;
     let textFrame = layer.frame;
