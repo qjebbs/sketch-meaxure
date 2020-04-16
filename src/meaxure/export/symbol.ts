@@ -2,12 +2,12 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
-import { LayerData, ArtboardData } from "../interfaces";
+import { LayerData, ArtboardData, SMType } from "../interfaces";
 import { tempCreatedLayers } from ".";
 import { getLayerData } from "./layerData";
 
 export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: LayerData, data: ArtboardData, byInfluence: boolean) {
-    if (layerData.type != "symbol") return;
+    if (layerData.type != SMType.symbol) return;
     let master = layer.master
     let masterID = master.id;
 

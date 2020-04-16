@@ -55,7 +55,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     applyTint(layer, layerData);
     getSlice(layer, layerData, symbolLayer);
     data.layers.push(layerData);
-    if (layerData.type == "symbol") {
+    if (layerData.type == SMType.symbol) {
         getSymbol(artboard, layer as SymbolInstance, layerData, data, byInfluence);
     }
     getTextFragment(artboard, layer as Text, data);

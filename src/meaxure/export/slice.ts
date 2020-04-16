@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
-import { SMExportable, LayerData, SMExportFormat } from "../interfaces";
+import { SMExportable, LayerData, SMExportFormat, SMType } from "../interfaces";
 import { assetsPath } from ".";
 import { context } from "../common/context";
 import { exportImage } from "./files";
@@ -19,7 +19,7 @@ export function getCollectedSlices(): any[] {
 }
 export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer) {
     let objectID = layerData.objectID;
-    if (layerData.type == "symbol") {
+    if (layerData.type == SMType.symbol) {
         objectID = (layer as SymbolInstance).master.id;
     } else if (symbolLayer) {
         objectID = symbolLayer.id;
@@ -28,12 +28,12 @@ export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer)
     // export it, if haven't yet
     if (
         (
-            layerData.type == "slice" ||
-            (layerData.type == "symbol" && (layer as SymbolInstance).master.exportFormats.length)
+            layerData.type == SMType.slice ||
+            (layerData.type == SMType.symbol && (layer as SymbolInstance).master.exportFormats.length)
         ) && !sliceCache[objectID]
     ) {
         let sliceLayer: Layer = layer;
-        if (layerData.type == "symbol") sliceLayer = (layer as SymbolInstance).master;
+        if (layerData.type == SMType.symbol) sliceLayer = (layer as SymbolInstance).master;
 
         NSFileManager
             .defaultManager()

@@ -41,7 +41,7 @@ export function applyTint(layer: Layer, layerData: LayerData) {
     // the first tint of the stack applied to current layer
     // logger.debug(`${layer.name} has tint from ${tintStack.reduce((p, c) => p += c.name + ',', '')}`)
     let tint = tintStack[0];
-    // caculate intersection of layer and tint, as the clipped frame of the layer
+    // apply tint to fills and text color
     let tintFill = tint.style.fills.filter(f => f.enabled)[0];
     if (layerData.fills) layerData.fills.forEach(
         fill => {
