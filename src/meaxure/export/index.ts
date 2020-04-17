@@ -30,7 +30,7 @@ export async function exportSpecification() {
     }
     let results = await exportPanel();
     if (!results) return;
-    if (results.selectionArtboards.length <= 0) return false;
+    if (results.selection.length <= 0) return false;
     let document = context.document;
     savePath = sketch.UI.savePanel(
         localize("Export spec"),
@@ -74,8 +74,9 @@ export async function exportSpecification() {
 
     let cancelled = false;
     let layerIndex = 0;
-    for (let i = 0; i < results.selectionArtboards.length; i++) {
-        let artboard = results.selectionArtboards[i];
+    for (let i = 0; i < results.selection.length; i++) {
+        let select = results.selection[i];
+        let artboard = select.artboard;
         let page = artboard.parent as Page;
         let fileName = toSlug(page.name + ' ' + (i + 1) + ' ' + artboard.name);
         data.artboards[i] = <ArtboardData>{
@@ -89,7 +90,7 @@ export async function exportSpecification() {
         data.artboards[i].objectID = artboard.id;
         data.artboards[i].width = artboard.frame.width;
         data.artboards[i].height = artboard.frame.height;
-        for (let layer of artboard.allSubLayers()) {
+        for (let layer of select.children) {
             layerIndex++;
             if (cancelled) {
                 onFinishCleanup();
@@ -110,14 +111,13 @@ export async function exportSpecification() {
             // so that processingPanel has time to initialize,
             // or we get a promise reject of reply timeout.
             processingPanel.postMessage('process', {
-                percentage: Math.round(layerIndex / results.allCount * 100),
-                text: localize("Processing layer %@ of %@", [layerIndex, results.allCount])
+                percentage: Math.round(layerIndex / results.layersCount * 100),
+                text: localize("Processing layer %@ of %@", [layerIndex, results.layersCount])
             });
         }
         if (results.advancedMode) {
             exportArtboardAdvanced(artboard, data.artboards[i], savePath, i);
-        }
-        else {
+        } else {
             exportArtboard(artboard, data.artboards[i], savePath, template);
         }
     }

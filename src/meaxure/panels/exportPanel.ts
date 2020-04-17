@@ -39,8 +39,8 @@ interface ExportData {
 }
 
 interface ExportConfig {
-    selectionArtboards: Artboard[];
-    allCount: number;
+    selection: { artboard: Artboard, children: Layer[] }[];
+    layersCount: number;
     advancedMode: boolean;
     byInfluence: boolean;
 }
@@ -56,7 +56,7 @@ export function exportPanel(): Promise<ExportConfig> {
 
     let [data, allArtboards] = prepareExportData();
     function onSubmit(rdata: ExportData, resolve: (boolean) => void) {
-        let exportArtboards: Artboard[] = [];
+        let exportArtboards: { artboard: Artboard, children: Layer[] }[] = [];
         let layersCount = 0;
         for (let page of data.pages) {
             // don't sort again, already done in sort requests.
@@ -64,14 +64,15 @@ export function exportPanel(): Promise<ExportConfig> {
             for (let info of page.artboards) {
                 if (rdata[info.objectID]) {
                     let artboard = allArtboards[info.objectID];
-                    layersCount += artboard.allSubLayers().length;
-                    exportArtboards.push(artboard);
+                    let children = artboard.allSubLayers();
+                    layersCount += children.length;
+                    exportArtboards.push({ artboard: artboard, children: children });
                 }
             }
         }
         resolve(<ExportConfig>{
-            selectionArtboards: exportArtboards,
-            allCount: layersCount,
+            selection: exportArtboards,
+            layersCount: layersCount,
             advancedMode: rdata.exportOption,
             byInfluence: rdata.exportInfluenceRect,
         });
