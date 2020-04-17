@@ -45,18 +45,6 @@ export class ConfigsMaster {
     set byPercentage(value: boolean) {
         this._setSessionVariable<boolean>('byPercentage', value);
     }
-    get isLocked(): boolean {
-        return this._readSessionVariable<boolean>('isLocked', false);
-    }
-    set isLocked(value: boolean) {
-        this._setSessionVariable<boolean>('isLocked', value);
-    }
-    get isHidden(): boolean {
-        return this._readSessionVariable<boolean>('isHidden', false);
-    }
-    set isHidden(value: boolean) {
-        this._setSessionVariable<boolean>('isHidden', value);
-    }
     private _readDocumentSetting<T>(field: string, defaultValue: T): T {
         let value = sketch.Settings.documentSettingForKey<T>(this._document, field);
         // logger.debug(`read config: "${field}"=${value}`);

@@ -17,20 +17,34 @@ export function clearAllMarks() {
 }
 
 export function toggleHidden() {
-    let isHidden = !context.configs.isHidden;
+    let isHidden = true;
     let marks = sketch.find<Group>('Group, [name^="#meaxure-"]', context.page);
+    for (let mark of marks) {
+        // if one mark of all is visible, 
+        // the curent state is visible, hide them all first
+        if (!isHidden) break;
+        isHidden = mark.hidden;
+    }
+    // invert the state
+    isHidden = !isHidden;
     for (let mark of marks) {
         mark.hidden = isHidden;
     }
-    context.configs.isHidden = isHidden;
 }
 export function toggleLocked() {
-    let isLocked = !context.configs.isLocked;
+    let isLocked = true;
     let marks = sketch.find<Group>('Group, [name^="#meaxure-"]', context.page);
+    for (let mark of marks) {
+        // if one mark of all is unlocked, 
+        // the curent state is unlocked, lock them all first
+        if (!isLocked) break;
+        isLocked = mark.hidden;
+    }
+    // invert the state
+    isLocked = !isLocked;
     for (let mark of marks) {
         mark.locked = isLocked;
     }
-    context.configs.isLocked = isLocked;
 }
 function customFindRange(layers: Layer[], includingSelf: boolean): any {
     return {
