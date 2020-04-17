@@ -30,21 +30,12 @@ export function exportImage(layer: Layer, format: SMExportFormat, path: string, 
     return savePath;
 }
 
-export function exportImage2(layer: Layer, format: SMExportFormat, path: string, name: string) {
-    let savePath = [
-        path, "/",
-        format.prefix, name, format.suffix,
-        ".", format.format
-    ].join("");
-    // cannot use sketch.export because it's option.output is a directory, 
-    // we don't have a chance to specify the filename,
-    // the filename is unpredictable.
-    sketch.export(layer, {
-        output: savePath,
+export function exportImageToBuffer(layer: Layer, format: SMExportFormat): Buffer {
+    return sketch.export(layer, {
+        output: null,
         formats: format.format,
         scales: format.scale.toString(),
-    })
-    return savePath;
+    }) as Buffer;
 }
 
 export function writeFile(options) {

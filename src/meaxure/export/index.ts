@@ -8,7 +8,7 @@ import { localize, getLanguageScript } from "../common/language";
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
 import { toHTMLEncode, tik, toSlug, emojiToEntities, getResourcePath } from "../helpers/helper";
-import { writeFile, buildTemplate, exportImage } from "./files";
+import { writeFile, buildTemplate, exportImage, exportImageToBuffer } from "./files";
 import { logger } from "../common/logger";
 import { ExportData, ArtboardData } from "../interfaces";
 import { getLayerData } from "./layerData";
@@ -118,7 +118,7 @@ export async function exportSpecification() {
         if (results.advancedMode) {
             exportArtboardAdvanced(artboard, data.artboards[i], savePath, i);
         } else {
-            exportArtboard(artboard, data.artboards[i], savePath, template);
+            exportArtboard(artboard, data, i, savePath, template);
         }
     }
     data.slices = getCollectedSlices();
@@ -167,22 +167,21 @@ function exportArtboardAdvanced(artboard: Artboard, data: ArtboardData, savePath
     });
 }
 
-function exportArtboard(artboard: Artboard, data: ArtboardData, savePath: string, template: string) {
-    let imageURL = NSURL.fileURLWithPath(
-        exportImage(
-            artboard,
-            {
-                format: 'png',
-                scale: 2,
-            }, savePath, data.objectID
-        )
-    );
-    let imageData = NSData.dataWithContentsOfURL(imageURL);
-    let imageBase64 = imageData.base64EncodedStringWithOptions(0);
-    data.imageBase64 = 'data:image/png;base64,' + imageBase64;
+function exportArtboard(artboard: Artboard, exportData: ExportData, index: number, savePath: string, template: string) {
+    let data = JSON.parse(JSON.stringify(exportData.artboards[index]));
+    let imageBase64 = exportImageToBuffer(
+        artboard, { format: 'png', scale: 2 }
+    ).toString('base64');
 
-    let newData = JSON.parse(JSON.stringify(data));
-    newData.artboards = [data];
+    data.imageBase64 = 'data:image/png;base64,' + imageBase64;
+    let newData = <ExportData>{
+        scale: exportData.scale,
+        unit: exportData.unit,
+        colorFormat: exportData.colorFormat,
+        artboards: [data],
+        slices: [],
+        colors: [],
+    };
 
     writeFile({
         content: buildTemplate(template, {
