@@ -76,6 +76,7 @@ function convertShadow(shadow: Shadow, type: "outer" | "inner"): SMShadow {
 }
 
 export function parseColor(rgbaHex: string): SMColor {
+    if (!rgbaHex) return <SMColor>{};
     let red = parseInt(rgbaHex.substr(1, 2), 16);
     let green = parseInt(rgbaHex.substr(3, 2), 16);
     let blue = parseInt(rgbaHex.substr(5, 2), 16);
