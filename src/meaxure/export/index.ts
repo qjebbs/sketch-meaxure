@@ -113,7 +113,10 @@ export async function exportSpecification() {
                 .catch(err => taskError = err);
             if (taskError) {
                 onFinishCleanup();
-                logger.error(taskError);
+                // select the error layer
+                document.selectedLayers.layers = [layer];
+                let msg = `Error processing layer ${layer.name}. \n` + taskError;
+                logger.error(msg);
                 return;
             }
             // stopwatch.tik('after promise');
