@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 import { sketch } from "../../sketch";
-import { tik, getResourcePath } from "./helper";
+import { newStopwatch, getResourcePath } from "./helper";
 import { createWebviewPanel } from "../../webviewPanel";
 import { logger } from "../common/logger";
 import { localize } from "../common/language";
@@ -17,7 +17,7 @@ export async function renameOldMarkers() {
         'Rename markers created by Sketch Measure, so that this plugin can manage them.' + '\n\n' +
         'Would you like to continue?'
     )) return;
-    let timer = tik();
+    let stopwatch = newStopwatch();
     let processingPanel = createWebviewPanel({
         url: getResourcePath() + "/panel/processing.html",
         width: 304,
@@ -43,7 +43,7 @@ export async function renameOldMarkers() {
         }
     }
     processingPanel.close();
-    sketch.UI.message(`All markers are renamed, takes ${timer.tok() / 1000} seconds.`);
+    sketch.UI.message(`All markers are renamed, takes ${stopwatch.elpased() / 1000} seconds.`);
 }
 function processingArtboard(artboard: Artboard) {
     return new Promise<boolean>((resolve, reject) => {

@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 import { LayerData, ArtboardData, SMType } from "../interfaces";
-import { tempCreatedLayers } from ".";
+import { tempCreatedLayers, stopwatch } from ".";
 import { getLayerData } from "./layerData";
 
 export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: LayerData, data: ArtboardData, byInfluence: boolean) {
@@ -26,6 +26,7 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
         // console.log('insert undefined into masterAllLayers[1] as master backgroud layer');
         masterAllLayers.splice(1, 0, undefined);
     }
+    // stopwatch.tik('create temp detached symbol');
     for (let i = 0; i < instanceAllLayers.length; i++) {
         let instanceLayer = instanceAllLayers[i];
         let masterLayer = masterAllLayers[i];

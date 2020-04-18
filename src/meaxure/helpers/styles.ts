@@ -59,19 +59,20 @@ export function getFillsFromStyle(style: Style): SMFillData[] {
 }
 
 export function getShadowsFromStyle(style: Style): SMShadow[] {
-    let convertShadow = function (shadow: Shadow, type: "outer" | "inner") {
-        return {
-            type: type,
-            offsetX: shadow.x,
-            offsetY: shadow.y,
-            blurRadius: shadow.blur,
-            spread: shadow.spread,
-            color: parseColor(shadow.color)
-        };
-    }
     return style.shadows.filter(s => s.enabled).map(s => convertShadow(s, 'outer')).concat(
         ...style.innerShadows.filter(s => s.enabled).map(s => convertShadow(s, 'inner'))
     );
+}
+
+function convertShadow(shadow: Shadow, type: "outer" | "inner"): SMShadow {
+    return {
+        type: type,
+        offsetX: shadow.x,
+        offsetY: shadow.y,
+        blurRadius: shadow.blur,
+        spread: shadow.spread,
+        color: parseColor(shadow.color)
+    };
 }
 
 export function parseColor(rgbaHex: string): SMColor {
@@ -119,10 +120,8 @@ export function parseGradient(gradient: Gradient): SMGradient {
 }
 
 export function getLayerRadius(layer: Layer): number[] {
-    if (layer.type == sketch.Types.ShapePath) {
-        return (layer as ShapePath).radius;
-    }
-    return undefined;
+    if (layer.type !== sketch.Types.ShapePath) return undefined;
+    return (layer as ShapePath).radius;
 }
 
 /**

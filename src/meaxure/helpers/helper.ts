@@ -134,11 +134,29 @@ export function openURL(url) {
     NSWorkspace.sharedWorkspace().openURL(nsurl);
 }
 
-export function tik() {
-    let start = Date.now();
-    return {
-        tok: function () {
+export function newStopwatch() {
+    let start: number;
+    let last: number;
+    let statistics: { [key: string]: number };
+    let stopwatch = {
+        restart: function () {
+            start = Date.now();
+            last = start;
+            statistics = {};
+        },
+        elpased: function () {
             return Date.now() - start;
+        },
+        tik: function (phase: string) {
+            let now = Date.now();
+            if (!statistics[phase]) statistics[phase] = 0;
+            statistics[phase] += now - last;
+            last = now;
+        },
+        statistics: function () {
+            return statistics;
         }
     }
+    stopwatch.restart();
+    return stopwatch;
 }

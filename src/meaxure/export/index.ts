@@ -7,7 +7,7 @@ import { sketch } from "../../sketch";
 import { localize, getLanguageScript } from "../common/language";
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
-import { toHTMLEncode, tik, toSlug, emojiToEntities, getResourcePath } from "../helpers/helper";
+import { toHTMLEncode, newStopwatch, toSlug, emojiToEntities, getResourcePath } from "../helpers/helper";
 import { writeFile, buildTemplate, exportImage, exportImageToBuffer } from "./files";
 import { logger } from "../common/logger";
 import { ExportData, ArtboardData } from "../interfaces";
@@ -21,6 +21,7 @@ import { renameIfIsMarker } from "../helpers/renameOldMarkers";
 export let tempCreatedLayers: Layer[] = [];
 export let savePath: string;
 export let assetsPath: string;
+export let stopwatch = newStopwatch();
 
 let exporting = false;
 export async function exportSpecification() {
@@ -43,10 +44,13 @@ export async function exportSpecification() {
     assetsPath = savePath + "/assets";
 
     exporting = true;
-    let stopWatch = tik();
+    stopwatch.restart();
     clearMaskStack();
+    // stopwatch.tik('clearMaskStack');
     clearTintStack();
+    // stopwatch.tik('clearTintStack');
     clearSliceCache();
+    // stopwatch.tik('clearSliceCache');
     let processingPanel = createWebviewPanel({
         url: getResourcePath() + "/panel/processing.html",
         width: 304,
@@ -54,6 +58,7 @@ export async function exportSpecification() {
     });
     processingPanel.onClose(() => cancelled = true);
     processingPanel.show();
+    // stopwatch.tik('processingPanel');
     let onFinishCleanup = function () {
         for (let tmp of tempCreatedLayers) {
             if (tmp) tmp.remove();
@@ -71,6 +76,7 @@ export async function exportSpecification() {
         slices: [],
         colors: getDocumentColors(document)
     };
+    // stopwatch.tik('load template');
 
     let cancelled = false;
     let layerIndex = 0;
@@ -90,6 +96,7 @@ export async function exportSpecification() {
         data.artboards[i].objectID = artboard.id;
         data.artboards[i].width = artboard.frame.width;
         data.artboards[i].height = artboard.frame.height;
+        // stopwatch.tik('collect artboards info');
         for (let layer of select.children) {
             layerIndex++;
             if (cancelled) {
@@ -99,7 +106,9 @@ export async function exportSpecification() {
             }
             // compatible with meaxure markers
             renameIfIsMarker(layer);
+            // stopwatch.tik('renameIfIsMarker');
             let taskError: Error;
+            // stopwatch.tik('before promise');
             await getLayerTask(artboard, layer, data.artboards[i], results.byInfluence)
                 .catch(err => taskError = err);
             if (taskError) {
@@ -107,6 +116,7 @@ export async function exportSpecification() {
                 logger.error(taskError);
                 return;
             }
+            // stopwatch.tik('after promise');
             // post messages after an async task, 
             // so that processingPanel has time to initialize,
             // or we get a promise reject of reply timeout.
@@ -114,12 +124,14 @@ export async function exportSpecification() {
                 percentage: Math.round(layerIndex / results.layersCount * 100),
                 text: localize("Processing layer %@ of %@", [layerIndex, results.layersCount])
             });
+            // stopwatch.tik('show process');
         }
         if (results.advancedMode) {
             exportArtboardAdvanced(artboard, data.artboards[i], savePath, i);
         } else {
             exportArtboard(artboard, data, i, savePath, template);
         }
+        // stopwatch.tik('export artboard');
     }
     data.slices = getCollectedSlices();
 
@@ -135,9 +147,12 @@ export async function exportSpecification() {
         });
         selectingPath = savePath + "/index.html";
     }
+    // stopwatch.tik('generate index.html');
     onFinishCleanup();
     NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
-    sketch.UI.message(localize("Export complete! Takes %s seconds", [stopWatch.tok() / 1000]));
+    sketch.UI.message(localize("Export complete! Takes %s seconds", [stopwatch.elpased() / 1000]));
+    // let statistics = stopwatch.statistics()
+    // sketch.UI.alert('statistics', Object.keys(statistics).map(key => `${key}: ${statistics[key] / 1000}s`).join('\n'))
 }
 
 function getLayerTask(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {

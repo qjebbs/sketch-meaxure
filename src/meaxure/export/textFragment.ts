@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 import { ArtboardData } from "../interfaces"; import { sketch } from "../../sketch";
-import { tempCreatedLayers } from ".";
+import { tempCreatedLayers, stopwatch } from ".";
 import { getLayerData } from "./layerData";
 import { TextFragment } from "../../sketch/text/textFragment";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
@@ -11,7 +11,7 @@ import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardData) {
     if (layer.type != sketch.Types.Text || layer.getFragmentsCount() < 2) return;
     let fragments = layer.getFragments();
-
+    // stopwatch.tik('get text fragments');
     let offsetFragmentsY = 0;
     let textFrame = layer.frame;
     let heightIfSingleLine = layer.style.lineHeight || Math.max(...fragments.map(f => f.defaultLineHeight));
@@ -101,6 +101,7 @@ export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardD
         default:
             break;
     }
+    // stopwatch.tik('create temp texts for fragments');
     for (let text of sketch.find<Text>('Text', textGroup)) {
         getLayerData(artboard, text, data, false);
     }

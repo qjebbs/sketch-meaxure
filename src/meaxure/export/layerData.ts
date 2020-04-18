@@ -13,18 +13,21 @@ import { getSlice } from "./slice";
 import { makeNote } from "./note";
 import { getSymbol } from "./symbol";
 import { updateTintStackAfterLayer, applyTint } from "./tint";
+import { stopwatch } from ".";
 
 export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
-
+    // stopwatch.tik('before updateMaskStackBeforeLayer');
     updateMaskStackBeforeLayer(layer, artboard);
-
+    // stopwatch.tik('updateMaskStackBeforeLayer');
     let note = makeNote(layer, artboard);
     if (note) {
         data.notes.push(note);
         return;
     }
+    // stopwatch.tik('make notes');
 
     let layerStates = getLayerStates(layer);
+    // stopwatch.tik('getLayerStates');
     if (!isExportable(layer) ||
         !layerStates.isVisible ||
         (layerStates.isLocked && layer.type != sketch.Types.Slice) ||
@@ -38,11 +41,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     }
 
     let layerType = getSMType(layer);
-
-    // if (symbolLayer && layerType == "text" && layer.textBehaviour() == 0) { // fixed for v40
-    //     layer.setTextBehaviour(1); // fixed for v40
-    //     layer.setTextBehaviour(0); // fixed for v40
-    // } // fixed for v40
+    // stopwatch.tik('get layerType');
 
     let layerData = <LayerData>{
         objectID: symbolLayer ? symbolLayer.id : layer.id,
@@ -50,17 +49,24 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         name: toHTMLEncode(emojiToEntities(layer.name)),
         rect: getSMRect(layer, artboard, byInfluence),
     };
+    // stopwatch.tik('prepare layer data');
     getLayerStyles(layer, layerType, layerData);
+    // stopwatch.tik('getLayerStyles');
     applyMasks(layer, layerData);
+    // stopwatch.tik('applyMasks');
     applyTint(layer, layerData);
+    // stopwatch.tik('applyTint');
     getSlice(layer, layerData, symbolLayer);
+    // stopwatch.tik('getSlice');
     data.layers.push(layerData);
     if (layerData.type == SMType.symbol) {
         getSymbol(artboard, layer as SymbolInstance, layerData, data, byInfluence);
     }
     getTextFragment(artboard, layer as Text, data);
+    // stopwatch.tik('getTextFragment');
     updateMaskStackAfterLayer(layer);
     updateTintStackAfterLayer(layer);
+    // stopwatch.tik('update stack');
 }
 function getSMType(layer: Layer): SMType {
     if (layer.type == sketch.Types.Text) return SMType.text;
