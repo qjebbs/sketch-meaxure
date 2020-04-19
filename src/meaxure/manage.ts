@@ -38,7 +38,7 @@ export function toggleLocked() {
         // if one mark of all is unlocked, 
         // the curent state is unlocked, lock them all first
         if (!isLocked) break;
-        isLocked = mark.hidden;
+        isLocked = mark.locked;
     }
     // invert the state
     isLocked = !isLocked;
