@@ -152,7 +152,7 @@ export async function exportSpecification() {
     }
     // stopwatch.tik('generate index.html');
     onFinishCleanup();
-    NSWorkspace.sharedWorkspace().activateFileViewerSelectingURLs([NSURL.fileURLWithPath(selectingPath)]);
+    sketch.UI.showFiles([selectingPath]);
     sketch.UI.message(localize("Export complete! Takes %s seconds", [stopwatch.elpased() / 1000]));
     // let statistics = stopwatch.statistics()
     // sketch.UI.alert('statistics', Object.keys(statistics).map(key => `${key}: ${statistics[key] / 1000}s`).join('\n'))
