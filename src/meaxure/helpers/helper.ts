@@ -47,18 +47,23 @@ export function lengthUnit(value: number, t?, flag?: boolean) {
     return "" + value + unit;
 }
 
-export function isIntersect(a: SMRect, b: SMRect) {
-    return isIntersectX(a, b) && isIntersectY(a, b);
-}
-export function isIntersectX(a: SMRect, b: SMRect) {
-    return (a.x >= b.x && a.x <= b.x + b.width) || //left board of a in x range of b
-        (a.x + a.width >= b.x && a.x + a.width <= b.x + b.width) || //right board of a in x range of b
-        (a.x < b.x && a.x + a.width > b.x + b.width)  // x range of a includes b's
-}
-export function isIntersectY(a: SMRect, b: SMRect) {
-    return (a.y >= b.y && a.y <= b.y + b.height) || //top board of a in y range of b
-        (a.y + a.height >= b.y && a.y + a.height <= b.y + b.height) || //bottom board of a in y range of b
-        (a.y < b.y && a.y + a.height > b.y + b.height); // y range of a includes b's
+export function getIntersection(a: SMRect, b: SMRect): SMRect {
+    let x1 = Math.max(a.x, b.x);
+    let y1 = Math.max(a.y, b.y);
+    let x2 = Math.min(a.x + a.width, b.x + b.width);
+    let y2 = Math.min(a.y + a.height, b.y + b.height);
+    let width = x2 - x1;
+    let height = y2 - y1;
+    if (width < 0 || height < 0) {
+        // no intersection
+        return undefined;
+    }
+    return {
+        x: x1,
+        y: y1,
+        width: width,
+        height: height,
+    }
 }
 
 export function getResourcePath(): string {

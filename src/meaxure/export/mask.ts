@@ -6,6 +6,7 @@ import { SMRect } from "../interfaces";
 import { sketch } from "../../sketch";
 import { logger } from "../common/logger";
 import { LayerData } from "../interfaces";
+import { getIntersection } from "../helpers/helper";
 
 interface MaskStackData {
     mask: Layer,
@@ -95,26 +96,8 @@ export function applyMasks(layer: Layer, layerData: LayerData) {
     let layerRect = layerData.rect;
     for (let mask of maskStack) {
         layerRect = getIntersection(mask.rect, layerRect)
+        if (!layerRect) layerRect = { x: 0, y: 0, width: 0, height: 0 };
     }
     // caculate intersection of layer and mask, as the clipped frame of the layer
     layerData.rect = layerRect;
-}
-function getIntersection(a: SMRect, b: SMRect): SMRect {
-    let x1 = Math.max(a.x, b.x);
-    let y1 = Math.max(a.y, b.y);
-    let x2 = Math.min(a.x + a.width, b.x + b.width);
-    let y2 = Math.min(a.y + a.height, b.y + b.height);
-    let width = x2 - x1;
-    let height = y2 - y1;
-    if (width < 0 || height < 0) {
-        // no intersection
-        width = 0;
-        height = 0;
-    }
-    return {
-        x: x1,
-        y: y1,
-        width: width,
-        height: height,
-    }
 }
