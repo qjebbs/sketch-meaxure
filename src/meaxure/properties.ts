@@ -93,6 +93,7 @@ function findTint(layer: Layer): Fill {
 function getProperties(target: Layer, properties: string[]): string {
     let targetStyle = target.style;
     let elements = properties.map((property) => {
+        let results = [];
         switch (property) {
             case "color":
                 // don't mark tint color
@@ -104,10 +105,10 @@ function getProperties(target: Layer, properties: string[]): string {
                 if (target.type == sketch.Types.Text) {
                     let color = parseColor(targetStyle.textColor);
                     if (tint) color = applyTintToSMColor(color, tint.color);
-                    return "color: " + color[context.configs.format];
-                } else {
-                    let fills = getFillsFromStyle(targetStyle);
-                    if (fills.length <= 0) return undefined;
+                    results.push("color: " + color[context.configs.format]);
+                }
+                let fills = getFillsFromStyle(targetStyle);
+                if (fills.length) {
                     // TODO: support multiple fills
                     let fill = fills.pop();
                     if (tint) {
@@ -117,8 +118,9 @@ function getProperties(target: Layer, properties: string[]): string {
                             fill.gradient = applyTintToSMGradient(fill.gradient, tint.color);
                         }
                     }
-                    return "fill: " + fillTypeContent(fill);
+                    results.push("fill: " + fillTypeContent(fill));
                 }
+                return results.join('\n');
             case "border":
                 let bordersJSON = getBordersFromStyle(targetStyle);
                 if (bordersJSON.length <= 0) return undefined;
@@ -130,7 +132,6 @@ function getProperties(target: Layer, properties: string[]): string {
                 if (target.type !== sketch.Types.ShapePath) return undefined;
                 return "radius: " + convertUnit(getLayerRadius(target));
             case "shadow":
-                let results = [];
                 let shadows = getShadowsFromStyle(targetStyle);
                 let innerShadow = shadows.filter(s => s.type == 'inner')[0];
                 let outerShadow = shadows.filter(s => s.type == 'outer')[0];
