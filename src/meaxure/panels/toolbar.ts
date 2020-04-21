@@ -59,6 +59,8 @@ export function markToolbar() {
         updateContext();
         context.configs.byInfluence = msg.byInfluence;
         context.configs.byPercentage = msg.byPercentage;
+        // if update configs only
+        if (!msg.action) return;
         workers[msg.action](msg.options);
     });
     panel.show();

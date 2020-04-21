@@ -98,6 +98,8 @@
 </div>
 `;
             $('body').html(html);
+            $('input[name=byInfluence]').prop("checked", data.byInfluence);
+            $('input[name=byPercentage]').prop("checked", data.byPercentage);
             $('.command').on('click', function () {
                 let options = Object.assign(
                     {
@@ -106,7 +108,16 @@
                     },
                     this.dataset
                 );
-                console.log(options)
+                // console.log(options);
+                if (!window.meaxure) return;
+                meaxure.postMessage('command', options);
+            });
+            $('input[type=checkbox]').change(function () {
+                let options = {
+                    byInfluence: $('input[name=byInfluence]:checked').val() == '1',
+                    byPercentage: $('input[name=byPercentage]:checked').val() == '1',
+                }
+                // console.log(options);
                 if (!window.meaxure) return;
                 meaxure.postMessage('command', options);
             });
