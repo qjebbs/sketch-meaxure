@@ -107,10 +107,8 @@ function getProperties(target: Layer, properties: string[]): string {
                     if (tint) color = applyTintToSMColor(color, tint.color);
                     results.push("color: " + color[context.configs.format]);
                 }
-                let fills = getFillsFromStyle(targetStyle);
-                if (fills.length) {
-                    // TODO: support multiple fills
-                    let fill = fills.pop();
+                let fills = getFillsFromStyle(targetStyle).reverse();
+                fills.forEach(fill => {
                     if (tint) {
                         if (fill.fillType == sketch.Style.FillType.Color) {
                             fill.color = applyTintToSMColor(fill.color, tint.color);
@@ -119,7 +117,7 @@ function getProperties(target: Layer, properties: string[]): string {
                         }
                     }
                     results.push("fill: " + fillTypeContent(fill));
-                }
+                });
                 return results.join('\n');
             case "border":
                 let bordersJSON = getBordersFromStyle(targetStyle);
