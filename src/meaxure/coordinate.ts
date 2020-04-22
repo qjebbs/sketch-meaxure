@@ -29,8 +29,12 @@ function coordinateLayer(layer: Layer) {
         artboard
     ).forEach(g => g.remove());
 
-    let layerRect = context.configs.byInfluence ? layer.frameInfluence : layer.frame.changeBasis({ from: layer.parent, to: artboard });
-    let artboardRect = context.configs.byInfluence ? artboard.frameInfluence : artboard.frame.changeBasis({ from: artboard.parent, to: artboard });
+    let layerRect = context.configs.byInfluence ?
+        layer.frameInfluence.changeBasis({ from: layer.parent, to: artboard }) :
+        layer.frame.changeBasis({ from: layer.parent, to: artboard });
+    let artboardRect = context.configs.byInfluence ?
+        artboard.frameInfluence.changeBasis({ from: artboard.parent, to: artboard }) :
+        artboard.frame.changeBasis({ from: artboard.parent, to: artboard });
 
     let container = new sketch.Group({ name: layerName, parent: artboard });
     let cross = new sketch.Group({ name: 'cross', parent: container });

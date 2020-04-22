@@ -38,10 +38,10 @@ function distance(layers: Layer[], position: string) {
     let fromID = layerA.id;
     let toID = layerA.id;
     let from = context.configs.byInfluence ?
-        layerA.frameInfluence :
+        layerA.frameInfluence.changeBasis({ from: layerA.parent, to: root }) :
         layerA.frame.changeBasis({ from: layerA.parent, to: root });
     let to = context.configs.byInfluence ?
-        layerB.frameInfluence :
+        layerB.frameInfluence.changeBasis({ from: layerB.parent, to: root }) :
         layerB.frame.changeBasis({ from: layerB.parent, to: root });
 
     switch (position) {

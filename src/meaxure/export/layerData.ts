@@ -106,7 +106,7 @@ function getSMRect(layer: Layer, artboard: Artboard, byInfluence: boolean): SMRe
     let layerFrame: Rectangle;
     if (byInfluence && layer.type != sketch.Types.Text) {
         // export the influence rect.(include the area of shadows and outside borders...)
-        layerFrame = layer.frameInfluence;
+        layerFrame = layer.frameInfluence.changeBasis({ from: layer.parent, to: artboard });
     } else {
         // export the default rect.
         layerFrame = layer.frame.changeBasis({ from: layer.parent, to: artboard });

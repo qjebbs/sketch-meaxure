@@ -30,18 +30,17 @@ export function extendLayer() {
     let target = sketch.Layer.prototype
     Object.defineProperty(target, "frameInfluence", {
         get: function () {
-            // TODO: frameInfluence should base on its parent
-            let root: Artboard | Page;
-            if ((this as Layer).type == sketch.Types.Artboard || (this as Layer).type == sketch.Types.Page) {
-                root = this;
+            let parent: Layer;
+            if ((this as Layer).type == sketch.Types.Page) {
+                return new sketch.Rectangle(0, 0, 0, 0);
             } else {
-                root = (this as Layer).getParentArtboard() || (this as Layer).getParentPage();
+                parent = (this as Layer).parent;
             }
-            let artboardRect = root.sketchObject.absoluteRect().rect();
+            let parentRect = parent.sketchObject.absoluteRect().rect();
             let influenceCGRect = this.sketchObject.absoluteInfluenceRect();
             return new sketch.Rectangle(
-                influenceCGRect.origin.x - artboardRect.origin.x,
-                influenceCGRect.origin.y - artboardRect.origin.y,
+                influenceCGRect.origin.x - parentRect.origin.x,
+                influenceCGRect.origin.y - parentRect.origin.y,
                 influenceCGRect.size.width,
                 influenceCGRect.size.height,
             );
