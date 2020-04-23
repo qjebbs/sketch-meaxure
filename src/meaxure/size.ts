@@ -5,7 +5,7 @@
 import { context } from "./common/context";
 import { localize } from "./common/language";
 import { sketch } from "../sketch";
-import { createLabel, createMeter } from "./helpers/elements";
+import { createBubble, createMeter } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { lengthUnit } from "./helpers/helper";
 import { ResizingConstraint } from "../sketch/layer/resizingConstraint";
@@ -72,27 +72,75 @@ export function drawSizeForFrame(
         background: options.background,
         isHorizontal: isHorizontal,
     })
-    let label = createLabel(text, {
+    let bubblePosition = calcBubblePosition(position);
+    let bubble = createBubble(text, {
         name: 'label',
         parent: container,
         foreground: options.foreground,
-        background: options.background
+        background: options.background,
+        bubblePosition: bubblePosition,
     })
     meter.alignToByPostion(
         // expand the frame so that the meter offsets to target by 1px;
         new sketch.Rectangle(frame.x - 1, frame.y - 1, frame.width + 2, frame.height + 2),
         position
     );
-    label.alignToByPostion(meter, Edge.center);
-    label.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
+    if (bubblePosition == Edge.left || bubblePosition == Edge.center || bubblePosition == Edge.right) {
+        bubble.alignTo(
+            meter,
+            { from: getCounterEdge(bubblePosition) as Edge, to: bubblePosition },
+            { from: EdgeVertical.middle, to: EdgeVertical.middle }
+        );
+    } else {
+        bubble.alignTo(
+            meter,
+            { from: Edge.center, to: Edge.center },
+            { from: getCounterEdge(bubblePosition) as EdgeVertical, to: bubblePosition }
+        );
+    }
+    bubble.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
     if (isHorizontal) {
+        bubble.resizingConstraint = bubble.resizingConstraint & ResizingConstraint.top;
         meter.resizingConstraint = ResizingConstraint.left &
             ResizingConstraint.right &
-            ResizingConstraint.height
+            ResizingConstraint.height &
+            ResizingConstraint.top
     } else {
+        bubble.resizingConstraint = bubble.resizingConstraint & ResizingConstraint.left;
         meter.resizingConstraint = ResizingConstraint.top &
             ResizingConstraint.bottom &
-            ResizingConstraint.width
+            ResizingConstraint.width &
+            ResizingConstraint.left
     }
     container.adjustToFit();
+}
+
+function calcBubblePosition(position: Edge | EdgeVertical): Edge | EdgeVertical {
+    switch (position) {
+        case Edge.center:
+            return Edge.right;
+        case EdgeVertical.middle:
+            return EdgeVertical.top;
+        // case Edge.left:
+        // case Edge.right:
+        // case EdgeVertical.top:
+        // case EdgeVertical.bottom:
+        default:
+            return position;
+    }
+}
+
+function getCounterEdge(position: Edge | EdgeVertical): Edge | EdgeVertical {
+    switch (position) {
+        case Edge.left:
+            return Edge.right;
+        case Edge.right:
+            return Edge.left;
+        case EdgeVertical.top:
+            return EdgeVertical.bottom;
+        case EdgeVertical.bottom:
+            return EdgeVertical.top;
+        default:
+            return position;
+    }
 }

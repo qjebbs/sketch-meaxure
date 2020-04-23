@@ -171,7 +171,35 @@ export function createBubble(
 
     let container = new sketch.Group({ name: options.name, parent: options.parent });
 
-    let arrow = new sketch.ShapePath({ name: 'arrow', parent: container });
+    let label = createLabel(content, {
+        name: 'label',
+        parent: container,
+        foreground: options.foreground,
+        background: options.background,
+        padding: options.padding,
+    });
+    label.resizingConstraint = ResizingConstraint.top &
+        ResizingConstraint.bottom &
+        ResizingConstraint.left &
+        ResizingConstraint.right;
+    let arrow = createArrowFor(label, {
+        background: options.background,
+        bubblePosition: options.bubblePosition,
+    })
+    container.adjustToFit();
+    return container;
+}
+
+function createArrowFor(
+    target: Group,
+    options: {
+        background: SharedStyle,
+        bubblePosition: Edge | EdgeVertical,
+    }): ShapePath {
+    if (options.bubblePosition == Edge.center || options.bubblePosition == EdgeVertical.middle) {
+        return undefined;
+    }
+    let arrow = new sketch.ShapePath({ name: 'arrow', parent: target.parent });
     if (options.background) {
         arrow.sharedStyle = options.background;
         arrow.style = options.background.style;
@@ -180,20 +208,13 @@ export function createBubble(
     arrow.frame.height = 6;
     arrow.transform.rotation = 45;
 
-    let label = createLabel(content, {
-        name: 'label',
-        parent: container,
-        foreground: options.foreground,
-        background: options.background,
-        padding: options.padding,
-    });
     let arrowConstraint: ResizingConstraint;
-    let placement = options.bubblePosition || Edge.right;
+    let position = options.bubblePosition || Edge.right;
 
-    switch (placement) {
+    switch (position) {
         case EdgeVertical.top:
             arrow.alignTo(
-                label,
+                target,
                 { from: Edge.center, to: Edge.center },
                 { from: EdgeVertical.middle, to: EdgeVertical.bottom },
             )
@@ -201,7 +222,7 @@ export function createBubble(
             break;
         case Edge.right:
             arrow.alignTo(
-                label,
+                target,
                 { from: Edge.center, to: Edge.left },
                 { from: EdgeVertical.middle, to: EdgeVertical.middle },
             )
@@ -209,7 +230,7 @@ export function createBubble(
             break;
         case EdgeVertical.bottom:
             arrow.alignTo(
-                label,
+                target,
                 { from: Edge.center, to: Edge.center },
                 { from: EdgeVertical.middle, to: EdgeVertical.top },
             )
@@ -217,7 +238,7 @@ export function createBubble(
             break;
         case Edge.left:
             arrow.alignTo(
-                label,
+                target,
                 { from: Edge.center, to: Edge.right },
                 { from: EdgeVertical.middle, to: EdgeVertical.middle },
             )
@@ -229,10 +250,5 @@ export function createBubble(
     arrow.resizingConstraint = arrowConstraint &
         ResizingConstraint.width &
         ResizingConstraint.height;
-    label.resizingConstraint = ResizingConstraint.top &
-        ResizingConstraint.bottom &
-        ResizingConstraint.left &
-        ResizingConstraint.right;
-    container.adjustToFit();
-    return container;
+    return arrow;
 }
