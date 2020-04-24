@@ -23,20 +23,21 @@ function coordinateLayer(layer: Layer) {
     let layerID = layer.id;
     let layerName = "#meaxure-coordinate-" + layerID;
     let artboard = layer.getParentArtboard();
-    if (!artboard) return;
+    let root = artboard || layer.getParentPage();
+    if (!root) return;
     sketch.find<Group>(
         `Group, [name="${layerName}"]`,
-        artboard
+        root
     ).forEach(g => g.remove());
 
-    let layerRect = context.configs.byInfluence ?
-        layer.frameInfluence.changeBasis({ from: layer.parent, to: artboard }) :
-        layer.frame.changeBasis({ from: layer.parent, to: artboard });
-    let artboardRect = context.configs.byInfluence ?
-        artboard.frameInfluence.changeBasis({ from: artboard.parent, to: artboard }) :
-        artboard.frame.changeBasis({ from: artboard.parent, to: artboard });
+    let layerRect = context.configs.byInfluence ? layer.frameInfluence : layer.frame;
+    let artboardRect = context.configs.byInfluence ? root.frameInfluence : root.frame;
+    if (artboard) {
+        layerRect = layerRect.changeBasis({ from: layer.parent, to: artboard });
+        artboardRect = artboardRect.changeBasis({ from: artboard.parent, to: artboard });
+    }
 
-    let container = new sketch.Group({ name: layerName, parent: artboard });
+    let container = new sketch.Group({ name: layerName, parent: root });
     let cross = new sketch.Group({ name: 'cross', parent: container });
     let crossX = new sketch.ShapePath({ parent: cross });
     crossX.frame.width = 17;
