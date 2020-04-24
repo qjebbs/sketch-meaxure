@@ -24,7 +24,7 @@ export function getFragments(layer: Layer): TextFragment[] {
         let fontSize = (fragment.NSFont && fragment.NSFont.attributes && fragment.NSFont.attributes.NSFontSizeAttribute) ?
             fragment.NSFont.attributes.NSFontSizeAttribute : layer.style.fontSize;
         let textColor = (fragment.MSAttributedStringColorAttribute && fragment.MSAttributedStringColorAttribute.value) ?
-            `${fragment.MSAttributedStringColorAttribute.value}FF` : '#000000FF';
+            parseColor(fragment.MSAttributedStringColorAttribute.value) : '#000000FF';
         results.push(<TextFragment>{
             location: fragment.location,
             length: fragment.length,
@@ -43,6 +43,23 @@ export function getFragments(layer: Layer): TextFragment[] {
         });
     }
     return results;
+}
+
+/**
+ * parse MSAttributedStringColorAttribute to rgba-hex, e.g.: `#808080FF`
+ * @param color can be `#808080`, `rgba(128,128,128,0.10)`
+ */
+function parseColor(color: string): string {
+    color = new String(color).toString();
+    if (color.startsWith('#')) return color + 'FF';
+    let values = color.substring(5, color.length - 1).split(',').map(Number);
+    values[3] = values[3] * 255;
+    let red = (values[0] < 16 ? '0' : '') + values[0].toString(16);
+    let green = (values[1] < 16 ? '0' : '') + values[1].toString(16);
+    let blue = (values[2] < 16 ? '0' : '') + values[2].toString(16);
+    let alpha = (values[3] < 16 ? '0' : '') + values[3].toString(16);
+    color = '#' + red + green + blue + alpha;
+    return color.toLocaleUpperCase();
 }
 function getDefaultLineHeightForFont(fontFamily, size) {
     let font = NSFont.fontWithName_size(fontFamily, size);
