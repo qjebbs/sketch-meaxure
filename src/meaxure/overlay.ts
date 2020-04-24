@@ -21,9 +21,10 @@ function overlay(target: Layer) {
     let name = "#meaxure-overlay-" + target.id;
     let artboard = target.getParentArtboard();
     let root = artboard || target.getParentPage();
-    if (artboard) sketch.find<Group>(
+    if (!root) return;
+    sketch.find<Group>(
         `Group, [name="${name}"]`,
-        artboard
+        root
     ).forEach(g => g.remove());
 
     let overlayStyle = context.meaxureStyles.overlay.background;

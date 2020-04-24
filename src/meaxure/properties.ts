@@ -58,9 +58,10 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
 
     let artboard = target.getParentArtboard();
     let root = artboard || target.getParentPage();
-    if (artboard) sketch.find<Group>(
+    if (!root) return;
+    sketch.find<Group>(
         `Group, [name="${name}"]`,
-        artboard
+        root
     ).forEach(g => g.remove());
 
     let bubble = createBubble(

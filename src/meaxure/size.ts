@@ -29,9 +29,10 @@ function drawSize(layer: Layer, position: Edge | EdgeVertical): void {
     let name = "#meaxure-" + sizeType + "-" + position + "-" + layer.id;
     let artboard = layer.getParentArtboard();
     let root = artboard || layer.getParentPage();
-    if (artboard) sketch.find<Group>(
+    if (!root) return;
+    sketch.find<Group>(
         `Group, [name="${name}"]`,
-        artboard
+        root
     ).forEach(g => g.remove());
     let frame = context.configs.byInfluence ? layer.frameInfluence : layer.frame;
     drawSizeForFrame(frame, position, {

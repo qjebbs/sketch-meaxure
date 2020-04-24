@@ -29,12 +29,10 @@ function distance(layers: Layer[], position: string) {
     let layerA = layers[0];
     let artboard = layerA.getParentArtboard();
     let layerB = layers.length == 1 ? artboard : layers[1];
-    if (!layerB) {
-        sketch.UI.message('Layer not in artboard, skipping...');
-        return;
-    }
+    if (!layerB) return;
 
     let root = artboard || layerA.getParentPage();
+    if (!root) return;
     let fromID = layerA.id;
     let toID = layerA.id;
     let from = context.configs.byInfluence ?
