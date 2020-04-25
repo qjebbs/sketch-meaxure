@@ -23,7 +23,8 @@
     "build": "skpm-build",
     "watch": "export DEBUG=1; skpm-build --watch",
     "start": "export DEBUG=1; skpm-build --watch --run",
-    "postinstall": "npm run build && skpm-link"
+    "postinstall": "npm run build && skpm-link",
+    "play": "node playground/scripts/index.js"
   },
   "devDependencies": {
     "@skpm/builder": "^0.7.0",
@@ -31,7 +32,8 @@
     "skpm": "^1.3.1",
     "ts-loader": "^6.2.1",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "uglify-js2": "^2.1.11"
   },
   "author": "utom & jebbs <qjebbs@gmail.com>",
   "dependencies": {

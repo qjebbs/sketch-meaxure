@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": false,
+        "rootDir": ".",
+        "noEmitOnError": false,
+        "lib": [
+            "es6"
+        ]
+    },
+    "exclude": [
+        "playground/scripts"
+    ]
+}
