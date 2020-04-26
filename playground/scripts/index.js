@@ -33,8 +33,11 @@ compiler.run((err, stats) => {
         mangle: false,
         fromString: true,
     }).code;
-    child_process.spawnSync('sh', [
+    let returns = child_process.spawnSync('sh', [
         __dirname + '/sketchRunScript.sh',
         encodeURIComponent(content)
     ]);
+    if (returns.stdout && returns.stdout.length) {
+        console.log(returns.stdout.toString());
+    }
 });
