@@ -30,7 +30,9 @@ compiler.outputFileSystem = outputFileSystem;
 compiler.run((err, stats) => {
     let content = outputFileSystem.readFileSync(__dirname + '/index_bundle.js').toString();
     content = uglifyjs.minify(content, {
-        mangle: false,
+        mangle: {
+            debug: ''
+        },
         fromString: true,
     }).code;
     let returns = child_process.spawnSync('sh', [
