@@ -8,6 +8,6 @@ export function runScript() {
         let exports = eval(script);
         exports['run'](sketch, context);
     } catch (error) {
-        console.error('Error: ' + error.message);
+        console.error(error);
     }
 }

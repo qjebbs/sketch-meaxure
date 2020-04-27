@@ -1,9 +1,8 @@
 process.chdir(__dirname);
 const child_process = require('child_process');
 const webpack = require('webpack');
-const uglifyjs = require('uglify-js2');
 const compiler = webpack({
-    mode: 'development',
+    mode: 'production',
     entry: {
         index: '../index.ts',
     },
@@ -23,6 +22,7 @@ const compiler = webpack({
     output: {
         path: __dirname,
         filename: '[name]_bundle.js',
+        library: 'e',
     },
 });
 console.log(new Date().toLocaleString() + ' Compiling...');
@@ -30,13 +30,8 @@ const outputFileSystem = new webpack.MemoryOutputFileSystem()
 compiler.outputFileSystem = outputFileSystem;
 compiler.run((err, stats) => {
     let content = outputFileSystem.readFileSync(__dirname + '/index_bundle.js').toString();
-    console.log(new Date().toLocaleString() + ' Minifying script...');
-    content = uglifyjs.minify(content, {
-        mangle: {
-            debug: ''
-        },
-        fromString: true,
-    }).code;
+    content = `(function(){${content};return e})()`;
+    // console.log(content)
     console.log(new Date().toLocaleString() + ' Running...');
     let returns = child_process.spawnSync('sh', [
         __dirname + '/sketchRunScript.sh',

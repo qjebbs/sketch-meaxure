@@ -7,6 +7,10 @@
         "noEmitOnError": false,
         "lib": [
             "es6"
+        ],
+        "typeRoots": [
+            "../node_modules/@types",
+            "../src/@custom_types"
         ]
     },
     "exclude": [
