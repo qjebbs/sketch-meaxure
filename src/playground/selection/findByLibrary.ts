@@ -1,4 +1,4 @@
-import { sketch } from "..";
+import { sketch } from "../context";
 
 export function findLayersWithStyleFrom(document: Document, library: string): Layer[] {
     let lib: Library;
