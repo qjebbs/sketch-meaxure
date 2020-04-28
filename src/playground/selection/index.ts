@@ -1,10 +1,31 @@
-import { findLayersWithStyleFrom, findSymbolInstacesFrom, findSymbolsWithStyleFrom } from "./findByLibrary";
+import { SelectCondition } from "./bools";
+import { SelectScope, getLayersForScope } from "./scope";
+import { context, sketch } from "../context";
 
-export function selectLayersByLibrary(document: Document, library: string): void {
-    let instnaces = findLayersWithStyleFrom(document, library);
-    if (!instnaces.length) instnaces = findSymbolInstacesFrom(document, library);
-    if (!instnaces.length) instnaces = findSymbolsWithStyleFrom(document, library);
-    if (!instnaces.length) return;
-    document.selectedPage = instnaces[0].getParentPage();
-    document.selectedLayers.layers = instnaces;
+export function selectLayers(condition: SelectCondition, scope: SelectScope) {
+    let page = getPageFromScope(scope);
+    if (!page) return;
+    let document = page.parent as Document;
+    document.selectedLayers.layers = getLayersByCondition(condition, scope);
+}
+
+export function getLayersByCondition(condition: SelectCondition, scope: SelectScope) {
+    let page = getPageFromScope(scope);
+    if (!page) return;
+    return getLayersForScope(scope, page)
+        .filter(layer => condition.test(layer));
+}
+
+function getPageFromScope(scope: SelectScope): Page {
+    if (!scope || (scope as Layer[]).length) return undefined;
+    let page: Page;
+    if (scope instanceof sketch.Page) {
+        page = scope;
+    } else if (typeof scope !== 'string') {
+        let layer = (scope instanceof Array) ? scope[0] : scope;
+        page = layer.getParentPage();
+    } else {
+        page = context.page;
+    }
+    return page;
 }

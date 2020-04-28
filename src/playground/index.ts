@@ -1,8 +1,15 @@
 import { initialize, PlaygroundContext, context, sketch } from "./context";
-import { selectLayersByLibrary } from "./selection";
+import { selectLayers } from "./selection";
+import { And, Test, Or, Not } from "./selection/bools";
 
 export function run(ctx: PlaygroundContext) {
     initialize(ctx);
-    // selectLayersByLibrary(context.document, 'le');
-    sketch.UI.message(context.document.fileName);
+    // select locked MeaXure markers in current page
+    selectLayers(
+        And(
+            Test(layer => layer.name.startsWith('#meaxure')),
+            Test(layer => layer.locked)
+        ),
+        context.page
+    );
 }
