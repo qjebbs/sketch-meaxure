@@ -33,8 +33,8 @@ function coordinateLayer(layer: Layer) {
     let layerRect = context.configs.byInfluence ? layer.frameInfluence : layer.frame;
     let artboardRect = context.configs.byInfluence ? root.frameInfluence : root.frame;
     if (artboard) {
-        layerRect = layerRect.changeBasis({ from: layer.parent, to: artboard });
-        artboardRect = artboardRect.changeBasis({ from: artboard.parent, to: artboard });
+        layerRect = layerRect.changeBasis({ from: layer.parent as Group, to: artboard });
+        artboardRect = artboardRect.changeBasis({ from: artboard.parent as Group, to: artboard });
     }
 
     let container = new sketch.Group({ name: layerName, parent: root });

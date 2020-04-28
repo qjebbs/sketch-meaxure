@@ -34,7 +34,7 @@ export function extendLayer() {
             if ((this as Layer).type == sketch.Types.Page) {
                 return new sketch.Rectangle(0, 0, 0, 0);
             } else {
-                parent = (this as Layer).parent;
+                parent = (this as Layer).parent as Group;
             }
             let parentRect = parent.sketchObject.absoluteRect().rect();
             let influenceCGRect = this.sketchObject.absoluteInfluenceRect();

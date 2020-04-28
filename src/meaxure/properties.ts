@@ -79,14 +79,14 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
 
 function findTint(layer: Layer): Fill {
     let tint: Fill;
-    let parent = layer.parent;
+    let parent = layer.parent as Group;
     while (parent && parent.type !== sketch.Types.Artboard && parent.type !== sketch.Types.Page) {
         if (parent.style && parent.style.fills && parent.style.fills.length) {
             let fills = parent.style.fills.filter(f => f.enabled);
             if (!fills.length) continue;
             tint = fills[0];
         }
-        parent = parent.parent;
+        parent = parent.parent as Group;
     }
     return tint;
 }

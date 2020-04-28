@@ -35,8 +35,8 @@ export function alignLayers(
             return;
         }
     }
-    let frameFrom = from.frame.changeBasis({ from: from.parent, to: root });
-    let frameTo = (to instanceof sketch.Layer) ? to.frame.changeBasis({ from: to.parent, to: root }) : to;
+    let frameFrom = from.frame.changeBasis({ from: from.parent as Group, to: root });
+    let frameTo = (to instanceof sketch.Layer) ? to.frame.changeBasis({ from: to.parent as Group, to: root }) : to;
 
     let offsetX = 0;
     let offsetY = 0;

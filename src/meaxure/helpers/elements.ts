@@ -31,7 +31,7 @@ function createMeterHorizontal(
 ): Group {
     if (size <= 0) return;
     options = Object.assign({}, options);
-    let container = new sketch.Group({ name: options.name, parent: options.parent });
+    let container = new sketch.Group({ name: options.name, parent: options.parent as Group });
     let start = new sketch.ShapePath({ name: 'start', parent: container });
     let body = new sketch.ShapePath({ name: 'body', parent: container });
     start.frame.width = 1;
@@ -78,7 +78,7 @@ function createMeterVertical(
 ): Group {
     if (size <= 0) return;
     options = Object.assign({}, options);
-    let container = new sketch.Group({ name: options.name, parent: options.parent });
+    let container = new sketch.Group({ name: options.name, parent: options.parent as Group });
     let start = new sketch.ShapePath({ name: 'start', parent: container });
     let body = new sketch.ShapePath({ name: 'body', parent: container });
     start.frame.width = 5;
@@ -126,7 +126,7 @@ export function createLabel(
     }
 ): Group {
     content = content || 'Label';
-    let container = new sketch.Group({ name: options.name, parent: options.parent });
+    let container = new sketch.Group({ name: options.name, parent: options.parent as Group });
     let box = new sketch.ShapePath({ name: 'background', parent: container });
     let text = new sketch.Text({ name: 'text', text: content, parent: container });
     if (options.foreground) {
@@ -169,7 +169,7 @@ export function createBubble(
     }
 ): Group {
 
-    let container = new sketch.Group({ name: options.name, parent: options.parent });
+    let container = new sketch.Group({ name: options.name, parent: options.parent as Group });
 
     let label = createLabel(content, {
         name: 'label',
@@ -199,7 +199,7 @@ function createArrowFor(
     if (options.bubblePosition == Edge.center || options.bubblePosition == EdgeVertical.middle) {
         return undefined;
     }
-    let arrow = new sketch.ShapePath({ name: 'arrow', parent: target.parent });
+    let arrow = new sketch.ShapePath({ name: 'arrow', parent: target.parent as Group });
     if (options.background) {
         arrow.sharedStyle = options.background;
         arrow.style = options.background.style;

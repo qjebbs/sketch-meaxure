@@ -13,7 +13,7 @@ export function makeNote(layer: Layer, artboard: Artboard): SMNote {
     let textLayer: Text = textLayers[0];
     layer.hidden = true;
     return <SMNote>{
-        rect: layer.frame.changeBasis({ from: layer.parent, to: artboard }),
+        rect: layer.frame.changeBasis({ from: layer.parent as Group, to: artboard }),
         note: toHTMLEncode(emojiToEntities(textLayer.text)).replace(/\n/g, "<br>"),
     };
 }
