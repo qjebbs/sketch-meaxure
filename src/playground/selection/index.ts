@@ -5,7 +5,7 @@ import { context, sketch } from "../context";
 export function selectLayers(condition: SelectCondition, scope: SelectScope) {
     let page = getPageFromScope(scope);
     if (!page) return;
-    let document = page.parent as Document;
+    let document = page.parent;
     document.selectedLayers.layers = getLayersByCondition(condition, scope);
 }
 
