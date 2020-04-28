@@ -68,7 +68,7 @@ export function updateMaskStackBeforeLayer(layer: Layer, artboard: Artboard) {
     if (layer.hasClippingMask) {
         // find a mask, keep in stack. 
         let breakMaskLayer: Layer;
-        let sibilings = layer.parent.layers;
+        let sibilings = (layer.parent as Group).layers;
         for (let i = layer.index + 1; i < sibilings.length; i++) {
             if (sibilings[i].shouldBreakMaskChain) {
                 breakMaskLayer = layer;
@@ -80,9 +80,9 @@ export function updateMaskStackBeforeLayer(layer: Layer, artboard: Artboard) {
             stopBeforeLayer: breakMaskLayer,
             // we still set the stopAfterGroup, since the breakMaskLayer 
             // could have chances to be deleted before enumerate to it
-            stopAfterGroup: layer.parent,
+            stopAfterGroup: layer.parent as Group,
             rect: layer.frame.changeBasis({
-                from: layer.parent,
+                from: layer.parent as Group,
                 to: artboard,
             })
         });

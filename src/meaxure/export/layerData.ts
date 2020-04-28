@@ -106,10 +106,10 @@ function getSMRect(layer: Layer, artboard: Artboard, byInfluence: boolean): SMRe
     let layerFrame: Rectangle;
     if (byInfluence && layer.type != sketch.Types.Text) {
         // export the influence rect.(include the area of shadows and outside borders...)
-        layerFrame = layer.frameInfluence.changeBasis({ from: layer.parent, to: artboard });
+        layerFrame = layer.frameInfluence.changeBasis({ from: layer.parent as Group, to: artboard });
     } else {
         // export the default rect.
-        layerFrame = layer.frame.changeBasis({ from: layer.parent, to: artboard });
+        layerFrame = layer.frame.changeBasis({ from: layer.parent as Group, to: artboard });
     }
     return {
         x: layerFrame.x,
@@ -136,7 +136,7 @@ function getLayerStates(layer: Layer): LayerStates {
     let isInShapeGroup = false;
 
     while (layer.type != sketch.Types.Artboard && layer.type != sketch.Types.SymbolMaster) {
-        let parent = layer.parent;
+        let parent = layer.parent as Group;
         if (!isMeaXure) isMeaXure = layer.name.startsWith('#meaxure-');
         // if parents is shape, this is in shape group
         if (!isInShapeGroup) isInShapeGroup = parent.type == sketch.Types.Shape;
