@@ -73,31 +73,46 @@ export function drawSizeForFrame(
         background: options.background,
         isHorizontal: isHorizontal,
     })
-    let bubblePosition = calcBubblePosition(position);
-    let bubble = createBubble(text, {
-        name: 'label',
-        parent: container,
-        foreground: options.foreground,
-        background: options.background,
-        bubblePosition: bubblePosition,
-    })
     meter.alignToByPostion(
         // expand the frame so that the meter offsets to target by 1px;
         new sketch.Rectangle(frame.x - 1, frame.y - 1, frame.width + 2, frame.height + 2),
         position
     );
-    if (bubblePosition == Edge.left || bubblePosition == Edge.center || bubblePosition == Edge.right) {
-        bubble.alignTo(
-            meter,
-            { from: getCounterEdge(bubblePosition) as Edge, to: bubblePosition },
-            { from: EdgeVertical.middle, to: EdgeVertical.middle }
-        );
-    } else {
-        bubble.alignTo(
-            meter,
-            { from: Edge.center, to: Edge.center },
-            { from: getCounterEdge(bubblePosition) as EdgeVertical, to: bubblePosition }
-        );
+    let bubbleOptions = {
+        name: 'label',
+        parent: container,
+        foreground: options.foreground,
+        background: options.background,
+        bubblePosition: position,
+    }
+    let bubble = createBubble(text, bubbleOptions);
+    alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
+    // in case the bubble in middle/center of meter, but the meter is too small
+    if (bubbleOptions.bubblePosition == Edge.center) {
+        if (bubble.frame.height + 10 > meter.frame.height) {
+            bubbleOptions.bubblePosition = Edge.right;
+            // console.log(`center bubble(${text}) too large, move to ${bubblePosition}`);
+            bubble.remove();
+            bubble = createBubble(text, bubbleOptions);
+            alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
+        }
+    } else if (bubbleOptions.bubblePosition == EdgeVertical.middle) {
+        if (bubble.frame.width + 10 > meter.frame.width) {
+            bubbleOptions.bubblePosition = EdgeVertical.top;
+            // console.log(`middle bubble(${text}) too large, move to ${bubblePosition}`);
+            bubble.remove();
+            bubble = createBubble(text, bubbleOptions);
+            alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
+        }
+    }
+    // in case the bubble is out side the artboard
+    let newBubblePosition = getCounterPositionIfOutside(bubble, meter, bubbleOptions.bubblePosition);
+    if (bubbleOptions.bubblePosition !== newBubblePosition) {
+        bubbleOptions.bubblePosition = newBubblePosition;
+        // console.log(`bubble(${text}) outside the artboard, move to ${bubblePosition}`);
+        bubble.remove();
+        bubble = createBubble(text, bubbleOptions);
+        alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
     }
     bubble.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
     if (isHorizontal) {
@@ -116,19 +131,36 @@ export function drawSizeForFrame(
     container.adjustToFit();
 }
 
-function calcBubblePosition(position: Edge | EdgeVertical): Edge | EdgeVertical {
-    switch (position) {
-        case Edge.center:
-            return Edge.right;
-        case EdgeVertical.middle:
-            return EdgeVertical.top;
-        // case Edge.left:
-        // case Edge.right:
-        // case EdgeVertical.top:
-        // case EdgeVertical.bottom:
-        default:
-            return position;
+function alignBubbleToMeter(bubble: Group, meter: Group, position: Edge | EdgeVertical): void {
+    if (position == Edge.left || position == Edge.center || position == Edge.right) {
+        bubble.alignTo(
+            meter,
+            { from: getCounterEdge(position) as Edge, to: position },
+            { from: EdgeVertical.middle, to: EdgeVertical.middle }
+        );
+    } else {
+        bubble.alignTo(
+            meter,
+            { from: Edge.center, to: Edge.center },
+            { from: getCounterEdge(position) as EdgeVertical, to: position }
+        );
     }
+}
+
+function getCounterPositionIfOutside(bubble: Group, meter: Group, position: Edge | EdgeVertical): Edge | EdgeVertical {
+    let artboard = bubble.getParentArtboard();
+    if (!artboard) return position;
+    let frameBubble = bubble.frame.changeBasis({ from: bubble.parent as Group, to: artboard });
+    let frameArtboard = artboard.frame.changeBasis({ from: artboard.parent, to: artboard });
+    let intersection = frameBubble.intersection(frameArtboard);
+    if (intersection && intersection.isEuqal(frameBubble)) return position;
+
+    let isHorizontal = position === EdgeVertical.top ||
+        position === EdgeVertical.middle ||
+        position === EdgeVertical.bottom;
+    if (isHorizontal && (!intersection || intersection.height != frameBubble.height)) return getCounterEdge(position);
+    if (!isHorizontal && (!intersection || intersection.width != frameBubble.width)) return getCounterEdge(position);
+    return position;
 }
 
 function getCounterEdge(position: Edge | EdgeVertical): Edge | EdgeVertical {

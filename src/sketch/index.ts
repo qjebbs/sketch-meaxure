@@ -8,6 +8,7 @@ import { extendLayer } from "./layer";
 import { extendText } from "./text";
 import { extendShapePath } from "./shapePath";
 import { extendSymbolInstance } from "./symbolInstance";
+import { extendRectangle } from "./rectangle";
 
 export const sketch: Sketch = require('sketch');
 
@@ -33,5 +34,6 @@ if (!sketch.__Extended_by_Jebbs__) {
     extendText();
     extendShapePath();
     extendSymbolInstance();
+    extendRectangle();
     sketch.__Extended_by_Jebbs__ = true;
 }

@@ -34,7 +34,7 @@ function distance(layers: Layer[], position: string) {
     let root = artboard || layerA.getParentPage();
     if (!root) return;
     let fromID = layerA.id;
-    let toID = layerA.id;
+    let toID = layerB.id;
     let from = context.configs.byInfluence ?
         layerA.frameInfluence.changeBasis({ from: layerA.parent as Group, to: root }) :
         layerA.frame.changeBasis({ from: layerA.parent as Group, to: root });
