@@ -7,7 +7,7 @@ import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
 import { TextBehaviour } from "../../sketch/text";
 import { ResizingConstraint } from "../../sketch/layer/resizingConstraint";
 
-export function createMeter(
+export function createRuler(
     size: number,
     options?: {
         name?: string,

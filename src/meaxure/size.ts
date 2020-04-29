@@ -5,7 +5,7 @@
 import { context } from "./common/context";
 import { localize } from "./common/language";
 import { sketch } from "../sketch";
-import { createBubble, createMeter } from "./helpers/elements";
+import { createBubble, createRuler } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { lengthUnit } from "./helpers/helper";
 import { ResizingConstraint } from "../sketch/layer/resizingConstraint";
@@ -67,14 +67,14 @@ export function drawSizeForFrame(
         text = lengthUnit(size, containerSize)
     }
     let container = new sketch.Group({ name: options.name, parent: options.parent });
-    let meter = createMeter(size, {
-        name: 'meter',
+    let ruler = createRuler(size, {
+        name: 'ruler',
         parent: container,
         background: options.background,
         isHorizontal: isHorizontal,
     })
-    meter.alignToByPostion(
-        // expand the frame so that the meter offsets to target by 1px;
+    ruler.alignToByPostion(
+        // expand the frame so that the ruler offsets to target by 1px;
         new sketch.Rectangle(frame.x - 1, frame.y - 1, frame.width + 2, frame.height + 2),
         position
     );
@@ -86,44 +86,44 @@ export function drawSizeForFrame(
         bubblePosition: position,
     }
     let bubble = createBubble(text, bubbleOptions);
-    alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
-    // in case the bubble in middle/center of meter, but the meter is too small
+    alignBubbleToRuler(bubble, ruler, bubbleOptions.bubblePosition);
+    // in case the bubble in middle/center of ruler, but the ruler is too small
     if (bubbleOptions.bubblePosition == Edge.center) {
-        if (bubble.frame.height + 10 > meter.frame.height) {
+        if (bubble.frame.height + 10 > ruler.frame.height) {
             bubbleOptions.bubblePosition = Edge.right;
             // console.log(`center bubble(${text}) too large, move to ${bubblePosition}`);
             bubble.remove();
             bubble = createBubble(text, bubbleOptions);
-            alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
+            alignBubbleToRuler(bubble, ruler, bubbleOptions.bubblePosition);
         }
     } else if (bubbleOptions.bubblePosition == EdgeVertical.middle) {
-        if (bubble.frame.width + 10 > meter.frame.width) {
+        if (bubble.frame.width + 10 > ruler.frame.width) {
             bubbleOptions.bubblePosition = EdgeVertical.top;
             // console.log(`middle bubble(${text}) too large, move to ${bubblePosition}`);
             bubble.remove();
             bubble = createBubble(text, bubbleOptions);
-            alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
+            alignBubbleToRuler(bubble, ruler, bubbleOptions.bubblePosition);
         }
     }
     // in case the bubble is out side the artboard
-    let newBubblePosition = getCounterPositionIfOutside(bubble, meter, bubbleOptions.bubblePosition);
+    let newBubblePosition = getCounterPositionIfOutside(bubble, bubbleOptions.bubblePosition);
     if (bubbleOptions.bubblePosition !== newBubblePosition) {
         bubbleOptions.bubblePosition = newBubblePosition;
         // console.log(`bubble(${text}) outside the artboard, move to ${bubblePosition}`);
         bubble.remove();
         bubble = createBubble(text, bubbleOptions);
-        alignBubbleToMeter(bubble, meter, bubbleOptions.bubblePosition);
+        alignBubbleToRuler(bubble, ruler, bubbleOptions.bubblePosition);
     }
     bubble.resizingConstraint = ResizingConstraint.width & ResizingConstraint.height;
     if (isHorizontal) {
         bubble.resizingConstraint = bubble.resizingConstraint & ResizingConstraint.top;
-        meter.resizingConstraint = ResizingConstraint.left &
+        ruler.resizingConstraint = ResizingConstraint.left &
             ResizingConstraint.right &
             ResizingConstraint.height &
             ResizingConstraint.top
     } else {
         bubble.resizingConstraint = bubble.resizingConstraint & ResizingConstraint.left;
-        meter.resizingConstraint = ResizingConstraint.top &
+        ruler.resizingConstraint = ResizingConstraint.top &
             ResizingConstraint.bottom &
             ResizingConstraint.width &
             ResizingConstraint.left
@@ -131,23 +131,23 @@ export function drawSizeForFrame(
     container.adjustToFit();
 }
 
-function alignBubbleToMeter(bubble: Group, meter: Group, position: Edge | EdgeVertical): void {
+function alignBubbleToRuler(bubble: Group, ruler: Group, position: Edge | EdgeVertical): void {
     if (position == Edge.left || position == Edge.center || position == Edge.right) {
         bubble.alignTo(
-            meter,
+            ruler,
             { from: getCounterEdge(position) as Edge, to: position },
             { from: EdgeVertical.middle, to: EdgeVertical.middle }
         );
     } else {
         bubble.alignTo(
-            meter,
+            ruler,
             { from: Edge.center, to: Edge.center },
             { from: getCounterEdge(position) as EdgeVertical, to: position }
         );
     }
 }
 
-function getCounterPositionIfOutside(bubble: Group, meter: Group, position: Edge | EdgeVertical): Edge | EdgeVertical {
+function getCounterPositionIfOutside(bubble: Group, position: Edge | EdgeVertical): Edge | EdgeVertical {
     let artboard = bubble.getParentArtboard();
     if (!artboard) return position;
     let frameBubble = bubble.frame.changeBasis({ from: bubble.parent as Group, to: artboard });

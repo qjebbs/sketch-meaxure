@@ -24,7 +24,7 @@ export async function markProperties(position: Edge | EdgeVertical) {
     for (let target of selection.layers) {
         properties({
             target: target,
-            placement: position,
+            position: position,
             properties: context.configs.properties
         });
     }
@@ -41,15 +41,14 @@ export function markPropertiesAll() {
     for (let target of selection) {
         properties({
             target: target,
-            placement: Edge.right,
+            position: Edge.right,
             properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "font-face", "character", "line-height", "paragraph", "style-name"]
         });
     }
 }
 
-function properties(options: { target: Layer, placement: Edge | EdgeVertical, properties?: string[], content?: string }) {
+function properties(options: { target: Layer, position: Edge | EdgeVertical, properties?: string[], content?: string }) {
     options = Object.assign({
-        placement: "top",
         properties: ["layer-name", "color", "border", "opacity", "radius", "shadow", "font-size", "line-height", "font-face", "character", "paragraph", "style-name"]
     }, options);
     let target = options.target;
@@ -71,10 +70,10 @@ function properties(options: { target: Layer, placement: Edge | EdgeVertical, pr
             parent: root,
             foreground: context.meaxureStyles.property.foreground,
             background: context.meaxureStyles.property.background,
-            bubblePosition: options.placement,
+            bubblePosition: options.position,
         }
     )
-    bubble.alignToByPostion(target, options.placement)
+    bubble.alignToByPostion(target, options.position)
 }
 
 function findTint(layer: Layer): Fill {
