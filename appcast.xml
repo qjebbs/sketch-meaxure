@@ -32,10 +32,11 @@
     <item>
       <title>Changelog</title>
       <description>
-        Fix toggle locked
-        Text can have fill property
-        Better mark spacings
-        Toolbar config optimize
+        Smarter size label layerout: don't goto outside of artboard, don't cover the ruler
+        Color alpha of text fragment support
+        Now you can mark coordinate outside artboards
+        Mark property of multiple fills support
+        Fix spacing marker name
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
