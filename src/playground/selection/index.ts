@@ -1,19 +1,18 @@
-import { SelectCondition } from "./bools";
 import { SelectScope, getLayersForScope } from "./scope";
 import { context, sketch } from "../context";
 
-export function selectLayers(condition: SelectCondition, scope: SelectScope) {
+export function selectLayers(condition: (layer: Layer) => boolean, scope: SelectScope) {
     let page = getPageFromScope(scope);
     if (!page) return;
     let document = page.parent;
     document.selectedLayers.layers = getLayersByCondition(condition, scope);
 }
 
-export function getLayersByCondition(condition: SelectCondition, scope: SelectScope) {
+export function getLayersByCondition(condition: (layer: Layer) => boolean, scope: SelectScope) {
     let page = getPageFromScope(scope);
     if (!page) return;
     return getLayersForScope(scope, page)
-        .filter(layer => condition.test(layer));
+        .filter(layer => condition(layer));
 }
 
 function getPageFromScope(scope: SelectScope): Page {
