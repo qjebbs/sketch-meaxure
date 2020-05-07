@@ -9,7 +9,7 @@ export function localize(str) {
 import { ExportData } from '../src/meaxure/interfaces'
 import { configs } from './configs';
 
-export type ProjectData = ExportData & { colorNames: { [key: string]: string }, language: any }
+export type ProjectData = ExportData & { colorNames: { [key: string]: string } }
 
 export let project: ProjectData = <ProjectData>{};
 
@@ -17,6 +17,6 @@ export function init(data: ProjectData): void {
     configs.scale = data.scale;
     configs.colorFormat = data.colorFormat;
     configs.unit = data.unit;
-    I18N = data.language || {};
+    I18N = data.languages || {};
     project = data;
 }
