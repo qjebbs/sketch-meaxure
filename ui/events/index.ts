@@ -7,7 +7,7 @@ import { noteEvents } from "./notes";
 import { inspectorEvents } from "./inspector";
 import { tabEvents } from "./tab";
 import { sliceEvents } from "./slices";
-import { dragViewerEvents } from "./panMode";
+import { panModeEvents } from "./panMode";
 import { percentageModeEvents } from "./percentageMode";
 import { keyboardZoomEvents } from "./keyboardZoom";
 
@@ -20,7 +20,7 @@ export function events() {
     inspectorEvents();
     tabEvents();
     sliceEvents();
-    dragViewerEvents();
+    panModeEvents();
     percentageModeEvents();
     keyboardZoomEvents();
     dragExportableEvents();

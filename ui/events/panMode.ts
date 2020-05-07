@@ -1,17 +1,17 @@
 import { mouseoutLayer } from "./helper";
 import { hideDistance } from "./distance";
 
-export function dragViewerEvents() {
-    let moveData;
+export var panMode = false;
+export function panModeEvents() {
     let moving = false;
-    let moveMode = false;
+    let moveData;
     window.addEventListener('keydown', event => {
         if (event.which !== 32) return;
         document.getElementById('cursor').style.display = 'inherit';
         document.querySelector('.screen-viewer').classList.add('moving-screen');
         mouseoutLayer();
         hideDistance();
-        moveMode = true;
+        panMode = true;
         event.preventDefault();
     });
     window.addEventListener('keyup', event => {
@@ -19,7 +19,7 @@ export function dragViewerEvents() {
         document.getElementById('cursor').style.display = 'none';
         document.getElementById('cursor').classList.remove('moving');
         document.querySelector('.screen-viewer').classList.remove('moving-screen');
-        moveMode = false;
+        panMode = false;
         moving = false;
         event.preventDefault();
     });
@@ -34,7 +34,7 @@ export function dragViewerEvents() {
         event.preventDefault();
     });
     window.addEventListener('mousedown', event => {
-        if (!moveMode) return;
+        if (!panMode) return;
         let cursor = document.getElementById('cursor');
         let viewer = document.querySelector('.screen-viewer');
         cursor.classList.add('moving');
@@ -48,7 +48,7 @@ export function dragViewerEvents() {
         event.preventDefault();
     });
     window.addEventListener('mouseup', event => {
-        if (!moveMode || !moving) return;
+        if (!panMode || !moving) return;
         let cursor = document.getElementById('cursor');
         let viewer = document.querySelector('.screen-viewer');
         viewer.classList.remove('moving-screen');

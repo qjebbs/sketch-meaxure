@@ -3,17 +3,16 @@ import { getIndex, mouseoutLayer, selectedLayer, removeSelected, getEventTarget 
 import { inspector } from "../render/inspector";
 import { distance, hideDistance } from "./distance";
 import { SMRect } from "../../src/meaxure/interfaces";
+import { panMode } from "./panMode";
 
 export function layerEvents() {
     document.body.addEventListener('click', function (event) {
+        if (panMode) return;
         if (getEventTarget(document.body, event, 'header, #inspector, .navbar')) {
             event.stopPropagation();
             return;
         }
         let target = event.target as HTMLElement;
-        if (document.querySelector('.screen-viewer').classList.contains('moving-screen')) {
-            return;
-        }
         if (target.classList.contains('layer') || target.classList.contains('slice-layer')) {
             var selected = (!target.classList.contains('slice-layer')) ?
                 target :
@@ -32,8 +31,7 @@ export function layerEvents() {
         state.tempTargetRect = undefined;
     });
     document.body.addEventListener('mousemove', function (event) {
-        if (document.querySelector('.screen-viewer').classList.contains('moving-screen'))
-            return;
+        if (panMode) return;
         mouseoutLayer();
         hideDistance();
         let target = event.target as HTMLElement;
