@@ -19,4 +19,9 @@ export function unitEvents() {
         unit.querySelector('p').innerText = checked.dataset.name;
         slices();
     })
+    unit.addEventListener('click', event => {
+        let target = getEventTargetFromSelector(event, 'h3, .overlay');
+        if (!target) return;
+        unit.blur();
+    });
 }

@@ -266,8 +266,10 @@ function renderInspector(html: string[]) {
 
     // select previously used tab
     let li = inspector.querySelector('[data-codeType=' + configs.codeType + ']') as HTMLElement;
-    li.classList.add('select');
-    inspector.querySelector("#" + li.getAttribute('data-id')).classList.add('select');
+    if (li) {
+        li.classList.add('select');
+        inspector.querySelector("#" + li.getAttribute('data-id')).classList.add('select');
+    }
     let onclick = function () {
         let target = this as HTMLElement;
         let id = target.getAttribute('data-id');
