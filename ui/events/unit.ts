@@ -1,6 +1,6 @@
 import { getEventTarget } from "./helper";
-import { configs } from "../configs";
-import { layers } from "../render/helper";
+import { state } from "../common";
+import { layers } from "../render/layers";
 import { inspector } from "../render/inspector";
 import { slices } from "../render/slices";
 
@@ -11,8 +11,8 @@ export function unitEvents() {
         let target = getEventTarget(unit, event, 'input[name=resolution]');
         if (!target) return;
         let checked = unit.querySelector('input[name=resolution]:checked') as HTMLElement;
-        configs.unit = checked.dataset.unit;
-        configs.scale = Number(checked.dataset.scale);
+        state.unit = checked.dataset.unit;
+        state.scale = Number(checked.dataset.scale);
         layers();
         inspector();
         unit.blur();

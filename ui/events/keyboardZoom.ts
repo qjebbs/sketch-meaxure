@@ -1,5 +1,5 @@
 import { clickElement } from "./helper";
-import { configs } from "../configs";
+import { state } from "../common";
 import { zoomRender } from "./zoom";
 
 export function keyboardZoomEvents() {
@@ -8,20 +8,20 @@ export function keyboardZoomEvents() {
         if (!event.ctrlKey && !event.metaKey) return;
         switch (event.which) {
             case 187:
-                if (configs.zoom < 4) clickElement(
+                if (state.zoom < 4) clickElement(
                     document.querySelector('.zoom-out')
                 );
                 event.preventDefault();
                 return false;
             case 189:
-                if (configs.zoom > .25) clickElement(
+                if (state.zoom > .25) clickElement(
                     document.querySelector('.zoom-in')
                 );
                 event.preventDefault();
                 return false;
             case 48:
-                configs.maxSize = undefined;
-                configs.zoom = 1;
+                state.maxSize = undefined;
+                state.zoom = 1;
                 zoomRender();
                 event.preventDefault();
                 return false;

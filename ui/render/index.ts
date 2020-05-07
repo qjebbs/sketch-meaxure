@@ -1,14 +1,16 @@
 import { localize, ProjectData, init } from "../common";
 import { artboards } from "./artboards";
 import { slices } from "./slices";
-import { unit, colors, layers, notes, screen } from "./helper";
+import { screen } from "./screen";
+import { layers } from "./layers";
+import { notes } from "./notes";
+import { colors } from "./colors";
+import { unit } from "./unit";
 import { zoom } from "./zoom";
-import { configs } from "../configs";
 import { events } from "../events";
 
 export function render(data: ProjectData) {
     init(data);
-    configs.current = data.artboards[0];
     document.querySelector('#app').innerHTML = [
         '<header>',
         '<div class="header-left">',

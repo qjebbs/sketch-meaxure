@@ -1,3 +1,30 @@
+import { ExportData } from '../src/meaxure/interfaces'
+import { ArtboardData } from "../src/meaxure/interfaces"
+
+interface State {
+    zoom: number,
+    unit: string,
+    scale: number,
+    artboardIndex: number,
+    colorFormat: string,
+    current: ArtboardData,
+    maxSize: number,
+    selectedIndex: number,
+    codeType: string,
+    targetIndex: number,
+    tempTargetRect: any,
+}
+
+export const state: State = <State>{
+    zoom: 1,
+    unit: 'px',
+    scale: 1,
+    artboardIndex: 0,
+    colorFormat: 'color-hex',
+    current: undefined,
+    codeType:'css',
+}
+
 export var I18N = {};
 export var lang = navigator.language.toLocaleLowerCase();
 export var timestamp = new Date().getTime();
@@ -6,17 +33,14 @@ export function localize(str) {
     return (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
 }
 
-import { ExportData } from '../src/meaxure/interfaces'
-import { configs } from './configs';
-
 export type ProjectData = ExportData & { colorNames: { [key: string]: string } }
-
 export let project: ProjectData = <ProjectData>{};
 
 export function init(data: ProjectData): void {
-    configs.scale = data.scale;
-    configs.colorFormat = data.colorFormat;
-    configs.unit = data.unit;
+    state.scale = data.scale;
+    state.colorFormat = data.colorFormat;
+    state.unit = data.unit;
+    state.current = data.artboards[0];
     I18N = data.languages || {};
     project = data;
 }

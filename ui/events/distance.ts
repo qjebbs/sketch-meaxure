@@ -1,14 +1,14 @@
 import { zoomSize, unitSize, percentageSize } from "../render/helper";
-import { configs } from "../configs";
+import { state } from "../common";
 import { SMRect } from "../../src/meaxure/interfaces";
 import { getIntersection } from "./helper";
 
 export function distance() {
-    if (configs.selectedIndex === undefined) return;
-    if (configs.selectedIndex == configs.targetIndex && !configs.tempTargetRect) return;
+    if (state.selectedIndex === undefined) return;
+    if (state.selectedIndex == state.targetIndex && !state.tempTargetRect) return;
 
-    var selectedRect: SMRect = getRect(configs.selectedIndex),
-        targetRect: SMRect = configs.tempTargetRect || getRect(configs.targetIndex),
+    var selectedRect: SMRect = getRect(state.selectedIndex),
+        targetRect: SMRect = state.tempTargetRect || getRect(state.targetIndex),
         topData, rightData, bottomData, leftData,
         x = zoomSize(selectedRect.x + selectedRect.width / 2),
         y = zoomSize(selectedRect.y + selectedRect.height / 2);
@@ -24,7 +24,7 @@ export function distance() {
                 y: zoomSize(targetY2),
                 h: zoomSize(selectedRect.y - targetY2),
                 distance: unitSize(selectedRect.y - targetY2),
-                percentageDistance: percentageSize((selectedRect.y - targetY2), configs.current.height)
+                percentageDistance: percentageSize((selectedRect.y - targetY2), state.current.height)
             };
         }
         if (selectedX2 < targetRect.x) { //right
@@ -33,7 +33,7 @@ export function distance() {
                 y: y,
                 w: zoomSize(targetRect.x - selectedX2),
                 distance: unitSize(targetRect.x - selectedX2),
-                percentageDistance: percentageSize((targetRect.x - selectedX2), configs.current.width)
+                percentageDistance: percentageSize((targetRect.x - selectedX2), state.current.width)
             }
         }
         if (selectedY2 < targetRect.y) { //bottom
@@ -42,7 +42,7 @@ export function distance() {
                 y: zoomSize(selectedY2),
                 h: zoomSize(targetRect.y - selectedY2),
                 distance: unitSize(targetRect.y - selectedY2),
-                percentageDistance: percentageSize((targetRect.y - selectedY2), configs.current.height)
+                percentageDistance: percentageSize((targetRect.y - selectedY2), state.current.height)
             }
         }
         if (selectedRect.x > targetX2) { //left
@@ -51,7 +51,7 @@ export function distance() {
                 y: y,
                 w: zoomSize(selectedRect.x - targetX2),
                 distance: unitSize(selectedRect.x - targetX2),
-                percentageDistance: percentageSize((selectedRect.x - targetX2), configs.current.width)
+                percentageDistance: percentageSize((selectedRect.x - targetX2), state.current.width)
             }
         }
     } else {
@@ -62,7 +62,7 @@ export function distance() {
                 y: (distance.top > 0) ? zoomSize(targetRect.y) : zoomSize(selectedRect.y),
                 h: zoomSize(Math.abs(distance.top)),
                 distance: unitSize(Math.abs(distance.top)),
-                percentageDistance: percentageSize(Math.abs(distance.top), configs.current.height)
+                percentageDistance: percentageSize(Math.abs(distance.top), state.current.height)
             };
         }
         if (distance.right != 0) { //right
@@ -71,7 +71,7 @@ export function distance() {
                 y: y,
                 w: zoomSize(Math.abs(distance.right)),
                 distance: unitSize(Math.abs(distance.right)),
-                percentageDistance: percentageSize(Math.abs(distance.right), configs.current.width)
+                percentageDistance: percentageSize(Math.abs(distance.right), state.current.width)
             };
         }
         if (distance.bottom != 0) { //bottom
@@ -80,7 +80,7 @@ export function distance() {
                 y: (distance.bottom > 0) ? zoomSize(selectedY2) : zoomSize(targetY2),
                 h: zoomSize(Math.abs(distance.bottom)),
                 distance: unitSize(Math.abs(distance.bottom)),
-                percentageDistance: percentageSize(Math.abs(distance.bottom), configs.current.height)
+                percentageDistance: percentageSize(Math.abs(distance.bottom), state.current.height)
             };
         }
         if (distance.left != 0) { //left
@@ -89,7 +89,7 @@ export function distance() {
                 y: y,
                 w: zoomSize(Math.abs(distance.left)),
                 distance: unitSize(Math.abs(distance.left)),
-                percentageDistance: percentageSize(Math.abs(distance.left), configs.current.width)
+                percentageDistance: percentageSize(Math.abs(distance.left), state.current.width)
             };
         }
     }
@@ -147,7 +147,7 @@ export function hideDistance() {
 }
 
 function getRect(index: number): SMRect {
-    var layer = configs.current.layers[index];
+    var layer = state.current.layers[index];
     return layer.rect;
 }
 

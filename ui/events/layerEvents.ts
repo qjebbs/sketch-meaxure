@@ -1,4 +1,4 @@
-import { configs } from "../configs";
+import { state } from "../common";
 import { getIndex, mouseoutLayer, selectedLayer, removeSelected, getEventTarget } from "./helper";
 import { inspector } from "../render/inspector";
 import { distance, hideDistance } from "./distance";
@@ -19,7 +19,7 @@ export function layerEvents() {
             var selected = (!target.classList.contains('slice-layer')) ?
                 target :
                 document.querySelector('.layer-' + target.attributes['data-objectid']) as HTMLElement;
-            configs.selectedIndex = getIndex(selected);
+            state.selectedIndex = getIndex(selected);
             hideDistance();
             mouseoutLayer();
             selectedLayer();
@@ -29,8 +29,8 @@ export function layerEvents() {
         removeSelected();
         hideDistance();
         document.querySelector('#inspector').classList.remove('active');
-        configs.selectedIndex = undefined;
-        configs.tempTargetRect = undefined;
+        state.selectedIndex = undefined;
+        state.tempTargetRect = undefined;
     });
     document.body.addEventListener('mousemove', function (event) {
         if (document.querySelector('.screen-viewer').classList.contains('moving-screen'))
@@ -39,16 +39,16 @@ export function layerEvents() {
         hideDistance();
         let target = event.target as HTMLElement;
         if (target.classList.contains('screen-viewer') || target.classList.contains('screen-viewer-inner')) {
-            configs.tempTargetRect = getEdgeRect(event);
-            configs.targetIndex = undefined;
+            state.tempTargetRect = getEdgeRect(event);
+            state.targetIndex = undefined;
             distance();
         } else if (target.classList.contains('layer')) {
-            configs.targetIndex = getIndex(event.target as HTMLElement);
-            configs.tempTargetRect = undefined;
+            state.targetIndex = getIndex(event.target as HTMLElement);
+            state.tempTargetRect = undefined;
             mouseoverLayer();
             distance();
         } else {
-            configs.tempTargetRect = undefined;
+            state.tempTargetRect = undefined;
         }
     });
 }
@@ -56,61 +56,61 @@ export function layerEvents() {
 function getEdgeRect(event: MouseEvent): SMRect {
     let screen = document.querySelector('#screen') as HTMLElement;
     let rect = screen.getBoundingClientRect();
-    let x = (event.pageX - rect.left) / configs.zoom;
-    let y = (event.pageY - rect.top) / configs.zoom;
+    let x = (event.pageX - rect.left) / state.zoom;
+    let y = (event.pageY - rect.top) / state.zoom;
     let width = 10;
     let height = 10;
-    let xScope = (x >= 0 && x <= configs.current.width);
-    let yScope = (y >= 0 && y <= configs.current.height);
+    let xScope = (x >= 0 && x <= state.current.width);
+    let yScope = (y >= 0 && y <= state.current.height);
     // left and top
     if (x <= 0 && y <= 0) {
         x = -10;
         y = -10;
     }
     // right and top
-    else if (x >= configs.current.width && y <= 0) {
-        x = configs.current.width;
+    else if (x >= state.current.width && y <= 0) {
+        x = state.current.width;
         y = -10;
     }
     // right and bottom
-    else if (x >= configs.current.width && y >= configs.current.height) {
-        x = configs.current.width;
-        y = configs.current.height;
+    else if (x >= state.current.width && y >= state.current.height) {
+        x = state.current.width;
+        y = state.current.height;
     }
     // left and bottom
-    else if (x <= 0 && y >= configs.current.height) {
+    else if (x <= 0 && y >= state.current.height) {
         x = -10;
-        y = configs.current.height;
+        y = state.current.height;
     }
     // top
     else if (y <= 0 && xScope) {
         x = 0;
         y = -10;
-        width = configs.current.width;
+        width = state.current.width;
     }
     // right
-    else if (x >= configs.current.width && yScope) {
-        x = configs.current.width;
+    else if (x >= state.current.width && yScope) {
+        x = state.current.width;
         y = 0;
-        height = configs.current.height;
+        height = state.current.height;
     }
     // bottom
-    else if (y >= configs.current.height && xScope) {
+    else if (y >= state.current.height && xScope) {
         x = 0;
-        y = configs.current.height;
-        width = configs.current.width;
+        y = state.current.height;
+        width = state.current.width;
     }
     // left
     else if (x <= 0 && yScope) {
         x = -10;
         y = 0;
-        height = configs.current.height;
+        height = state.current.height;
     }
     if (xScope && yScope) {
         x = 0;
         y = 0;
-        width = configs.current.width;
-        height = configs.current.height;
+        width = state.current.width;
+        height = state.current.height;
     }
     return {
         x: x,

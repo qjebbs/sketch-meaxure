@@ -24,5 +24,4 @@ export function slices() {
     if (project.slices.length > 0) {
         document.querySelector('#slices').innerHTML = sliceListHTML.join('');
     }
-    return this;
 }

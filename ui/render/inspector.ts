@@ -1,4 +1,4 @@
-import { configs } from "../configs";
+import { state } from "../common";
 import { localize, project } from "../common";
 import { SMColor } from "../../src/meaxure/interfaces";
 import { unitSize } from "./helper";
@@ -6,8 +6,8 @@ import { getAndroidWithHeight, getAndroidShapeBackground, getAndroidImageSrc, ge
 import { scaleSize } from "../events/helper";
 
 export function inspector() {
-    if (configs.selectedIndex === undefined || (!configs.current && !configs.current.layers && !configs.current.layers[configs.selectedIndex])) return false;
-    let layerData = configs.current.layers[configs.selectedIndex];
+    if (state.selectedIndex === undefined || (!state.current && !state.current.layers && !state.current.layers[state.selectedIndex])) return false;
+    let layerData = state.current.layers[state.selectedIndex];
     let html = [];
     html.push('<h2>' + layerData.name + '</h2>');
     // fix 0 [opacity]
@@ -250,11 +250,11 @@ export function inspector() {
 }
 
 function colorItem(color: SMColor) {
-    var colorName = (/**this.**/project.colorNames) ? project.colorNames[color['argb-hex']] : '';
+    var colorName = (project.colorNames) ? project.colorNames[color['argb-hex']] : '';
     colorName = (colorName) ? ' data-name="' + colorName + '"' : '';
     return [
         '<div class="color"' + colorName + '>',
-        '<label><em><i style="background-color:' + color['css-rgba'] + ';"></i></em></label><input data-color="' + encodeURI(JSON.stringify(color)) + '" type="text" value="' + color[/**this.**/configs.colorFormat] + '" readonly="readonly">',
+        '<label><em><i style="background-color:' + color['css-rgba'] + ';"></i></em></label><input data-color="' + encodeURI(JSON.stringify(color)) + '" type="text" value="' + color[state.colorFormat] + '" readonly="readonly">',
         '</div>'
     ].join('');
 }
@@ -265,7 +265,7 @@ function renderInspector(html: string[]) {
     inspector.innerHTML = html.join('');
 
     // select previously used tab
-    let li = inspector.querySelector('[data-codeType=' + configs.codeType + ']') as HTMLElement;
+    let li = inspector.querySelector('[data-codeType=' + state.codeType + ']') as HTMLElement;
     if (li) {
         li.classList.add('select');
         inspector.querySelector("#" + li.getAttribute('data-id')).classList.add('select');
@@ -273,7 +273,7 @@ function renderInspector(html: string[]) {
     let onclick = function () {
         let target = this as HTMLElement;
         let id = target.getAttribute('data-id');
-        configs.codeType = target.getAttribute('data-codeType');
+        state.codeType = target.getAttribute('data-codeType');
         target.parentElement.querySelector('li.select').classList.remove('select');
         target.classList.add('select');
         inspector.querySelector('div.item.select')?.classList.remove('select');

@@ -1,8 +1,8 @@
-import { configs } from "../configs";
+import { state } from "../common";
 
 export function mouseoverLayer() {
-    if (configs.targetIndex && configs.selectedIndex == configs.targetIndex) return false;
-    var target = document.querySelector('#layer-' + configs.targetIndex) as HTMLElement;
+    if (state.targetIndex && state.selectedIndex == state.targetIndex) return false;
+    var target = document.querySelector('#layer-' + state.targetIndex) as HTMLElement;
     target.classList.add('hover');
     let rv = (document.querySelector('#rv') as HTMLElement);
     rv.style.left = target.offsetLeft + 'px';

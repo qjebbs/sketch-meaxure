@@ -1,7 +1,10 @@
 import { getEventTarget, getIndex } from "./helper";
-import { configs } from "../configs";
+import { state } from "../common";
 import { project } from "../common";
-import { layers, notes, screen, locationHash } from "../render/helper";
+import { locationHash } from "../render/helper";
+import { screen } from "../render/screen";
+import { layers } from "../render/layers";
+import { notes } from "../render/notes";
 import { hideDistance } from "./distance";
 
 export function artboardsEvents() {
@@ -12,11 +15,11 @@ export function artboardsEvents() {
             if (!target) return;
             // console.log(target);
             let index = getIndex(target);
-            if (configs.artboardIndex == index) return;
-            configs.maxSize = undefined;
-            configs.artboardIndex = index;
-            configs.selectedIndex = undefined;
-            configs.current = project.artboards[configs.artboardIndex];
+            if (state.artboardIndex == index) return;
+            state.maxSize = undefined;
+            state.artboardIndex = index;
+            state.selectedIndex = undefined;
+            state.current = project.artboards[state.artboardIndex];
             hideDistance();
             screen();
             layers();
@@ -24,7 +27,7 @@ export function artboardsEvents() {
             document.querySelector('.active').classList.remove('active');
             target.classList.add('active');
             locationHash({
-                artboard: configs.artboardIndex
+                artboard: state.artboardIndex
             });
         }
     );

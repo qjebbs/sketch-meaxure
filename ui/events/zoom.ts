@@ -1,6 +1,8 @@
 import { getEventTarget } from "./helper";
-import { configs } from "../configs";
-import { screen, layers, notes } from "../render/helper";
+import { state } from "../common";
+import { screen } from "../render/screen";
+import { layers } from "../render/layers";
+import { notes } from "../render/notes";
 import { zoom } from "../render/zoom";
 import { hideDistance } from "./distance";
 
@@ -10,9 +12,9 @@ export function zoomEvents() {
         let target = getEventTarget(zoomer, event, '.zoom-in:not(disabled), .zoom-out:not(disabled)');
         if (!target) return;
         if (target.classList.contains('zoom-in')) {
-            configs.zoom -= .25;
+            state.zoom -= .25;
         } else {
-            configs.zoom += .25;
+            state.zoom += .25;
         }
         zoomRender();
         event.stopPropagation();
@@ -20,7 +22,7 @@ export function zoomEvents() {
 }
 
 export function zoomRender() {
-    configs.targetIndex = undefined;
+    state.targetIndex = undefined;
     (document.querySelector('#rulers') as HTMLElement).style.display = 'none';
     hideDistance();
     zoom();

@@ -1,5 +1,5 @@
 import { project, timestamp, localize } from "../common";
-import { configs } from "../configs";
+import { state } from "../common";
 
 export function artboards() {
     let artboardListHTML = [];
@@ -21,7 +21,7 @@ export function artboards() {
             };
         }
         pagesData[artboard.pageObjectID].count++;
-        var classNames = (configs.artboardIndex == index && !artboard.fileName) ? ' active' : '',
+        var classNames = (state.artboardIndex == index && !artboard.fileName) ? ' active' : '',
             fileName = (artboard.fileName) ? ' data-file="' + artboard.fileName + '"' : '',
             imageData = (artboard.imageBase64) ? artboard.imageBase64 : artboard.imagePath + '?' + timestamp;
         artboardListHTML.push(
@@ -52,5 +52,4 @@ export function artboards() {
     pagesSelect.push('</div>');
 
     document.querySelector('#artboards').innerHTML = [pagesSelect.join(''), artboardListHTML.join('')].join('');
-    return this;
 }

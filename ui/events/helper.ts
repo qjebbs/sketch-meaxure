@@ -1,4 +1,4 @@
-import { configs } from "../configs";
+import { state } from "../common";
 import { SMRect } from "../../src/meaxure/interfaces";
 
 export function getEventTarget(eventNode: Element, event: Event, selector: string): HTMLElement {
@@ -20,21 +20,21 @@ export function mouseoutLayer() {
 }
 
 export function selectedLayer() {
-    if (configs.selectedIndex == undefined) return false;
+    if (state.selectedIndex == undefined) return false;
     document.querySelector('.selected')?.classList.remove('selected');
-    document.querySelector('#layer-' + configs.selectedIndex).classList.add('selected');
+    document.querySelector('#layer-' + state.selectedIndex).classList.add('selected');
     (document.querySelector('#rulers') as HTMLElement).style.display = 'none';
 }
 
 
 export function removeSelected() {
-    if (configs.selectedIndex === undefined) return false;
-    document.querySelector('#layer-' + /**this.**/configs.selectedIndex).classList.remove('selected');
+    if (state.selectedIndex === undefined) return false;
+    document.querySelector('#layer-' + state.selectedIndex).classList.remove('selected');
     (document.querySelector('#rulers') as HTMLElement).style.display = 'none';
 }
 
 export function scaleSize(length: number) {
-    return Math.round(length / configs.scale * 10) / 10;
+    return Math.round(length / state.scale * 10) / 10;
 }
 
 export function getIntersection(a: SMRect, b: SMRect): SMRect {

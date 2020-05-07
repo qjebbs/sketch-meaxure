@@ -1,6 +1,6 @@
 import { getEventTarget } from "./helper";
-import { configs } from "../configs";
-import { colors } from "../render/helper";
+import { state } from "../common";
+import { colors } from "../render/colors";
 
 export function inspectorEvents() {
     let formats = ['color-hex', 'argb-hex', 'css-rgba', 'ui-color'];
@@ -8,14 +8,12 @@ export function inspectorEvents() {
     inspector.addEventListener('click', event => {
         let target = getEventTarget(inspector, event, '.color label');
         if (!target) return;
-        let current = formats.indexOf(configs.colorFormat)
+        let current = formats.indexOf(state.colorFormat)
         let next = (current + 1) % formats.length;
-        configs.colorFormat = formats[next];
-        // changeColorFormat();
-        var self = this;
+        state.colorFormat = formats[next];
         document.querySelectorAll('.color input').forEach((i: HTMLInputElement) => {
             let colors = JSON.parse(decodeURI(i.dataset.color));
-            i.value = colors[configs.colorFormat];
+            i.value = colors[state.colorFormat];
         })
         colors();
     });
