@@ -109,6 +109,7 @@ export interface ArtboardData {
     imageBase64?: string,
     notes: SMNote[],
     layers: LayerData[],
+    fileName?: string,
 }
 export interface ExportData {
     scale: number,
