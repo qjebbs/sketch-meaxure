@@ -93,6 +93,12 @@
       "script": "mark_bundle.js"
     },
     {
+      "name": "Run Script",
+      "identifier": "commandRunScript",
+      "handler": "commandRunScript",
+      "script": "mark_bundle.js"
+    },
+    {
       "name": "Feedback",
       "identifier": "linkFeedback",
       "handler": "linkFeedback",
