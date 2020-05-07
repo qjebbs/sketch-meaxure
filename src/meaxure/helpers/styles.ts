@@ -81,26 +81,28 @@ export function parseColor(rgbaHex: string): SMColor {
     let green = parseInt(rgbaHex.substr(3, 2), 16);
     let blue = parseInt(rgbaHex.substr(5, 2), 16);
     let alpha = parseInt(rgbaHex.substr(7, 2), 16);
+
+    let alpha100 = Math.round(alpha / 255 * 100);
     let colorUpperCase = rgbaHex.toUpperCase();
     return {
         r: red,
         g: green,
         b: blue,
         a: alpha,
-        "color-hex": colorUpperCase.substr(0, 7) + " " + Math.round(alpha / 255 * 100) + "%",
+        "color-hex": colorUpperCase.substr(0, 7) + " " + alpha100 + "%",
         "argb-hex": "#" + alpha.toString(16).toUpperCase() + colorUpperCase.substr(1, 6).replace("#", ""),
         "rgba-hex": rgbaHex.toLocaleUpperCase(),
         "css-rgba": "rgba(" + [
             red,
             green,
             blue,
-            (Math.round(alpha * 100) / 255)
+            alpha100 / 100
         ].join(",") + ")",
         "ui-color": "(" + [
             "r:" + red.toFixed(2),
             "g:" + green.toFixed(2),
             "b:" + blue.toFixed(2),
-            "a:" + alpha.toFixed(2)
+            "a:" + (alpha100 / 100).toFixed(2)
         ].join(" ") + ")"
     };
 }

@@ -111,13 +111,18 @@ export interface ArtboardData {
     layers: LayerData[],
     fileName?: string,
 }
+
+export interface SMColorAsset {
+    name: string,
+    color: SMColor,
+}
 export interface ExportData {
     scale: number,
     unit: string,
     colorFormat: string,
     artboards: ArtboardData[],
     slices: any[],
-    colors: any[],
+    colors: SMColorAsset[],
     languages: { [key: string]: string },
 }
 
