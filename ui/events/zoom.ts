@@ -1,17 +1,15 @@
-import { getEventTarget } from "./helper";
 import { state } from "../common";
 import { screen } from "../render/screen";
 import { layers } from "../render/layers";
 import { notes } from "../render/notes";
 import { zoom } from "../render/zoom";
 import { hideDistance } from "./distance";
+import { eventDelegate } from "./delegate";
 
 export function zoomEvents() {
     let zoomer = document.querySelector('#zoom') as HTMLElement;
-    zoomer.addEventListener('click', event => {
-        let target = getEventTarget(zoomer, event, '.zoom-in:not(disabled), .zoom-out:not(disabled)');
-        if (!target) return;
-        if (target.classList.contains('zoom-in')) {
+    eventDelegate(zoomer, 'click', '.zoom-in:not(disabled), .zoom-out:not(disabled)', function (event) {
+        if (this.classList.contains('zoom-in')) {
             state.zoom -= .25;
         } else {
             state.zoom += .25;

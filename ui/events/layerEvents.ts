@@ -2,23 +2,22 @@ import { state } from "../common";
 import { getIndex, mouseoutLayer, selectedLayer, removeSelected, getEventTarget } from "./helper";
 import { inspector } from "../render/inspector";
 import { distance, hideDistance } from "./distance";
-import { mouseoverLayer } from "./mouseoverLayer";
 import { SMRect } from "../../src/meaxure/interfaces";
 
 export function layerEvents() {
     document.body.addEventListener('click', function (event) {
-        let target = event.target as HTMLElement;
         if (getEventTarget(document.body, event, 'header, #inspector, .navbar')) {
             event.stopPropagation();
             return;
         }
+        let target = event.target as HTMLElement;
         if (document.querySelector('.screen-viewer').classList.contains('moving-screen')) {
             return;
         }
         if (target.classList.contains('layer') || target.classList.contains('slice-layer')) {
             var selected = (!target.classList.contains('slice-layer')) ?
                 target :
-                document.querySelector('.layer-' + target.attributes['data-objectid']) as HTMLElement;
+                document.querySelector('.layer-' + target.dataset.objectid) as HTMLElement;
             state.selectedIndex = getIndex(selected);
             hideDistance();
             mouseoutLayer();
@@ -51,6 +50,18 @@ export function layerEvents() {
             state.tempTargetRect = undefined;
         }
     });
+}
+function mouseoverLayer() {
+    if (state.targetIndex && state.selectedIndex == state.targetIndex) return false;
+    var target = document.querySelector('#layer-' + state.targetIndex) as HTMLElement;
+    target.classList.add('hover');
+    let rv = (document.querySelector('#rv') as HTMLElement);
+    rv.style.left = target.offsetLeft + 'px';
+    rv.style.width = target.offsetWidth + 'px';
+    let rh = (document.querySelector('#rh') as HTMLElement);
+    rh.style.top = target.offsetTop + 'px';
+    rh.style.height = target.offsetHeight + 'px';
+    (document.querySelector('#rulers') as HTMLElement).style.display = '';
 }
 
 function getEdgeRect(event: MouseEvent): SMRect {

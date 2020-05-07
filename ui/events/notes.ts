@@ -1,5 +1,6 @@
-import { getEventTarget, mouseoutLayer } from "./helper";
+import { mouseoutLayer } from "./helper";
 import { hideDistance } from "./distance";
+import { eventDelegate } from "./delegate";
 
 export function noteEvents() {
     let notes = document.querySelector('#notes') as HTMLElement;
@@ -8,12 +9,10 @@ export function noteEvents() {
             let target = this as HTMLInputElement;
             notes.style.display = target.checked ? '' : 'none';
         })
-    notes.addEventListener('mousemove', event => {
-        let target = getEventTarget(notes, event, '.note');
-        if (!target) return;
+    eventDelegate(notes, 'mousemove', '.note', function (event) {
         mouseoutLayer();
         hideDistance();
-        let note = target.querySelector('div');
+        let note = this.querySelector('div');
         note.style.display = '';
         if (note.clientWidth > 160) {
             note.style.width = '160px';
@@ -21,7 +20,7 @@ export function noteEvents() {
         }
         event.stopPropagation();
     });
-    notes.addEventListener('mouseout', event => {
+    notes.addEventListener('mouseout', function (event) {
         notes.querySelectorAll('.note div').forEach(
             (div: HTMLElement) => div.style.display = 'none'
         );
