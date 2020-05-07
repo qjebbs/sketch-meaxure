@@ -206,7 +206,6 @@ return j.call(r(a),c)})),b))for(;i>h;h++)b(a[h],c,g?d:d.call(a[h],h,b(a[h],c)));
 var I18N = {},
     lang = navigator.language.toLocaleLowerCase(),
     timestamp = new Date().getTime();
-<!-- lang -->;
 (function(window) {
 
     String.prototype.firstUpperCase = function(){
@@ -1545,6 +1544,7 @@ var I18N = {},
                 colorFormat: this.project.colorFormat,
                 codeType: 'css'
             };
+        I18N =project.languages || {};
         this.artboardIndex = (!isNaN(path.artboard))? path.artboard: 0;
         this.current = this.project.artboards[this.artboardIndex];
         var proportion = $(document).height() / this.current.height;
@@ -1569,7 +1569,7 @@ var I18N = {},
     init.prototype = SMApp.fn;
     window.SMApp = SMApp;
 })(window);
-$(function(){ SMApp(<!-- data -->) });
+$(function(){ SMApp('{{data}}') });
     </script>
   </head>
   <body id="app"></body>

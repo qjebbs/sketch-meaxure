@@ -111,6 +111,8 @@
     "Center Border": "中心邊框",
     "Inner Shadow": "內陰影",
     "Outer Shadow": "外陰影",
+	"Offset":"偏移",
+	"Effect":"效果",
     "No artboards!": "沒有畫布",
     "You need add some artboards.": "您需要先新增畫布",
     "No colors added!": "尚無色彩",

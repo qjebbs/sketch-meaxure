@@ -116,7 +116,8 @@ export interface ExportData {
     colorFormat: string,
     artboards: ArtboardData[],
     slices: any[],
-    colors: any[]
+    colors: any[],
+    languages: { [key: string]: string },
 }
 
 export interface SMExportFormat {
@@ -125,8 +126,13 @@ export interface SMExportFormat {
     prefix?: string,
     suffix?: string,
 }
+export enum shadowType {
+    outer = "Outer",
+    inner = "Inner",
+}
+
 export interface SMShadow {
-    type: "outer" | "inner",
+    type: shadowType,
     offsetX: number,
     offsetY: number,
     blurRadius: number,

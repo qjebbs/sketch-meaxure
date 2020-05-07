@@ -62,13 +62,6 @@ export function writeFile(options) {
     content.writeToFile_atomically_encoding_error(savePath, false, 4, null);
 }
 
-export function buildTemplate(content, data) {
-    content = content.replace(new RegExp("\\<\\!\\-\\-\\s([^\\s\\-\\-\\>]+)\\s\\-\\-\\>", "gi"), function ($0, $1) {
-        if ($1 in data) {
-            return data[$1];
-        } else {
-            return $0;
-        }
-    });
-    return content;
+export function buildTemplate(content: string, data: object) {
+    return content.replace("'{{data}}'", JSON.stringify(data));
 }

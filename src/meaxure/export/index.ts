@@ -4,7 +4,7 @@
 
 import { exportPanel } from "../panels/exportPanel";
 import { sketch } from "../../sketch";
-import { localize, getLanguageScript } from "../common/language";
+import { localize, getLanguageObject } from "../common/language";
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
 import { toHTMLEncode, newStopwatch, toSlug, emojiToEntities, getResourcePath } from "../helpers/helper";
@@ -74,7 +74,8 @@ export async function exportSpecification() {
         colorFormat: context.configs.format,
         artboards: [],
         slices: [],
-        colors: getDocumentColors(document)
+        colors: getDocumentColors(document),
+        languages: getLanguageObject(),
     };
     // stopwatch.tik('load template');
 
@@ -141,10 +142,7 @@ export async function exportSpecification() {
     let selectingPath = savePath;
     if (results.advancedMode) {
         writeFile({
-            content: buildTemplate(template, {
-                lang: getLanguageScript(),
-                data: JSON.stringify(data)
-            }),
+            content: buildTemplate(template, data),
             path: savePath,
             fileName: "index.html"
         });
@@ -199,13 +197,11 @@ function exportArtboard(artboard: Artboard, exportData: ExportData, index: numbe
         artboards: [data],
         slices: [],
         colors: [],
+        languages: exportData.languages,
     };
 
     writeFile({
-        content: buildTemplate(template, {
-            lang: getLanguageScript(),
-            data: JSON.stringify(newData)
-        }),
+        content: buildTemplate(template, data),
         path: savePath,
         fileName: data.slug + ".html"
     });

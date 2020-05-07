@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
-import { BorderData, SMFillData, SMShadow, SMGradient, SMGradientStop } from "../interfaces";
+import { BorderData, SMFillData, SMShadow, SMGradient, SMGradientStop, shadowType } from "../interfaces";
 import { SMColor } from "../interfaces";
 import { sketch } from "../../sketch";
 
@@ -59,12 +59,12 @@ export function getFillsFromStyle(style: Style): SMFillData[] {
 }
 
 export function getShadowsFromStyle(style: Style): SMShadow[] {
-    return style.shadows.filter(s => s.enabled).map(s => convertShadow(s, 'outer')).concat(
-        ...style.innerShadows.filter(s => s.enabled).map(s => convertShadow(s, 'inner'))
+    return style.shadows.filter(s => s.enabled).map(s => convertShadow(s, shadowType.outer)).concat(
+        ...style.innerShadows.filter(s => s.enabled).map(s => convertShadow(s, shadowType.inner))
     );
 }
 
-function convertShadow(shadow: Shadow, type: "outer" | "inner"): SMShadow {
+function convertShadow(shadow: Shadow, type: shadowType): SMShadow {
     return {
         type: type,
         offsetX: shadow.x,

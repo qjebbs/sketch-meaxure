@@ -8,7 +8,7 @@ import { propertiesPanel } from "./panels/propertiesPanel";
 import { context } from "./common/context";
 import { sketch } from "../sketch";
 import { parseColor, getFillsFromStyle, getBordersFromStyle, getLayerRadius, getShadowsFromStyle } from "./helpers/styles";
-import { SMFillData, SMShadow } from "./interfaces";
+import { SMFillData, SMShadow, shadowType } from "./interfaces";
 import { createBubble } from "./helpers/elements";
 import { Edge, EdgeVertical } from "../sketch/layer/alignment";
 import { applyTintToSMColor, applyTintToSMGradient } from "./export/tint";
@@ -131,8 +131,8 @@ function getProperties(target: Layer, properties: string[]): string {
                 return "radius: " + convertUnit(getLayerRadius(target));
             case "shadow":
                 let shadows = getShadowsFromStyle(targetStyle);
-                let innerShadow = shadows.filter(s => s.type == 'inner')[0];
-                let outerShadow = shadows.filter(s => s.type == 'outer')[0];
+                let innerShadow = shadows.filter(s => s.type == shadowType.inner)[0];
+                let outerShadow = shadows.filter(s => s.type == shadowType.outer)[0];
                 if (outerShadow) {
                     results.push("shadow: outer\r\n" + shadowContent(outerShadow));
                 }
