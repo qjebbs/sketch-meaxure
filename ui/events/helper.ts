@@ -1,15 +1,10 @@
 import { configs } from "../configs";
 import { SMRect } from "../../src/meaxure/interfaces";
 
-export function getEventTargetFromSelector(event: Event, selector: string): HTMLElement {
-    let selection = document.querySelectorAll(selector);
+export function getEventTarget(eventNode: Element, event: Event, selector: string): HTMLElement {
     let current = event.target as HTMLElement;
-    while (current) {
-        for (let el of selection) {
-            if (el === current) {
-                return current;
-            }
-        }
+    while (current && current !== eventNode) {
+        if (current.matches(selector)) return current;
         current = current.parentElement;
     }
     return undefined;

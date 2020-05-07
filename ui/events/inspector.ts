@@ -1,4 +1,4 @@
-import { getEventTargetFromSelector } from "./helper";
+import { getEventTarget } from "./helper";
 import { configs } from "../configs";
 import { colors } from "../render/helper";
 
@@ -6,7 +6,7 @@ export function inspectorEvents() {
     let formats = ['color-hex', 'argb-hex', 'css-rgba', 'ui-color'];
     let inspector = document.querySelector('#inspector') as HTMLElement;
     inspector.addEventListener('click', event => {
-        let target = getEventTargetFromSelector(event, '.color label');
+        let target = getEventTarget(inspector, event, '.color label');
         if (!target) return;
         let current = formats.indexOf(configs.colorFormat)
         let next = (current + 1) % formats.length;
@@ -20,7 +20,7 @@ export function inspectorEvents() {
         colors();
     });
     inspector.addEventListener('dblclick', event => {
-        let target = getEventTargetFromSelector(event, 'input, textarea') as HTMLInputElement;
+        let target = getEventTarget(inspector, event, 'input, textarea') as HTMLInputElement;
         if (!target) return;
         target.select();
     });

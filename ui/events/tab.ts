@@ -1,10 +1,10 @@
-import { getEventTargetFromSelector } from "./helper";
+import { getEventTarget } from "./helper";
 
 export function tabEvents() {
     let tab = document.querySelector('.header-left .tab') as HTMLDivElement;
     let navbar = document.querySelector('.navbar') as HTMLDivElement;
     tab.addEventListener('click', event => {
-        let target = getEventTargetFromSelector(event, 'li');
+        let target = getEventTarget(navbar, event, 'li');
         let current = tab.querySelector('.current');
         if (!target) return;
         if (target === current) {

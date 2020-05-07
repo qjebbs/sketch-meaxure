@@ -1,4 +1,4 @@
-import { getEventTargetFromSelector } from "./helper";
+import { getEventTarget } from "./helper";
 import { configs } from "../configs";
 import { screen, layers, notes } from "../render/helper";
 import { zoom } from "../render/zoom";
@@ -7,7 +7,7 @@ import { hideDistance } from "./distance";
 export function zoomEvents() {
     let zoomer = document.querySelector('#zoom') as HTMLElement;
     zoomer.addEventListener('click', event => {
-        let target = getEventTargetFromSelector(event, '.zoom-in:not(disabled), .zoom-out:not(disabled)');
+        let target = getEventTarget(zoomer, event, '.zoom-in:not(disabled), .zoom-out:not(disabled)');
         if (!target) return;
         if (target.classList.contains('zoom-in')) {
             configs.zoom -= .25;

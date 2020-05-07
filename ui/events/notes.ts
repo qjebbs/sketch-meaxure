@@ -1,4 +1,4 @@
-import { getEventTargetFromSelector, mouseoutLayer } from "./helper";
+import { getEventTarget, mouseoutLayer } from "./helper";
 import { hideDistance } from "./distance";
 
 export function noteEvents() {
@@ -9,7 +9,7 @@ export function noteEvents() {
             notes.style.display = target.checked ? '' : 'none';
         })
     notes.addEventListener('mousemove', event => {
-        let target = getEventTargetFromSelector(event, '.note');
+        let target = getEventTarget(notes, event, '.note');
         if (!target) return;
         mouseoutLayer();
         hideDistance();

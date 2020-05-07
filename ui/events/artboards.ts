@@ -1,4 +1,4 @@
-import { getEventTargetFromSelector, getIndex } from "./helper";
+import { getEventTarget, getIndex } from "./helper";
 import { configs } from "../configs";
 import { project } from "../common";
 import { layers, notes, screen, locationHash } from "../render/helper";
@@ -8,7 +8,7 @@ export function artboardsEvents() {
     let artboardsList = document.querySelector('#artboards') as HTMLElement;
     artboardsList.addEventListener(
         'click', function (event) {
-            let target = getEventTargetFromSelector(event, '.artboard');
+            let target = getEventTarget(artboardsList, event, '.artboard');
             if (!target) return;
             // console.log(target);
             let index = getIndex(target);
@@ -30,7 +30,7 @@ export function artboardsEvents() {
     );
     artboardsList.addEventListener(
         'change', function (event) {
-            let target = getEventTargetFromSelector(event, 'input[name=page]');
+            let target = getEventTarget(artboardsList, event, 'input[name=page]');
             if (!target) return;
             var pObjectID = (document.querySelector('.page-list input[name=page]:checked') as HTMLInputElement).value;
             document.querySelector('.pages-select h3')

@@ -1,23 +1,23 @@
-import { getEventTargetFromSelector, clickElement } from "./helper";
+import { getEventTarget, clickElement } from "./helper";
 import { message } from "../render/helper";
 import { localize } from "../common";
 
 export function sliceEvents() {
     let slices = document.querySelector('#slices') as HTMLDivElement;
     slices.addEventListener('mouseover', event => {
-        let target = getEventTargetFromSelector(event, 'li');
+        let target = getEventTarget(slices, event, 'li');
         if (!target) return;
         document.querySelectorAll('.layer-' + target.dataset.objectid)
             .forEach(div => div.classList.add('has-slice'));
     });
     slices.addEventListener('mouseout', event => {
-        let target = getEventTargetFromSelector(event, 'li');
+        let target = getEventTarget(slices, event, 'li');
         if (!target) return;
         document.querySelectorAll('.has-slice')
             .forEach(div => div.classList.remove('has-slice'));
     });
     slices.addEventListener('click', event => {
-        let target = getEventTargetFromSelector(event, 'li');
+        let target = getEventTarget(slices, event, 'li');
         if (!target) return;
         let layercls = '.layer-' + target.dataset.objectid;
         let instances = document.querySelectorAll(layercls);

@@ -1,4 +1,4 @@
-import { getEventTargetFromSelector } from "./helper";
+import { getEventTarget } from "./helper";
 import { configs } from "../configs";
 import { layers } from "../render/helper";
 import { inspector } from "../render/inspector";
@@ -8,7 +8,7 @@ import { slices } from "../render/slices";
 export function unitEvents() {
     let unit = document.querySelector('#unit') as HTMLElement;
     unit.addEventListener('change', event => {
-        let target = getEventTargetFromSelector(event, 'input[name=resolution]');
+        let target = getEventTarget(unit, event, 'input[name=resolution]');
         if (!target) return;
         let checked = unit.querySelector('input[name=resolution]:checked') as HTMLElement;
         configs.unit = checked.dataset.unit;
@@ -20,7 +20,7 @@ export function unitEvents() {
         slices();
     })
     unit.addEventListener('click', event => {
-        let target = getEventTargetFromSelector(event, 'h3, .overlay');
+        let target = getEventTarget(unit, event, 'h3, .overlay');
         if (!target) return;
         unit.blur();
     });

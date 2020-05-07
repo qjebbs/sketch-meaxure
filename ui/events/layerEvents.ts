@@ -1,5 +1,5 @@
 import { configs } from "../configs";
-import { getIndex, mouseoutLayer, selectedLayer, removeSelected, getEventTargetFromSelector } from "./helper";
+import { getIndex, mouseoutLayer, selectedLayer, removeSelected, getEventTarget } from "./helper";
 import { inspector } from "../render/inspector";
 import { distance, hideDistance } from "./distance";
 import { mouseoverLayer } from "./mouseoverLayer";
@@ -8,7 +8,7 @@ import { SMRect } from "../../src/meaxure/interfaces";
 export function layerEvents() {
     document.body.addEventListener('click', function (event) {
         let target = event.target as HTMLElement;
-        if (getEventTargetFromSelector(event, 'header, #inspector, .navbar')) {
+        if (getEventTarget(document.body, event, 'header, #inspector, .navbar')) {
             event.stopPropagation();
             return;
         }
