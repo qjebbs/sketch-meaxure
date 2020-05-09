@@ -20,3 +20,10 @@ export function tabEvents() {
         (navbar.querySelector('#' + id) as HTMLDivElement).style.display = '';
     });
 }
+
+export function hideNavBar() {
+    let tab = document.querySelector('.header-left .tab') as HTMLDivElement;
+    tab.querySelector('.current')?.classList.remove('current');
+    let navbar = document.querySelector('.navbar') as HTMLDivElement;
+    navbar.classList.remove('on');
+}

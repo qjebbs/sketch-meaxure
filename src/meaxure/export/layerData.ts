@@ -14,6 +14,7 @@ import { makeNote } from "./note";
 import { getSymbol } from "./symbol";
 import { updateTintStackAfterLayer, applyTint } from "./tint";
 import { stopwatch } from ".";
+import { getFlow } from "./flow";
 
 export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
     // stopwatch.tik('before updateMaskStackBeforeLayer');
@@ -58,6 +59,8 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     // stopwatch.tik('applyTint');
     getSlice(layer, layerData, symbolLayer);
     // stopwatch.tik('getSlice');
+    getFlow(layer, layerData);
+    // stopwatch.tik('getFlow');
     data.layers.push(layerData);
     if (layerData.type == SMType.symbol) {
         getSymbol(artboard, layer as SymbolInstance, layerData, data, byInfluence);

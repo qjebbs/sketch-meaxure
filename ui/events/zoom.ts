@@ -1,5 +1,5 @@
 import { state } from "../common";
-import { screen } from "../render/screen";
+import { updateScreen } from "../render/screen";
 import { layers } from "../render/layers";
 import { notes } from "../render/notes";
 import { zoom } from "../render/zoom";
@@ -24,7 +24,7 @@ export function zoomRender() {
     (document.querySelector('#rulers') as HTMLElement).style.display = 'none';
     hideDistance();
     zoom();
-    screen();
+    updateScreen();
     document.querySelectorAll('#layers, #notes').forEach(e => e.innerHTML = '');
     setTimeout(function () {
         layers();

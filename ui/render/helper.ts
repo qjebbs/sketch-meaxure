@@ -18,29 +18,6 @@ export function unitSize(length: number, isText?: boolean) {
     return length + unit;
 }
 
-export function locationHash(options) {
-    if (options) {
-        var objHash = {},
-            arrHash = [];
-        Object.keys(options).forEach(key => {
-            let value = options[key];
-            if (/[a-z]+/.test(key) && !isNaN(value)) {
-                objHash[key] = parseInt(value);
-                arrHash.push(key + value);
-            }
-        });
-        window.history.replaceState(undefined, undefined, '#' + arrHash.join('-'));
-        return objHash;
-    } else {
-        var objHash = {},
-            hash = window.location.hash.replace(/[\#\-]([a-z]+)([\d]+)/ig, function (match, key, value) {
-                objHash[key] = parseInt(value);
-                return '';
-            });
-        return objHash;
-    }
-}
-
 let msgTimeout;
 export function message(msg) {
     let message = document.querySelector('#message') as HTMLDivElement;

@@ -19,10 +19,10 @@ export const state: State = <State>{
     zoom: 1,
     unit: 'px',
     scale: 1,
-    artboardIndex: 0,
+    artboardIndex: undefined,
     colorFormat: 'color-hex',
     current: undefined,
-    codeType:'css',
+    codeType: 'css',
 }
 
 export var I18N = {};
@@ -40,7 +40,6 @@ export function init(data: ProjectData): void {
     state.scale = data.scale;
     state.colorFormat = data.colorFormat;
     state.unit = data.unit;
-    state.current = data.artboards[0];
     I18N = data.languages || {};
     project = data;
 }

@@ -1,5 +1,6 @@
 import { state } from "../common";
 import { SMRect } from "../../src/meaxure/interfaces";
+import { hideDistance } from "./distance";
 
 export function getEventTarget(eventNode: Element, event: Event, selector: string): HTMLElement {
     let current = event.target as HTMLElement;
@@ -31,6 +32,10 @@ export function removeSelected() {
     if (state.selectedIndex === undefined) return false;
     document.querySelector('#layer-' + state.selectedIndex).classList.remove('selected');
     (document.querySelector('#rulers') as HTMLElement).style.display = 'none';
+    document.querySelector('#inspector').classList.remove('active');
+    state.selectedIndex = undefined;
+    state.tempTargetRect = undefined;
+    hideDistance();
 }
 
 export function scaleSize(length: number) {
@@ -56,7 +61,7 @@ export function getIntersection(a: SMRect, b: SMRect): SMRect {
     }
 }
 
-export function clickElement(element: HTMLDivElement) {
+export function clickElement(element: HTMLElement) {
     let e = document.createEvent("MouseEvents");
     e.initEvent("click", true, true);
     element.dispatchEvent(e);

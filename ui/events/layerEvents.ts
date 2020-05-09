@@ -25,10 +25,6 @@ export function layerEvents() {
             return;
         }
         removeSelected();
-        hideDistance();
-        document.querySelector('#inspector').classList.remove('active');
-        state.selectedIndex = undefined;
-        state.tempTargetRect = undefined;
     });
     document.body.addEventListener('mousemove', function (event) {
         if (panMode) return;

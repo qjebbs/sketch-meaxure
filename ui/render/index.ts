@@ -1,13 +1,14 @@
 import { localize, ProjectData, init } from "../common";
 import { artboards } from "./artboards";
 import { slices } from "./slices";
-import { screen } from "./screen";
+import { updateScreen } from "./screen";
 import { layers } from "./layers";
 import { notes } from "./notes";
 import { colors } from "./colors";
 import { unit } from "./unit";
 import { zoom } from "./zoom";
 import { events } from "../events";
+import { navigateByURLHash } from "../events/navigate";
 
 export function render(data: ProjectData) {
     init(data);
@@ -22,6 +23,13 @@ export function render(data: ProjectData) {
         '</div>',
         '<div class="header-center">',
         '<div id="zoom" class="zoom-widget"></div>',
+        '<div class="flow-mode">',
+        '<label for="flow-mode">' + localize('FLOW') + '</label>',
+        '<div class="slidebox">',
+        '<input id="flow-mode" type="checkbox" name="flow-mode">',
+        '<label for="flow-mode"></label>',
+        '</div>',
+        '</div>',
         '<h1></h1>',
         '<div class="show-notes">',
         '<label for="show-notes">' + localize('NOTES') + '</label>',
@@ -65,9 +73,10 @@ export function render(data: ProjectData) {
     zoom();
     unit();
     artboards();
+    navigateByURLHash();
     slices();
     colors();
-    screen();
+    updateScreen();
     layers();
     notes();
     events();

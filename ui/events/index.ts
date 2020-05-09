@@ -10,6 +10,8 @@ import { sliceEvents } from "./slices";
 import { panModeEvents } from "./panMode";
 import { percentageModeEvents } from "./percentageMode";
 import { keyboardZoomEvents } from "./keyboardZoom";
+import { flowEvents } from "./flow";
+import { hashChangeEvents } from "./hashChange";
 
 export function events() {
     layerEvents();
@@ -24,5 +26,7 @@ export function events() {
     percentageModeEvents();
     keyboardZoomEvents();
     dragExportableEvents();
+    flowEvents();
+    hashChangeEvents();
 }
 

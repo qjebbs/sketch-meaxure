@@ -68,6 +68,11 @@ export enum SMType {
     slice = "slice",
     shape = "shape",
 };
+
+export interface SMFlow {
+    targetId: string | 'back';
+    animationType: AnimationType;
+}
 export interface LayerData {
     // shared
     objectID: string,
@@ -94,6 +99,8 @@ export interface LayerData {
     exportable: SMExportable[],
     // css
     css: string[],
+    // flow
+    flow?: SMFlow,
 }
 export interface SMNote { rect: SMRect, note: string }
 export interface ArtboardData {
