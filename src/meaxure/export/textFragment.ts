@@ -162,7 +162,7 @@ function splitFragment(fragment: TextFragment, length: number): [TextFragment, T
 }
 
 function getFragmentLinesFromSVG(svg: string) {
-    const REG_TSPAN = /<tspan x="(\d+(?:\.\d+)?)" y="(\d+(?:\.\d+)?)" .+?>(.+?)<\/tspan>/g
+    const REG_TSPAN = /<tspan x="(\d+(?:\.\d+)?)" y="(\d+(?:\.\d+)?)".*?>(.+?)<\/tspan>/g
     let curY = undefined;
     let lines: { elements: string[] }[] = [];
     let lineElements: string[] = [];
