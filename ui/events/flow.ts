@@ -49,8 +49,8 @@ function flowModeSwitchEvents() {
     ]
     document.querySelector('#flow-mode').addEventListener('change', function () {
         flowMode = (this as HTMLInputElement).checked;
-        const hideOnFLowDisplay = flowMode ? 'none' : 'inherit';
-        const showOnFLowDisplay = flowMode ? 'inherit' : 'none';
+        const hideOnFLowDisplay = flowMode ? 'none' : '';
+        const showOnFLowDisplay = flowMode ? '' : 'none';
         hideOnFLow.forEach(s => {
             (document.querySelector(s) as HTMLElement).style.display = hideOnFLowDisplay;
         })

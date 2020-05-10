@@ -21,6 +21,5 @@ export function artboardsEvents() {
         });
         (document.querySelector('.pages-select') as HTMLElement).blur();
         event.stopPropagation();
-    }
-    );
+    });
 }

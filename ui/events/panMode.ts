@@ -7,7 +7,7 @@ export function panModeEvents() {
     let moveData;
     window.addEventListener('keydown', event => {
         if (event.which !== 32) return;
-        document.getElementById('cursor').style.display = 'inherit';
+        document.getElementById('cursor').style.display = '';
         document.querySelector('.screen-viewer').classList.add('moving-screen');
         mouseoutLayer();
         hideDistance();
