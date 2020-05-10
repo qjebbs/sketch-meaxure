@@ -80,5 +80,4 @@ export function render(data: ProjectData) {
     layers();
     notes();
     events();
-    // decidePreivew();
 }

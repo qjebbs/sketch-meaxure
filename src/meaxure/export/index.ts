@@ -170,11 +170,16 @@ function getLayerTask(artboard: Artboard, layer: Layer, data: ArtboardData, byIn
 function exportArtboardAdvanced(artboard: Artboard, data: ArtboardData, savePath: string, index: number) {
     // data.artboards[artboardIndex].imagePath = "preview/" + objectID + ".png";
     data.imagePath = "preview/" + encodeURI(data.slug) + ".png";
-
+    data.imageIconPath = "preview/icons/" + encodeURI(data.slug) + ".png";
     exportImage(artboard, {
         format: 'png',
         scale: 2,
     }, savePath + "/preview", data.slug);
+
+    exportImage(artboard, {
+        format: 'png',
+        scale: 128 / Math.max(data.width, data.height),
+    }, savePath + "/preview/icons", data.slug);
 
     writeFile({
         content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#" + index + "\">",

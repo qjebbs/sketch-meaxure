@@ -113,10 +113,10 @@ export interface ArtboardData {
     width: number,
     height: number,
     imagePath?: string,
+    imageIconPath?: string,
     imageBase64?: string,
     notes: SMNote[],
     layers: LayerData[],
-    fileName?: string,
 }
 
 export interface SMColorAsset {
