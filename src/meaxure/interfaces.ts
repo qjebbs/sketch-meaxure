@@ -117,6 +117,7 @@ export interface ArtboardData {
     imageBase64?: string,
     notes: SMNote[],
     layers: LayerData[],
+    flowStartPoint: boolean,
 }
 
 export interface SMColorAsset {

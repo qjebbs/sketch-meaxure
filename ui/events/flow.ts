@@ -4,7 +4,7 @@ import { updateScreen } from "../render/screen";
 import { state } from "../common";
 import { hideNavBar } from "./tab";
 
-export var flowMode = false;
+export var flowMode = undefined;
 
 export function flowEvents() {
     flowModeSwitchEvents();
@@ -54,25 +54,29 @@ export function setFlowMode(enabled: boolean) {
         '.header-left [data-id="slices"]',
         '.header-left [data-id="colors"]',
         '.header-right',
+        '#artboards .flow-starts',
     ];
     let showOnFlow = [
         '#flows',
+        '#artboards .flow-starts',
     ]
     const hideOnFLowDisplay = flowMode ? 'none' : '';
     const showOnFLowDisplay = flowMode ? '' : 'none';
     hideOnFLow.forEach(s => {
-        (document.querySelector(s) as HTMLElement).style.display = hideOnFLowDisplay;
+        let el = document.querySelector(s) as HTMLElement;
+        if (el) el.style.display = hideOnFLowDisplay;
     })
     showOnFlow.forEach(s => {
-        (document.querySelector(s) as HTMLElement).style.display = showOnFLowDisplay;
+        let el = document.querySelector(s) as HTMLElement;
+        if (el) el.style.display = showOnFLowDisplay;
     })
-    state.maxSize = undefined;
-    removeSelected();
-    hideNavBar();
-    updateScreen();
     if (flowMode) {
         screen.classList.add('flow');
+        removeSelected();
+        hideNavBar();
     } else {
         screen.classList.remove('flow');
     }
+    state.maxSize = undefined;
+    updateScreen();
 }

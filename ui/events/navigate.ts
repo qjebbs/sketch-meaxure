@@ -30,15 +30,16 @@ export function gotoArtboard(para: number | string, updateHash: boolean = true):
     updateScreen();
     layers();
     notes();
-    document.querySelector('.active')?.classList.remove('active');
+    document.querySelectorAll('.active').forEach(e => e.classList.remove('active'));
     document.querySelector('#artboard-' + index)?.classList.add('active');
+    document.querySelector('#startpoint-' + index)?.classList.add('active');
     if (updateHash) updateURLHash();
 }
 
 export function navigateByURLHash(updateHash: boolean = true) {
     let setting = parseURLHash();
     gotoArtboard(setting.artboardIndex, false);
-    if (flowMode != setting.flowMode) {
+    if (flowMode !== setting.flowMode) {
         setFlowMode(setting.flowMode)
     }
     if (updateHash) updateURLHash();

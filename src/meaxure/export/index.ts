@@ -97,6 +97,7 @@ export async function exportSpecification() {
         data.artboards[i].objectID = artboard.id;
         data.artboards[i].width = artboard.frame.width;
         data.artboards[i].height = artboard.frame.height;
+        data.artboards[i].flowStartPoint = artboard.flowStartPoint;
         // stopwatch.tik('collect artboards info');
         for (let layer of select.children) {
             layerIndex++;

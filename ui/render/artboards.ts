@@ -4,6 +4,7 @@ import { state } from "../common";
 export function artboards() {
     let artboardListHTML = [];
     let pagesSelect = [];
+    let flowStarts = [];
     let pagesData: {
         [key: string]: {
             name: string,
@@ -23,15 +24,21 @@ export function artboards() {
         pagesData[artboard.pageObjectID].count++;
         let classNames = (state.artboardIndex == index) ? ' active' : '';
         let imageData = (artboard.imageBase64) ? artboard.imageBase64 : artboard.imageIconPath + '?' + timestamp;
+        let artboardLiBody = `<picture class="preview-img" data-name="${artboard.name}">` +
+            `<img alt="${artboard.name}" src="${imageData}">` +
+            `</picture>` +
+            `<div>` +
+            `<h3>${artboard.name}</h3>` +
+            `<small>${artboard.pageName}</small>` +
+            `</div>`;
         artboardListHTML.push(
-            `<li id="artboard-${index}" class="artboard${classNames}" data-page-id="${artboard.pageObjectID}" data-id="${artboard.objectID}" data-index="${index}" >`,
-            `<picture class="preview-img" data-name="${artboard.name}">`,
-            `<img alt="${artboard.name}" src="${imageData}">`,
-            `</picture>`,
-            `<div>`,
-            `<h3>${artboard.name}</h3>`,
-            `<small>${artboard.pageName}</small>`,
-            `</div>`,
+            `<li id="artboard-${index}" class="artboard${classNames}" data-page-id="${artboard.pageObjectID}" data-id="${artboard.objectID}" data-index="${index}" >` +
+            artboardLiBody +
+            `</li>`
+        );
+        if (artboard.flowStartPoint) flowStarts.push(
+            `<li id="startpoint-${index}" class="artboard${classNames}" data-page-id="${artboard.pageObjectID}" data-id="${artboard.objectID}" data-index="${index}" >` +
+            artboardLiBody +
             `</li>`
         );
     })
@@ -51,5 +58,19 @@ export function artboards() {
     pagesSelect.push('</ul>');
     pagesSelect.push('</div>');
 
-    document.querySelector('#artboards').innerHTML = [pagesSelect.join(''), artboardListHTML.join('')].join('');
+    if (flowStarts.length) {
+        flowStarts.unshift(
+            '<div class="flow-starts">',
+            '<div class="title">',
+            `<h3>${localize('Start points')} <em>(${flowStarts.length})</em></h3>`,
+            '</div>',
+            '<ul class="artboard-list">',
+        )
+        flowStarts.push(
+            '</ul>',
+            '</div>',
+        );
+    }
+
+    document.querySelector('#artboards').innerHTML = [flowStarts.join(''), pagesSelect.join(''), artboardListHTML.join('')].join('');
 }

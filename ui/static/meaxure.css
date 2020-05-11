@@ -1040,22 +1040,28 @@ main {
     vertical-align: middle;
 }
 
-.pages-select {
+.pages-select,
+.flow-starts .title {
     padding: 24px;
     position: relative;
 }
 
-.pages-select h3 {
+.pages-select h3,
+.flow-starts .title h3 {
     margin: 0;
     text-align: center;
     font-size: 12px;
     font-weight: 400;
     color: #FFF;
+}
+
+.pages-select h3 {
     cursor: pointer;
 }
 
 .page-list em,
-.pages-select h3 em {
+.pages-select h3 em,
+.flow-starts .title h3 em {
     font-style: normal;
     font-size: 10px;
     color: #989A9C;
