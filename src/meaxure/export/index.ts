@@ -146,6 +146,11 @@ export async function exportSpecification() {
             path: savePath,
             fileName: "index.html"
         });
+        writeFile({
+            content: '<meta http-equiv="refresh" content="0;url=index.html#p">',
+            path: savePath,
+            fileName: "proto.html"
+        });
         selectingPath = savePath + "/index.html";
     }
     // stopwatch.tik('generate index.html');

@@ -3,6 +3,11 @@ import { zoomSize, percentageSize, unitSize } from "./helper";
 
 export var MapArtboardIDToIndex: { [key: string]: number } = undefined;
 export function layers() {
+    specLayers();
+    flowLayers();
+}
+
+function specLayers() {
     let layersHTML = [];
     state.current.layers.forEach((layer, index) => {
         let x = zoomSize(layer.rect.x);
@@ -26,10 +31,9 @@ export function layers() {
 </div>`].join(''));
     });
     document.querySelector('#layers').innerHTML = layersHTML.join('');
-    flows();
 }
 
-function flows() {
+function flowLayers() {
     MapArtboardIDToIndex = project.artboards.reduce((p, c, i) => {
         p[c.objectID] = i;
         return p;

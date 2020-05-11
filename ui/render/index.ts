@@ -1,9 +1,6 @@
 import { localize, ProjectData, init } from "../common";
 import { artboards } from "./artboards";
 import { slices } from "./slices";
-import { updateScreen } from "./screen";
-import { layers } from "./layers";
-import { notes } from "./notes";
 import { colors } from "./colors";
 import { unit } from "./unit";
 import { zoom } from "./zoom";
@@ -73,11 +70,8 @@ export function render(data: ProjectData) {
     zoom();
     unit();
     artboards();
-    navigateByURLHash();
     slices();
     colors();
-    updateScreen();
-    layers();
-    notes();
     events();
+    navigateByURLHash(false);
 }

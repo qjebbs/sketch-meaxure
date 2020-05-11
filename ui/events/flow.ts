@@ -1,4 +1,4 @@
-import { gotoArtboard } from "./navigate";
+import { gotoArtboard, updateURLHash } from "./navigate";
 import { getEventTarget, removeSelected } from "./helper";
 import { updateScreen } from "../render/screen";
 import { state } from "../common";
@@ -36,6 +36,17 @@ function flowClickEvents() {
 }
 
 function flowModeSwitchEvents() {
+    document.querySelector('#flow-mode').addEventListener('change', function () {
+        setFlowMode((this as HTMLInputElement).checked);
+        updateURLHash();
+    })
+}
+
+export function setFlowMode(enabled: boolean) {
+    flowMode = enabled;
+    let inputFlowMode = document.querySelector('#flow-mode') as HTMLInputElement;
+    // set checked won't trigge change event
+    inputFlowMode.checked = enabled;
     let screen = document.querySelector('#screen') as HTMLDivElement;
     let hideOnFLow = [
         '#layers',
@@ -47,24 +58,21 @@ function flowModeSwitchEvents() {
     let showOnFlow = [
         '#flows',
     ]
-    document.querySelector('#flow-mode').addEventListener('change', function () {
-        flowMode = (this as HTMLInputElement).checked;
-        const hideOnFLowDisplay = flowMode ? 'none' : '';
-        const showOnFLowDisplay = flowMode ? '' : 'none';
-        hideOnFLow.forEach(s => {
-            (document.querySelector(s) as HTMLElement).style.display = hideOnFLowDisplay;
-        })
-        showOnFlow.forEach(s => {
-            (document.querySelector(s) as HTMLElement).style.display = showOnFLowDisplay;
-        })
-        state.maxSize = undefined;
-        removeSelected();
-        hideNavBar();
-        updateScreen();
-        if (flowMode) {
-            screen.classList.add('flow');
-        } else {
-            screen.classList.remove('flow');
-        }
+    const hideOnFLowDisplay = flowMode ? 'none' : '';
+    const showOnFLowDisplay = flowMode ? '' : 'none';
+    hideOnFLow.forEach(s => {
+        (document.querySelector(s) as HTMLElement).style.display = hideOnFLowDisplay;
     })
+    showOnFlow.forEach(s => {
+        (document.querySelector(s) as HTMLElement).style.display = showOnFLowDisplay;
+    })
+    state.maxSize = undefined;
+    removeSelected();
+    hideNavBar();
+    updateScreen();
+    if (flowMode) {
+        screen.classList.add('flow');
+    } else {
+        screen.classList.remove('flow');
+    }
 }
