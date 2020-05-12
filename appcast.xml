@@ -35,11 +35,9 @@
     <item>
       <title>Changelog</title>
       <description>
-        Smarter size label layerout: don't goto outside of artboard, don't cover the ruler
-        Color alpha of text fragment support
-        Now you can mark coordinate outside artboards
-        Mark property of multiple fills support
-        Fix spacing marker name
+        Fix export symbol instance of none, #4
+        Fix parse text fragments error in some cases
+        Fix parseColor returns wrong css-rgba
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
