@@ -77,33 +77,54 @@ function convertShadow(shadow: Shadow, type: shadowType): SMShadow {
 
 export function parseColor(rgbaHex: string): SMColor {
     if (!rgbaHex) return <SMColor>{};
-    let red = parseInt(rgbaHex.substr(1, 2), 16);
-    let green = parseInt(rgbaHex.substr(3, 2), 16);
-    let blue = parseInt(rgbaHex.substr(5, 2), 16);
+    let r = parseInt(rgbaHex.substr(1, 2), 16);
+    let g = parseInt(rgbaHex.substr(3, 2), 16);
+    let b = parseInt(rgbaHex.substr(5, 2), 16);
     let alpha = parseInt(rgbaHex.substr(7, 2), 16);
 
     let alpha100 = Math.round(alpha / 255 * 100);
     let colorUpperCase = rgbaHex.toUpperCase();
+    let hsl = calcHSLColor(r / 255, g / 255, b / 255);
     return {
-        r: red,
-        g: green,
-        b: blue,
-        a: alpha,
+        rgb: {
+            r: r,
+            g: g,
+            b: b,
+        },
+        hsl: hsl,
+        alpha: alpha100,
         "color-hex": colorUpperCase.substr(0, 7) + " " + alpha100 + "%",
         "argb-hex": "#" + alpha.toString(16).toUpperCase() + colorUpperCase.substr(1, 6).replace("#", ""),
         "rgba-hex": rgbaHex.toLocaleUpperCase(),
-        "css-rgba": "rgba(" + [
-            red,
-            green,
-            blue,
-            alpha100 / 100
-        ].join(",") + ")",
+        "css-rgba": `rgba(${r},${g},${b},${alpha100 / 100})`,
+        "css-hsla": `hsla(${hsl.h},${hsl.s}%,${hsl.l}%,${alpha100 / 100})`,
         "ui-color": "(" + [
-            "r:" + red.toFixed(2),
-            "g:" + green.toFixed(2),
-            "b:" + blue.toFixed(2),
+            "r:" + r.toFixed(2),
+            "g:" + g.toFixed(2),
+            "b:" + b.toFixed(2),
             "a:" + (alpha100 / 100).toFixed(2)
         ].join(" ") + ")"
+    };
+}
+
+function calcHSLColor(r: number, g: number, b: number): { h: number, s: number, l: number } {
+    // https://juejin.im/entry/5cc4670f5188252dcf5d5063
+    const rgbToLightness = (r, g, b) => 1 / 2 * (Math.max(r, g, b) + Math.min(r, g, b));
+    const rgbToSaturation = (r, g, b) => {
+        const L = rgbToLightness(r, g, b);
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        return (L === 0 || L === 1) ? 0 : (max - min) / (1 - Math.abs(2 * L - 1));
+    };
+    const rgbToHue = (r, g, b) => Math.round(Math.atan2(Math.sqrt(3) * (g - b), 2 * r - g - b) * 180 / Math.PI);
+    const lightness = Math.round(rgbToLightness(r, g, b) * 100);
+    const saturation = Math.round(rgbToSaturation(r, g, b) * 100);
+    let hue = Math.round(rgbToHue(r, g, b));
+    if (hue < 0) hue += 360;
+    return {
+        h: hue,
+        s: saturation,
+        l: lightness,
     };
 }
 
