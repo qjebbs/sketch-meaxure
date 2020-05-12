@@ -19,8 +19,11 @@ export function getCollectedSlices(): any[] {
 }
 export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer) {
     let objectID = layerData.objectID;
+    let layerMaster = (layer as SymbolInstance).master;
     if (layerData.type == SMType.symbol) {
-        objectID = (layer as SymbolInstance).master.id;
+        // symbol instance of none, #4
+        if (!layerMaster) return;
+        objectID = layerMaster.id;
     } else if (symbolLayer) {
         objectID = symbolLayer.id;
     }
@@ -29,11 +32,11 @@ export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer)
     if (
         (
             layerData.type == SMType.slice ||
-            (layerData.type == SMType.symbol && (layer as SymbolInstance).master.exportFormats.length)
+            (layerData.type == SMType.symbol && layerMaster.exportFormats.length)
         ) && !sliceCache[objectID]
     ) {
         let sliceLayer: Layer = layer;
-        if (layerData.type == SMType.symbol) sliceLayer = (layer as SymbolInstance).master;
+        if (layerData.type == SMType.symbol) sliceLayer = layerMaster;
 
         NSFileManager
             .defaultManager()

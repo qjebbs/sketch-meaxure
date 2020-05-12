@@ -8,6 +8,8 @@ import { getLayerData } from "./layerData";
 
 export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: LayerData, data: ArtboardData, byInfluence: boolean) {
     if (layerData.type != SMType.symbol) return;
+    // symbol instance of none, #4
+    if (!layer.master) return;
     let master = layer.master
     let masterID = master.id;
 
