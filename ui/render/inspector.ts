@@ -200,7 +200,7 @@ export function inspector() {
                 scaleSize(layerData.rect.width) + "\, " + scaleSize(layerData.rect.height) + ");\r\n" +
                 "label.text = \@\"" + layerData.content + "\";\r\n" +
                 "label.font = [UIFont fontWithName:\@\"" + layerData.fontFace + "\" size:" + scaleSize(layerData.fontSize) + "];\r\n" +
-                "label.textColor = [UIColor colorWithRed:" + layerData.color.r + "/255.0 green:" + layerData.color.g + "/255.0 blue:" + layerData.color.b + "/255.0 alpha:" + layerData.color.a + "/1.0];\r\n" +
+                "label.textColor = [UIColor colorWithRed:" + layerData.color.rgb.r + "/255.0 green:" + layerData.color.rgb.g + "/255.0 blue:" + layerData.color.rgb.b + "/255.0 alpha:" + layerData.color.alpha + "/1.0];\r\n" +
                 '</textarea></label>',
                 '</div>'
             );

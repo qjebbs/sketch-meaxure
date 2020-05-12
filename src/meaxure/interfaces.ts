@@ -17,15 +17,15 @@ export interface SMRect {
     height: number;
 }
 export interface SMColor {
-    r: number;
-    g: number;
-    b: number;
-    a: number;
-    "color-hex": string;
-    "argb-hex": string;
-    "rgba-hex": string;
-    "css-rgba": string;
-    "ui-color": string;
+    rgb: { r: number, g: number, b: number, },
+    hsl: { h: number, s: number, l: number, },
+    alpha: number,
+    "color-hex": string,
+    "argb-hex": string,
+    "rgba-hex": string,
+    "css-rgba": string,
+    "css-hsla": string,
+    "ui-color": string,
 }
 export interface BorderData {
     fillType: FillType,

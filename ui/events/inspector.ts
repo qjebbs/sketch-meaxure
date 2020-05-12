@@ -3,7 +3,7 @@ import { colors } from "../render/colors";
 import { eventDelegate } from "./delegate";
 
 export function inspectorEvents() {
-    let formats = ['color-hex', 'argb-hex', 'css-rgba', 'ui-color'];
+    let formats = ['color-hex', 'argb-hex', 'css-rgba', 'css-hsla', 'ui-color'];
     let inspector = document.querySelector('#inspector') as HTMLElement;
     eventDelegate(inspector, 'click', '.color label', function (event) {
         let current = formats.indexOf(state.colorFormat)

@@ -60,7 +60,7 @@ export function applyTintToSMColor(color: SMColor, tintColor: string): SMColor {
     if (!color) return color;
     // logger.debug(`current: ${color}, tint: ${tintColor}`);
     let tintAlpha = parseInt(tintColor.substr(7, 2), 16);
-    let alpha = Math.round(color.a * tintAlpha / 255);
+    let alpha = Math.round(color.alpha * tintAlpha / 255);
     // logger.debug(`new alpha: ${alpha.toString(16)}, ${alpha / 255 * 100}%`);
     let appliedColor = `${tintColor.substr(0, 7)}${alpha.toString(16)}`;
     color = parseColor(appliedColor);
