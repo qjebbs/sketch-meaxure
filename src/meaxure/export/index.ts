@@ -201,7 +201,7 @@ function exportArtboard(artboard: Artboard, exportData: ExportData, index: numbe
     };
 
     writeFile({
-        content: buildTemplate(template, data),
+        content: buildTemplate(template, newData),
         path: savePath,
         fileName: data.slug + ".html"
     });
