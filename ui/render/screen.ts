@@ -14,7 +14,7 @@ export function updateScreen(resetScroll: boolean = false) {
     screen.style.background = '#FFF url(' + imageData + ') no-repeat';
     screen.style.backgroundSize = zoomSize(state.current.width) + 'px ' + zoomSize(state.current.height) + 'px';
     // viewer size
-    let maxSize = Math.max(state.current.width, state.current.height, viewer.clientWidth, viewer.clientHeight) * 2;
+    let maxSize = Math.max(state.current.width, state.current.height, viewer.clientWidth, viewer.clientHeight) * 5;
     if (flowMode) {
         viewerInner.style.width = zoomSize(state.current.width) + 'px';
         viewerInner.style.height = zoomSize(state.current.height) + 'px';

@@ -65,7 +65,7 @@ export function render(data: ProjectData) {
         '<aside id="inspector" class="inspector"></aside>',
         '</main>',
         '<div id="message" class="message"></div>',
-        '<div id="cursor" class="cursor"></div>'
+        '<div id="cursor" class="cursor" style="display: none;"></div>'
     ].join('');
     zoom();
     unit();
