@@ -29,7 +29,13 @@ export function zoomRender() {
     let currentRect = screen.getBoundingClientRect();
     zoom();
     updateScreen();
-    alignElement(viewer, screen, currentRect, Edge.hcenter & Edge.vtop, Edge.hcenter & Edge.vtop);
+    alignElement({
+        scroller: viewer,
+        target: screen,
+        toRect: currentRect,
+        fromEdge: Edge.hleft | Edge.vtop,
+        toEdge: Edge.hleft | Edge.vtop,
+    })
     document.querySelectorAll('#layers, #notes').forEach(e => e.innerHTML = '');
     setTimeout(function () {
         layers();

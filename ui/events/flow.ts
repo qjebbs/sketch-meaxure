@@ -80,5 +80,11 @@ export function setFlowMode(enabled: boolean) {
         screen.classList.remove('flow');
     }
     updateScreen();
-    alignElement(viewer, screen, currentRect, Edge.hcenter & Edge.vtop, Edge.hcenter & Edge.vtop);
+    alignElement({
+        scroller: viewer,
+        target: screen,
+        toRect: currentRect,
+        fromEdge: Edge.hcenter | Edge.vtop,
+        toEdge: Edge.hcenter | Edge.vtop
+    });
 }
