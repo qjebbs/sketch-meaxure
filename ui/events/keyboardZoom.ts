@@ -20,8 +20,7 @@ export function keyboardZoomEvents() {
                 event.preventDefault();
                 return false;
             case 48:
-                state.zoom = 1;
-                zoomRender();
+                zoomRender(1);
                 event.preventDefault();
                 return false;
             default:
