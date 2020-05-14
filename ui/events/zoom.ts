@@ -5,6 +5,7 @@ import { notes } from "../render/notes";
 import { zoom } from "../render/zoom";
 import { hideDistance } from "./distance";
 import { eventDelegate } from "./delegate";
+import { alignElement, Edge } from "./alignElement";
 
 export function zoomEvents() {
     let zoomer = document.querySelector('#zoom') as HTMLElement;
@@ -23,8 +24,12 @@ export function zoomRender() {
     state.targetIndex = undefined;
     (document.querySelector('#rulers') as HTMLElement).style.display = 'none';
     hideDistance();
+    let viewer = document.querySelector('.screen-viewer') as HTMLDivElement;
+    let screen = document.querySelector('#screen') as HTMLDivElement;
+    let currentRect = screen.getBoundingClientRect();
     zoom();
     updateScreen();
+    alignElement(viewer, screen, currentRect, Edge.hcenter & Edge.vtop, Edge.hcenter & Edge.vtop);
     document.querySelectorAll('#layers, #notes').forEach(e => e.innerHTML = '');
     setTimeout(function () {
         layers();

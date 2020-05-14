@@ -1,5 +1,4 @@
 import { project, state, localize } from "../common";
-import { hideDistance } from "./distance";
 import { layers, MapArtboardIDToIndex } from "../render/layers";
 import { notes } from "../render/notes";
 import { message } from "../render/helper";
@@ -23,11 +22,10 @@ export function gotoArtboard(para: number | string, updateHash: boolean = true):
     let flows = document.querySelector('#flows') as HTMLDivElement;
     flows.classList.remove('show-flows');
     removeSelected();
-    state.maxSize = undefined;
     state.artboardIndex = index;
     state.selectedIndex = undefined;
     state.current = project.artboards[state.artboardIndex];
-    updateScreen();
+    updateScreen(true);
     layers();
     notes();
     document.querySelectorAll('.active').forEach(e => e.classList.remove('active'));

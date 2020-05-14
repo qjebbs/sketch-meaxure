@@ -3,43 +3,34 @@ import { timestamp } from "../common";
 import { zoomSize } from "./helper";
 import { flowMode } from "../events/flow";
 
-export function updateScreen() {
+export function updateScreen(resetScroll: boolean = false) {
     let imageData = (state.current.imageBase64) ? state.current.imageBase64 : state.current.imagePath + '?' + timestamp;
     let screen = document.querySelector('#screen') as HTMLElement;
     let viewerInner = screen.parentElement;
+    let viewer = document.querySelector('.screen-viewer');
+
     screen.style.width = zoomSize(state.current.width) + 'px';
     screen.style.height = zoomSize(state.current.height) + 'px';
     screen.style.background = '#FFF url(' + imageData + ') no-repeat';
     screen.style.backgroundSize = zoomSize(state.current.width) + 'px ' + zoomSize(state.current.height) + 'px';
+    // viewer size
+    let maxSize = Math.max(state.current.width, state.current.height, viewer.clientWidth, viewer.clientHeight) * 2;
     if (flowMode) {
         viewerInner.style.width = zoomSize(state.current.width) + 'px';
         viewerInner.style.height = zoomSize(state.current.height) + 'px';
-        screen.style.marginLeft = -zoomSize(state.current.width / 2) + 'px';
-        screen.style.marginTop = -zoomSize(state.current.height / 2) + 'px';
         screen.style.marginLeft = '0';
         screen.style.marginTop = '0';
         document.querySelector('.screen-viewer').scrollTop = 0;
         return;
+    } else {
+        viewerInner.style.width = maxSize + 'px';
+        viewerInner.style.height = maxSize + 'px';
+        screen.style.marginLeft = -zoomSize(state.current.width / 2) + 'px';
+        screen.style.marginTop = -zoomSize(state.current.height / 2) + 'px';
     }
-    if (!state.maxSize) {
-        // reset screen
-        let screenSize = (state.current.width > state.current.height) ?
-            state.current.width :
-            state.current.height;
-        let viewer = document.querySelector('.screen-viewer');
-        let artboardSize = (viewer.clientWidth > viewer.clientHeight) ?
-            viewer.clientWidth :
-            viewer.clientHeight;
-        state.maxSize = (screenSize > artboardSize) ? screenSize * 5 : artboardSize * 5;
-        viewerInner.style.width = state.maxSize + 'px';
-        viewerInner.style.height = state.maxSize + 'px';
-        let scrollMaxX = state.maxSize - viewer.clientWidth;
-        let scrollMaxY = state.maxSize - viewer.clientHeight;
-        let scrollLeft = .5 * scrollMaxX;
-        let scrollTop = .5 * scrollMaxY;
-        viewer.scrollLeft = scrollLeft;
-        viewer.scrollTop = scrollTop;
+    // set scroll
+    if (resetScroll) {
+        viewer.scrollLeft = flowMode ? 0 : (maxSize - viewer.clientWidth) / 2;
+        viewer.scrollTop = flowMode ? 0 : (maxSize - screen.clientHeight) / 2;
     }
-    screen.style.marginLeft = -zoomSize(state.current.width / 2) + 'px';
-    screen.style.marginTop = -zoomSize(state.current.height / 2) + 'px';
 }

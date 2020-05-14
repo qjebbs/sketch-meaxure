@@ -8,7 +8,6 @@ interface State {
     artboardIndex: number,
     colorFormat: string,
     current: ArtboardData,
-    maxSize: number,
     selectedIndex: number,
     codeType: string,
     targetIndex: number,

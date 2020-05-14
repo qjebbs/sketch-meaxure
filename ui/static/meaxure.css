@@ -412,19 +412,11 @@ main {
     overflow: auto;
 }
 
-.screen-viewer,
-.screen-viewer .overlay {
-    position: absolute;
-    width: 100vw;
-    height: calc(100vh - 60px);
-    background: #191919 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAABlBMVEUAAAAAAAClZ7nPAAAAAnRSTlMAUvP2/eAAAAARSURBVAjXY6ASYD6ATlAHAADy5gMN0fCqFwAAAABJRU5ErkJggg==);
-    background-size: 16px 16px;
-    overflow: auto;
-}
-
 .screen-viewer .overlay {
     display: none;
     position: fixed;
+    width: 100vw;
+    height: calc(100vh - 60px);
     top: 60px;
     left: 0;
     background: transparent;

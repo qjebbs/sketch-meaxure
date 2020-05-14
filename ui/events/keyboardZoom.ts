@@ -20,7 +20,6 @@ export function keyboardZoomEvents() {
                 event.preventDefault();
                 return false;
             case 48:
-                state.maxSize = undefined;
                 state.zoom = 1;
                 zoomRender();
                 event.preventDefault();

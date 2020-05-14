@@ -1,8 +1,8 @@
 import { gotoArtboard, updateURLHash } from "./navigate";
 import { getEventTarget, removeSelected } from "./helper";
 import { updateScreen } from "../render/screen";
-import { state } from "../common";
 import { hideNavBar } from "./tab";
+import { alignElement, Edge } from "./alignElement";
 
 export var flowMode = undefined;
 
@@ -44,10 +44,12 @@ function flowModeSwitchEvents() {
 
 export function setFlowMode(enabled: boolean) {
     flowMode = enabled;
+    let viewer = document.querySelector('.screen-viewer') as HTMLDivElement;
+    let screen = document.querySelector('#screen') as HTMLDivElement;
+    let currentRect = screen.getBoundingClientRect();
     let inputFlowMode = document.querySelector('#flow-mode') as HTMLInputElement;
     // set checked won't trigge change event
     inputFlowMode.checked = enabled;
-    let screen = document.querySelector('#screen') as HTMLDivElement;
     let hideOnFLow = [
         '#layers',
         '#unit',
@@ -77,6 +79,6 @@ export function setFlowMode(enabled: boolean) {
     } else {
         screen.classList.remove('flow');
     }
-    state.maxSize = undefined;
     updateScreen();
+    alignElement(viewer, screen, currentRect, Edge.hcenter & Edge.vtop, Edge.hcenter & Edge.vtop);
 }
