@@ -48,6 +48,20 @@ export function updateURLHash() {
     if (window.location.hash != hash) window.location.hash = hash;
 }
 
+export function historyBackUntilAnotherArtboard() {
+    let currentIndex = parseURLHash().artboardIndex;
+    (function backAndTest() {
+        let lastLocation = window.location.href;
+        history.back();
+        setTimeout(() => {
+            // no backward history
+            if (lastLocation == window.location.href) return;
+            let index = parseURLHash().artboardIndex;
+            if (index == currentIndex) backAndTest();
+        }, 0)
+    })();
+}
+
 function getURLHash(): string {
     return `#${flowMode ? 'p' : 's'}${state.artboardIndex}`;
 }

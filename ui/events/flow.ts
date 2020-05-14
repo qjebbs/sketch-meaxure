@@ -1,4 +1,4 @@
-import { gotoArtboard, updateURLHash } from "./navigate";
+import { gotoArtboard, updateURLHash, historyBackUntilAnotherArtboard } from "./navigate";
 import { getEventTarget, removeSelected } from "./helper";
 import { updateScreen } from "../render/screen";
 import { hideNavBar } from "./tab";
@@ -27,7 +27,7 @@ function flowClickEvents() {
         }
         let id = target.dataset.flowTarget;
         if (id == 'back') {
-            history.back();
+            historyBackUntilAnotherArtboard();
         } else {
             gotoArtboard(id);
         }
