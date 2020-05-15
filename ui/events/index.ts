@@ -9,9 +9,10 @@ import { tabEvents } from "./tab";
 import { sliceEvents } from "./slices";
 import { panModeEvents } from "./panMode";
 import { percentageModeEvents } from "./percentageMode";
-import { keyboardZoomEvents } from "./keyboardZoom";
+import { keyboardZoomEvents } from "./keyboard/zoom";
 import { flowEvents } from "./flow";
 import { hashChangeEvents } from "./hashChange";
+import { keyboardSwitchEvents } from "./keyboard/switch";
 
 export function events() {
     layerEvents();
@@ -27,6 +28,7 @@ export function events() {
     keyboardZoomEvents();
     dragExportableEvents();
     flowEvents();
+    keyboardSwitchEvents();
     hashChangeEvents();
 }
 

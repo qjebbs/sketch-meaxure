@@ -1,6 +1,6 @@
-import { clickElement } from "./helper";
-import { state } from "../common";
-import { zoomRender } from "./zoom";
+import { clickElement } from "../helper";
+import { state } from "../../common";
+import { zoomRender } from "../zoom";
 
 export function keyboardZoomEvents() {
     window.addEventListener('keydown', event => {
