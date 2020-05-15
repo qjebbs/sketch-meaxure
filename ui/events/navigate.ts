@@ -5,8 +5,10 @@ import { message } from "../render/helper";
 import { updateScreen } from "../render/screen";
 import { flowMode, setFlowMode } from "./flow";
 import { removeSelected } from "./helper";
+import { setShouldBackToAnother } from "./hashChange";
 
 export function gotoArtboard(para: number | string, updateHash: boolean = true): void {
+    setShouldBackToAnother(false);
     let index: number;
     if (typeof para == 'number') {
         index = para;
@@ -49,24 +51,15 @@ export function updateURLHash() {
 }
 
 export function historyBackUntilAnotherArtboard() {
-    let currentIndex = parseURLHash().artboardIndex;
-    (function backAndTest() {
-        let lastLocation = window.location.href;
-        history.back();
-        setTimeout(() => {
-            // no backward history
-            if (lastLocation == window.location.href) return;
-            let index = parseURLHash().artboardIndex;
-            if (index == currentIndex) backAndTest();
-        }, 0)
-    })();
+    setShouldBackToAnother(true);
+    history.back();
 }
 
-function getURLHash(): string {
+export function getURLHash(): string {
     return `#${flowMode ? 'p' : 's'}${state.artboardIndex}`;
 }
 
-function parseURLHash() {
+export function parseURLHash() {
     let result = {
         flowMode: false,
         artboardIndex: 0,
