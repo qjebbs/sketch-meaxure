@@ -49,7 +49,7 @@ export function getIntersection(a: SMRect, b: SMRect): SMRect {
     let y2 = Math.min(a.y + a.height, b.y + b.height);
     let width = x2 - x1;
     let height = y2 - y1;
-    if (width < 0 || height < 0) {
+    if (width <= 0 || height <= 0) {
         // no intersection
         return undefined;
     }
