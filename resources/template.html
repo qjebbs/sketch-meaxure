@@ -1060,7 +1060,7 @@ var I18N = {},
                             + this.scaleSize(layerData.rect.width) + "\, " + this.scaleSize(layerData.rect.height) + ");\r\n"
                             + "label.text = \@\"" + layerData.content + "\";\r\n"
                             + "label.font = [UIFont fontWithName:\@\"" + layerData.fontFace + "\" size:" + this.scaleSize(layerData.fontSize) + "];\r\n"
-                            + "label.textColor = [UIColor colorWithRed:" + layerData.color.r + "/255.0 green:" + layerData.color.g + "/255.0 blue:" + layerData.color.b + "/255.0 alpha:" + layerData.color.a + "/1.0];\r\n"
+                            + "label.textColor = [UIColor colorWithRed:" + layerData.color.rgb.r + "/255.0 green:" + layerData.color.rgb.g + "/255.0 blue:" + layerData.color.rgb.b + "/255.0 alpha:" + layerData.color.alpha + "/255.0];\r\n"
                             + '</textarea></label>',
                             '</div>'
                     );
@@ -1130,7 +1130,7 @@ var I18N = {},
             var f;
             for (f in layerData.fills) {
                 if(layerData.fills[f].fillType.toLowerCase() == "color"){
-                    return "view.backgroundColor = [UIColor colorWithRed:" + layerData.fills[f].color.r + "/255.0 green:" + layerData.fills[f].color.g  + "/255.0 blue:" + layerData.fills[f].color.b + "/255.0 alpha:" + layerData.fills[f].color.a + "/1.0]\;\r\n";
+                    return "view.backgroundColor = [UIColor colorWithRed:" + layerData.fills[f].color.rgb.r + "/255.0 green:" + layerData.fills[f].color.rgb.g  + "/255.0 blue:" + layerData.fills[f].color.rgb.b + "/255.0 alpha:" + layerData.fills[f].color.alpha + "/255.0]\;\r\n";
                 }
             }
             return colorCode;

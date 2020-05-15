@@ -19,6 +19,9 @@ export interface SMRect {
 export interface SMColor {
     rgb: { r: number, g: number, b: number, },
     hsl: { h: number, s: number, l: number, },
+    /**
+     * alpha value within 0-255
+     */
     alpha: number,
     "color-hex": string,
     "argb-hex": string,
