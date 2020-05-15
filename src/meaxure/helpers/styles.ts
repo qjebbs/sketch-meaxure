@@ -92,7 +92,7 @@ export function parseColor(rgbaHex: string): SMColor {
             b: b,
         },
         hsl: hsl,
-        alpha: alpha100,
+        alpha: alpha,
         "color-hex": colorUpperCase.substr(0, 7) + " " + alpha100 + "%",
         "argb-hex": "#" + alpha.toString(16).toUpperCase() + colorUpperCase.substr(1, 6).replace("#", ""),
         "rgba-hex": rgbaHex.toLocaleUpperCase(),
