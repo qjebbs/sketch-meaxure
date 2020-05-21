@@ -38,9 +38,8 @@
     <item>
       <title>Changelog</title>
       <description>
-        Fix export symbol instance of none, #4
-        Fix parse text fragments error in some cases
-        Fix parseColor returns wrong css-rgba
+        Fix single file mode export
+        Fix export hidden layers, #7
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
