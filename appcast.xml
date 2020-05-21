@@ -6,6 +6,9 @@
     <description>Make it a fun to create spec for developers and teammates</description>
     <language>en</language>
     <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.2/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.2"/>
+    </item>
+    <item>
       <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.1/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.1"/>
     </item>
     <item>
