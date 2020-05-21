@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 export interface LayerStates {
-    isVisible: boolean,
+    isHidden: boolean,
     isLocked: boolean,
     hasSlice: boolean,
     isMeaXure: boolean,
