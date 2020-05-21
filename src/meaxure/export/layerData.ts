@@ -29,7 +29,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     let layerStates = getLayerStates(layer);
     // stopwatch.tik('getLayerStates');
     if (!isExportable(layer) ||
-        !layerStates.isVisible ||
+        layerStates.isHidden ||
         (layerStates.isLocked && layer.type != sketch.Types.Slice) ||
         layerStates.isEmptyText ||
         layerStates.hasSlice ||
@@ -128,7 +128,7 @@ function isExportable(layer: Layer) {
         layer.type == sketch.Types.SymbolInstance
 }
 function getLayerStates(layer: Layer): LayerStates {
-    let isVisible = true;
+    let isHidden = false;
     let isLocked = false;
     let hasSlice = false;
     let isEmptyText = false;
@@ -140,14 +140,14 @@ function getLayerStates(layer: Layer): LayerStates {
         if (!isMeaXure) isMeaXure = layer.name.startsWith('#meaxure-');
         // if parents is shape, this is in shape group
         if (!isInShapeGroup) isInShapeGroup = parent.type == sketch.Types.Shape;
-        if (!isVisible) isVisible = !layer.hidden;
+        if (!isHidden) isHidden = layer.hidden;
         if (!isLocked) isLocked = layer.locked;
         if (!hasSlice) hasSlice = parent.type == sketch.Types.Group && parent.exportFormats.length > 0;
         if (!isEmptyText) isEmptyText = layer.type == sketch.Types.Text && (layer as Text).isEmpty
         layer = parent;
     }
     return {
-        isVisible: isVisible,
+        isHidden: isHidden,
         isLocked: isLocked,
         hasSlice: hasSlice,
         isMeaXure: isMeaXure,
