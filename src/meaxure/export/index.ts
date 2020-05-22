@@ -17,8 +17,8 @@ import { clearMaskStack } from "./mask";
 import { getDocumentColors } from "./colors";
 import { clearTintStack } from "./tint";
 import { renameIfIsMarker } from "../helpers/renameOldMarkers";
+import { tempLayers } from "./tempLayers";
 
-export let tempCreatedLayers: Layer[] = [];
 export let savePath: string;
 export let assetsPath: string;
 export let stopwatch = newStopwatch();
@@ -60,10 +60,7 @@ export async function exportSpecification() {
     processingPanel.show();
     // stopwatch.tik('processingPanel');
     let onFinishCleanup = function () {
-        for (let tmp of tempCreatedLayers) {
-            if (tmp) tmp.remove();
-        }
-        tempCreatedLayers = [];
+        tempLayers.removeAll();
         exporting = false;
         processingPanel.close();
     }
