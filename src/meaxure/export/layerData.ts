@@ -15,6 +15,7 @@ import { getSymbol } from "./symbol";
 import { updateTintStackAfterLayer, applyTint } from "./tint";
 import { stopwatch } from ".";
 import { getFlow } from "./flow";
+import { tempLayers } from "./tempLayers";
 
 export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
     // stopwatch.tik('before updateMaskStackBeforeLayer');
@@ -143,7 +144,7 @@ function getLayerStates(layer: Layer): LayerStates {
         if (!isMeaXure) isMeaXure = layer.name.startsWith('#meaxure-');
         // if parents is shape, this is in shape group
         if (!isInShapeGroup) isInShapeGroup = parent.type == sketch.Types.Shape;
-        if (!isHidden) isHidden = layer.hidden;
+        if (!isHidden) isHidden = layer.hidden && !tempLayers.exists(layer);
         if (!isLocked) isLocked = layer.locked;
         if (!hasSlice) hasSlice = parent.type == sketch.Types.Group && parent.exportFormats.length > 0;
         if (!isEmptyText) isEmptyText = layer.type == sketch.Types.Text && (layer as Text).isEmpty

@@ -3,8 +3,9 @@
 // license that can be found in the LICENSE file.
 
 import { LayerData, ArtboardData, SMType } from "../interfaces";
-import { tempCreatedLayers, stopwatch } from ".";
+import { stopwatch } from ".";
 import { getLayerData } from "./layerData";
+import { tempLayers } from "./tempLayers";
 
 export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: LayerData, data: ArtboardData, byInfluence: boolean) {
     if (layerData.type != SMType.symbol) return;
@@ -18,9 +19,10 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
     if (master.exportFormats.length || master.allSubLayers().length < 2) return;
     let tempInstance = layer.duplicate() as SymbolInstance;
     // do not trigger layer re-arrange from 3rd-party plugins, e.g.: Anima
-    tempInstance.hidden = true;
+    tempInstance.parent = artboard;
+    tempInstance.frame = layer.frame.changeBasis({ from: layer.parent as Group, to: artboard });
     let tempGroup = tempInstance.detach({ recursively: false });
-    tempCreatedLayers.push(tempGroup);
+    tempLayers.add(tempGroup);
 
     let masterAllLayers = master.allSubLayers();
     let instanceAllLayers = tempGroup.allSubLayers();

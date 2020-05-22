@@ -3,10 +3,11 @@
 // license that can be found in the LICENSE file.
 
 import { ArtboardData } from "../interfaces"; import { sketch } from "../../sketch";
-import { tempCreatedLayers, stopwatch } from ".";
+import { stopwatch } from ".";
 import { getLayerData } from "./layerData";
 import { TextFragment } from "../../sketch/text/textFragment";
 import { Edge, EdgeVertical } from "../../sketch/layer/alignment";
+import { tempLayers } from "./tempLayers";
 
 export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardData) {
     if (layer.type != sketch.Types.Text || layer.getFragmentsCount() < 2) return;
@@ -23,8 +24,7 @@ export function getTextFragment(artboard: Artboard, layer: Text, data: ArtboardD
         lines = [fragments];
     }
     let textGroup: Group = new sketch.Group({ parent: artboard });
-    textGroup.hidden = true;
-    tempCreatedLayers.push(textGroup);
+    tempLayers.add(textGroup);
 
     for (let frags of lines) {
         if (frags == null) {
