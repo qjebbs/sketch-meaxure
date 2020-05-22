@@ -10,7 +10,7 @@ class TempLayersManager {
         this._idMap = {};
     }
     add(layer: Layer) {
-        layer.name = '#meaxure-tmp-' + layer.name;
+        layer.name = '#tmp-' + layer.name;
         layer.hidden = true;
         this._layers.push(layer);
         this._idMap[layer.id] = true;
