@@ -14,10 +14,10 @@ It aims to be:
 
 Improvements that users can recognize:
 
-1. Fully works with lastest version of Sketch (v64).
+1. Fully works with lastest version of Sketch (v66).
 1. The latest `Tint` feature support.
-1. Easily resize markers, without concerns to break them. (The `resizing constrain` feature)
-1. Always export masked layers right, while `Measure` doesn't in some cases.
+1. Easily resize markers, without concerns to break them. (The `resizing constrain` feature).
+1. Export directly with `Anima stacks` activated.
 1. Customize the order of exported artboards.
 1. Better display of text fragments.
 1. Re-organize functions and panels.
