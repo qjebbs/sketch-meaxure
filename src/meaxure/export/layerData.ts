@@ -20,13 +20,20 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     // stopwatch.tik('before updateMaskStackBeforeLayer');
     updateMaskStackBeforeLayer(layer, artboard);
     // stopwatch.tik('updateMaskStackBeforeLayer');
+    let layerRect = getSMRect(layer, artboard, byInfluence);
+    layerRect = applyMasks(layer, layerRect, artboard);
+    if (!layerRect) {
+        onLayerEnd(layer);
+        return;
+    }
+    // stopwatch.tik('applyMasks');
     let note = makeNote(layer, artboard);
     if (note) {
         data.notes.push(note);
+        onLayerEnd(layer);
         return;
     }
     // stopwatch.tik('make notes');
-
     let layerStates = getLayerStates(layer);
     // stopwatch.tik('getLayerStates');
     if (!isExportable(layer) ||
@@ -36,8 +43,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         layerStates.hasSlice ||
         layerStates.isMeaXure ||
         layerStates.isInShapeGroup) {
-        updateMaskStackAfterLayer(layer);
-        updateTintStackAfterLayer(layer);
+        onLayerEnd(layer);
         return;
     }
 
@@ -48,13 +54,11 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         objectID: symbolLayer ? symbolLayer.id : layer.id,
         type: layerType,
         name: toHTMLEncode(emojiToEntities(layer.name)),
-        rect: getSMRect(layer, artboard, byInfluence),
+        rect: layerRect,
     };
     // stopwatch.tik('prepare layer data');
     getLayerStyles(layer, layerType, layerData);
     // stopwatch.tik('getLayerStyles');
-    applyMasks(layer, layerData);
-    // stopwatch.tik('applyMasks');
     applyTint(layer, layerData);
     // stopwatch.tik('applyTint');
     getSlice(layer, layerData, symbolLayer);
@@ -65,6 +69,9 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     }
     getTextFragment(artboard, layer as Text, data);
     // stopwatch.tik('getTextFragment');
+    onLayerEnd(layer);
+}
+function onLayerEnd(layer: Layer) {
     updateMaskStackAfterLayer(layer);
     updateTintStackAfterLayer(layer);
     // stopwatch.tik('update stack');
