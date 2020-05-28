@@ -48,6 +48,7 @@ export function lengthUnit(value: number, t?, flag?: boolean) {
 }
 
 export function getIntersection(a: SMRect, b: SMRect): SMRect {
+    if (!a || !b) return undefined;
     let x1 = Math.max(a.x, b.x);
     let y1 = Math.max(a.y, b.y);
     let x2 = Math.min(a.x + a.width, b.x + b.width);

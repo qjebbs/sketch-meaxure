@@ -88,16 +88,13 @@ export function updateMaskStackBeforeLayer(layer: Layer, artboard: Artboard) {
         });
     }
 }
-export function applyMasks(layer: Layer, layerData: LayerData) {
-    // If no active masks, nothing to do
-    if (!maskStack.length) return;
-    // we have currentMask applied to current layer
-    // logger.debug(`${layer.name} has clip mask of ${maskStack.reduce((p, c) => p += c.mask.name + ',', '')}`)
-    let layerRect = layerData.rect;
+export function applyMasks(layer: Layer, layerRect: SMRect, artboard: Artboard): SMRect {
+    // if (maskStack.length) logger.debug(`${layer.name} has clip mask of ${maskStack.reduce((p, c) => p += c.mask.name + ',', '')}`)
     for (let mask of maskStack) {
-        layerRect = getIntersection(mask.rect, layerRect)
-        if (!layerRect) layerRect = { x: 0, y: 0, width: 0, height: 0 };
+        // caculate intersection of layer and mask, as the clipped frame of the layer
+        layerRect = getIntersection(mask.rect, layerRect);
     }
-    // caculate intersection of layer and mask, as the clipped frame of the layer
-    layerData.rect = layerRect;
+    // caculate intersection of layer and artboard
+    layerRect = getIntersection(artboard.frame.changeBasis({ from: artboard.parent, to: artboard }), layerRect);
+    return layerRect;
 }
