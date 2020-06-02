@@ -21,6 +21,8 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
     // do not trigger layer re-arrange from 3rd-party plugins, e.g.: Anima
     tempInstance.parent = artboard;
     tempInstance.frame = layer.frame.changeBasis({ from: layer.parent as Group, to: artboard });
+    // make sure it doesn't make another duplicated flow layer
+    tempInstance.flow = undefined;
     let tempGroup = tempInstance.detach({ recursively: false });
     tempLayers.add(tempGroup);
 
