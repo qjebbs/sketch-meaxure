@@ -50,9 +50,9 @@
     <item>
       <title>Changelog</title>
       <description>
-        Fix symbol and text fragments not exported, which introduced in last release
-        Improvement: better work with Anima stacks
-        Improvement: better temp layers management
+        Optimize: Toolbar UI optimize
+        Optimize: Do not export layers out of artboard frame
+        Fix: Export slice inside symbol, #10
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
