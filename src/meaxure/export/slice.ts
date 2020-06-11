@@ -35,7 +35,8 @@ export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer)
             (layerData.type == SMType.symbol && layerMaster.exportFormats.length)
         ) && !sliceCache[objectID]
     ) {
-        let sliceLayer: Layer = layer;
+        // use symbolLayer layer first, since the 'layer' (temporarily created from symbolLayer) could be hidden, #10
+        let sliceLayer: Layer = symbolLayer || layer;
         if (layerData.type == SMType.symbol) sliceLayer = layerMaster;
 
         NSFileManager
