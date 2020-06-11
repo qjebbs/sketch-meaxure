@@ -32,12 +32,8 @@ export function updateMaskStackAfterLayer(layer: Layer) {
         // child mask ends on last layer of itself,
         // they are the same one.
         if (!m.stopAfterGroup) continue;
-        let groupLayers = m.stopAfterGroup.layers;
-        let lastLayer = groupLayers[groupLayers.length - 1];
-        if (lastLayer.type == sketch.Types.Group) {
-            groupLayers = lastLayer.allSubLayers();
-            lastLayer = groupLayers[groupLayers.length - 1];
-        }
+        let lastLayer = m.stopAfterGroup.getLastChildren();
+
         // if current is the last child layer of the stop group, mask stops
         if (layer.id == lastLayer.id) {
             // logger.debug(`mask ${m.mask.name} stops after layer ${layer.name} of group ${m.stopAfterGroup.name}`);

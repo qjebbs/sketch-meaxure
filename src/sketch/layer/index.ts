@@ -16,6 +16,7 @@ declare module 'sketch/sketch' {
             CSSAttributes: string[];
             resizingConstraint: number;
             allSubLayers(): Layer[];
+            getLastChildren(): Layer;
             alignTo(
                 target: Layer | Rectangle,
                 horizontal?: { from: Edge, to: Edge } | boolean,
@@ -85,6 +86,9 @@ export function extendLayer() {
             }
         }
         return layers;
+    }
+    target.getLastChildren = function (): Layer {
+        return sketch.fromNative((this as Layer).sketchObject.children().lastObject()) as Layer;
     }
     target.alignTo = function (
         target: Layer | Rectangle,
