@@ -8,7 +8,7 @@ import { sketch } from "../sketch";
 export function clearAllMarks() {
     let targets = context.selection.length ? context.selection.layers : [context.page];
     for (let target of targets) {
-        for (let layer of target.allSubLayers()) {
+        for (let layer of target.getAllChildren()) {
             if (layer.type == sketch.Types.Group && layer.name.startsWith('#meaxure-')) {
                 layer.remove();
             }

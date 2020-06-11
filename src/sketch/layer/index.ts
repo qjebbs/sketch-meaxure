@@ -15,7 +15,7 @@ declare module 'sketch/sketch' {
             hasClippingMask: boolean;
             CSSAttributes: string[];
             resizingConstraint: number;
-            allSubLayers(): Layer[];
+            getAllChildren(): Layer[];
             getLastChildren(): Layer;
             alignTo(
                 target: Layer | Rectangle,
@@ -76,7 +76,7 @@ export function extendLayer() {
             setResizingConstraint(this, value);
         }
     });
-    target.allSubLayers = function (): Layer[] {
+    target.getAllChildren = function (): Layer[] {
         let layers: Layer[] = [];
         enumLayers(this);
         function enumLayers(layer: Layer) {

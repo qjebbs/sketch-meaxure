@@ -64,7 +64,7 @@ export function exportPanel(): Promise<ExportConfig> {
             for (let info of page.artboards) {
                 if (rdata[info.objectID]) {
                     let artboard = allArtboards[info.objectID];
-                    let children = artboard.allSubLayers();
+                    let children = artboard.getAllChildren();
                     layersCount += children.length;
                     exportArtboards.push({ artboard: artboard, children: children });
                 }

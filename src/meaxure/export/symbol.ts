@@ -16,7 +16,8 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
 
     layerData.objectID = masterID;
 
-    if (master.exportFormats.length || master.allSubLayers().length < 2) return;
+    let masterAllLayers = master.getAllChildren();
+    if (master.exportFormats.length || masterAllLayers.length < 2) return;
     let tempInstance = layer.duplicate() as SymbolInstance;
     // do not trigger layer re-arrange from 3rd-party plugins, e.g.: Anima
     tempInstance.parent = artboard;
@@ -24,8 +25,7 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
     let tempGroup = tempInstance.detach({ recursively: false });
     tempLayers.add(tempGroup);
 
-    let masterAllLayers = master.allSubLayers();
-    let instanceAllLayers = tempGroup.allSubLayers();
+    let instanceAllLayers = tempGroup.getAllChildren();
     if (masterAllLayers.length < instanceAllLayers.length) {
         // console.log('insert undefined into masterAllLayers[1] as master backgroud layer');
         masterAllLayers.splice(1, 0, undefined);
