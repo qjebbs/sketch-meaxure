@@ -146,10 +146,10 @@
             background-size: 32px;
             background-repeat: no-repeat;
             background-position: center center;
-            background-color: #444;
+            background-color: #3d3d3d;
             margin: 0 4px 4px 0;
             cursor: pointer;
-            border: 1px solid #555;
+            border: 1px solid #535353;
             border-radius: 2px;
         }
 
@@ -162,11 +162,11 @@
         }
 
         .command:hover {
-            background-color: #333;
+            background-color: #303030;
         }
 
         .command:active {
-            background-color: #555;
+            background-color: #4d4d4d;
         }
     </style>
 </head>
@@ -179,7 +179,7 @@
                 onInitOK();
             }).catch(error => showError(error));
         } else {
-            init();
+            init({});
         }
     </script>
 </body>
