@@ -10,12 +10,7 @@ import { toJSString } from "../helpers/helper";
 export function exportImage(layer: Layer, format: SMExportFormat, path: string, name: string) {
     let document = context.sketchObject.document;
     let slice = MSExportRequest.exportRequestsFromExportableLayer(layer.sketchObject).firstObject();
-    let savePathName = [];
-
-    slice.scale = format.scale;
-    slice.format = format.format;
-
-    savePathName.push(
+    let savePath = [
         path,
         "/",
         format.prefix,
@@ -23,8 +18,10 @@ export function exportImage(layer: Layer, format: SMExportFormat, path: string, 
         format.suffix,
         ".",
         format.format
-    );
-    let savePath = savePathName.join("");
+    ].join("");
+
+    slice.scale = format.scale;
+    slice.format = format.format;
 
     document.saveArtboardOrSlice_toFile(slice, savePath);
     return savePath;

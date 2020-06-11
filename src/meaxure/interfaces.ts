@@ -5,7 +5,7 @@
 export interface LayerStates {
     isHidden: boolean,
     isLocked: boolean,
-    hasSlice: boolean,
+    isInSlice: boolean,
     isMeaXure: boolean,
     isEmptyText: boolean,
     isInShapeGroup: boolean,

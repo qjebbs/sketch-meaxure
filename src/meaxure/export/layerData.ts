@@ -40,7 +40,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         layerStates.isHidden ||
         (layerStates.isLocked && layer.type != sketch.Types.Slice) ||
         layerStates.isEmptyText ||
-        layerStates.hasSlice ||
+        layerStates.isInSlice ||
         layerStates.isMeaXure ||
         layerStates.isInShapeGroup) {
         onLayerEnd(layer);
@@ -138,7 +138,7 @@ function isExportable(layer: Layer) {
 function getLayerStates(layer: Layer): LayerStates {
     let isHidden = false;
     let isLocked = false;
-    let hasSlice = false;
+    let isInSlice = false;
     let isEmptyText = false;
     let isMeaXure = false;
     let isInShapeGroup = false;
@@ -150,14 +150,14 @@ function getLayerStates(layer: Layer): LayerStates {
         if (!isInShapeGroup) isInShapeGroup = parent.type == sketch.Types.Shape;
         if (!isHidden) isHidden = layer.hidden && !tempLayers.exists(layer);
         if (!isLocked) isLocked = layer.locked;
-        if (!hasSlice) hasSlice = parent.type == sketch.Types.Group && parent.exportFormats.length > 0;
+        if (!isInSlice) isInSlice = parent.type == sketch.Types.Group && parent.exportFormats.length > 0;
         if (!isEmptyText) isEmptyText = layer.type == sketch.Types.Text && (layer as Text).isEmpty
         layer = parent;
     }
     return {
         isHidden: isHidden,
         isLocked: isLocked,
-        hasSlice: hasSlice,
+        isInSlice: isInSlice,
         isMeaXure: isMeaXure,
         isEmptyText: isEmptyText,
         isInShapeGroup: isInShapeGroup
