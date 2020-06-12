@@ -6,6 +6,7 @@ import { SMExportable, LayerData, SMExportFormat, SMType } from "../interfaces";
 import { assetsPath } from ".";
 import { context } from "../common/context";
 import { exportImage } from "./files";
+import { sketch } from "../../sketch";
 
 let slices = [];
 let sliceCache: { [key: string]: SMExportable[] } = {}
@@ -18,43 +19,34 @@ export function getCollectedSlices(): any[] {
     return slices;
 }
 export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer) {
-    let objectID = layerData.objectID;
-    let layerMaster = (layer as SymbolInstance).master;
-    if (layerData.type == SMType.symbol) {
+    let sliceLayer: Layer;
+    if (layer.exportFormats.length > 0) {
+        sliceLayer = symbolLayer || layer;
+    } else if (layer.type == sketch.Types.SymbolInstance) {
+        let layerMaster = (layer as SymbolInstance).master;
         // symbol instance of none, #4
         if (!layerMaster) return;
-        objectID = layerMaster.id;
-    } else if (symbolLayer) {
-        objectID = symbolLayer.id;
+        if (!layerMaster.exportFormats.length) return;
+        sliceLayer = layerMaster;
     }
-    // if layer is slice or an instance exportale symbol master
+    if (!sliceLayer) return;
+    let layerID = sliceLayer.id;
     // export it, if haven't yet
-    if (
-        (
-            layerData.type == SMType.slice ||
-            (layerData.type == SMType.symbol && layerMaster.exportFormats.length)
-        ) && !sliceCache[objectID]
-    ) {
-        // use symbolLayer layer first, since the 'layer' (temporarily created from symbolLayer) could be hidden, #10
-        let sliceLayer: Layer = symbolLayer || layer;
-        if (layerData.type == SMType.symbol) sliceLayer = layerMaster;
-
-        NSFileManager
-            .defaultManager()
+    if (!sliceCache[layerID]) {
+        NSFileManager.defaultManager()
             .createDirectoryAtPath_withIntermediateDirectories_attributes_error(assetsPath, true, nil, nil);
-
-        sliceCache[objectID] = layerData.exportable = getExportable(sliceLayer);
+        sliceCache[layerID] = layerData.exportable = getExportable(sliceLayer);
         slices.push({
             name: layerData.name,
-            objectID: objectID,
+            objectID: layerID,
             rect: layerData.rect,
             exportable: layerData.exportable
         })
-    } else if (sliceCache[objectID]) {
-        layerData.exportable = sliceCache[objectID];
+    } else if (sliceCache[layerID]) {
+        layerData.exportable = sliceCache[layerID];
     }
 }
-function getExportable(layer: Layer, savePath?: string): SMExportable[] {
+function getExportable(layer: Layer): SMExportable[] {
     let exportable = [];
     let sizes = layer.exportFormats;
     let fileFormat = sizes[0].fileFormat;

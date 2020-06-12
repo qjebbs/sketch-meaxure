@@ -77,9 +77,11 @@ function onLayerEnd(layer: Layer) {
     // stopwatch.tik('update stack');
 }
 function getSMType(layer: Layer): SMType {
+    if (layer.exportFormats.length > 0) return SMType.slice;
+    let master = (layer as SymbolInstance).master;
+    if (master && master.exportFormats.length) return SMType.slice;
     if (layer.type == sketch.Types.Text) return SMType.text;
     if (layer.type == sketch.Types.SymbolInstance) return SMType.symbol;
-    if (layer.type == sketch.Types.Slice || layer.exportFormats.length > 0) return SMType.slice;
     return SMType.shape;
 }
 
