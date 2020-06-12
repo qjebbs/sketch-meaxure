@@ -28,8 +28,7 @@ export function updateTintStackAfterLayer(layer: Layer) {
         // pop all stopped tint stops from stack
         if (!tintStack.length) return;
         let tint = tintStack[tintStack.length - 1];
-        let children = tint.allSubLayers();
-        let lastLayer = children[children.length - 1];
+        let lastLayer = tint.getLastChildren();
         if (layer.id !== lastLayer.id) return;
         tintStack.pop();
     }

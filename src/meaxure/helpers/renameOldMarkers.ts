@@ -47,7 +47,7 @@ export async function renameOldMarkers() {
 }
 function processingArtboard(artboard: Artboard) {
     return new Promise<boolean>((resolve, reject) => {
-        for (let layer of artboard.allSubLayers()) {
+        for (let layer of artboard.getAllChildren()) {
             renameIfIsMarker(layer);
         }
         resolve(true);

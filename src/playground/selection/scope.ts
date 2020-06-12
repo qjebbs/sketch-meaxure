@@ -5,8 +5,8 @@ export function getLayersForScope(scope: SelectScope, currentPage: Page): Layer[
     if (scope instanceof Array) return scope;
     if (typeof scope === 'string') {
         let layers = [];
-        sketch.find<Layer>(scope, currentPage).forEach(find => layers.push(...find.allSubLayers()));
+        sketch.find<Layer>(scope, currentPage).forEach(find => layers.push(...find.getAllChildren()));
         return layers;
     }
-    return scope.allSubLayers();
+    return scope.getAllChildren();
 }

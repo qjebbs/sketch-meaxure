@@ -6,6 +6,27 @@
     <description>Make it a fun to create spec for developers and teammates</description>
     <language>en</language>
     <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.7/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.7"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.6/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.6"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.5/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.5"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.4/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.4"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.3/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.3"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.2/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.2"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.1/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.1"/>
+    </item>
+    <item>
       <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.0/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.0"/>
     </item>
     <item>
@@ -35,11 +56,12 @@
     <item>
       <title>Changelog</title>
       <description>
-        Smarter size label layerout: don't goto outside of artboard, don't cover the ruler
-        Color alpha of text fragment support
-        Now you can mark coordinate outside artboards
-        Mark property of multiple fills support
-        Fix spacing marker name
+        Fix: Export slice inside symbol, #10
+        Fix: Export slice on symbol instances, #10
+        Fix: Slow to export mask with massive layers, #11
+        Optimize: Toolbar UI optimize
+        Optimize: Do not export layers out of artboard frame
+        Optimize: Don't export temp group which is create on symbol detach
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>

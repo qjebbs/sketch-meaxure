@@ -127,6 +127,11 @@ export interface SMColorAsset {
     name: string,
     color: SMColor,
 }
+
+export interface SMColorAsset {
+    name: string,
+    color: SMColor,
+}
 export interface ExportData {
     scale: number,
     unit: string,
