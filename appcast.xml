@@ -53,9 +53,12 @@
     <item>
       <title>Changelog</title>
       <description>
+        Fix: Export slice inside symbol, #10
+        Fix: Export slice on symbol instances, #10
+        Fix: Slow to export mask with massive layers, #11
         Optimize: Toolbar UI optimize
         Optimize: Do not export layers out of artboard frame
-        Fix: Export slice inside symbol, #10
+        Optimize: Don't export temp group which is create on symbol detach
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
