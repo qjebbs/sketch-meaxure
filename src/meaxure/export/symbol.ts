@@ -31,7 +31,8 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
         masterAllLayers.splice(1, 0, undefined);
     }
     // stopwatch.tik('create temp detached symbol');
-    for (let i = 0; i < instanceAllLayers.length; i++) {
+    // starts from 1, skip temp group which is create on detach
+    for (let i = 1; i < instanceAllLayers.length; i++) {
         let instanceLayer = instanceAllLayers[i];
         let masterLayer = masterAllLayers[i];
         // console.log(instanceLayer.name + ":" + (masterLayer ? masterLayer.name : 'undefined'));
