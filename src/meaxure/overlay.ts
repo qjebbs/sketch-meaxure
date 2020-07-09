@@ -30,7 +30,7 @@ function overlay(target: Layer) {
     let overlayStyle = context.meaxureStyles.overlay.background;
     let container = new sketch.Group({ name: name, parent: root })
     let overlay = new sketch.ShapePath({ name: 'overlay', parent: container });
-    overlay.frame = target.frame;
+    overlay.frame = target.frame.changeBasis({ from: target.parent as Layer, to: root });;
     overlay.sharedStyle = overlayStyle;
     overlay.style = overlayStyle.style;
     overlay.resizingConstraint = ResizingConstraint.top &
