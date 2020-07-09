@@ -35,6 +35,7 @@ function drawSize(layer: Layer, position: Edge | EdgeVertical): void {
         root
     ).forEach(g => g.remove());
     let frame = context.configs.byInfluence ? layer.frameInfluence : layer.frame;
+    frame = frame.changeBasis({ from: layer.parent as Layer, to: root });
     drawSizeForFrame(frame, position, {
         name: name,
         parent: root,
