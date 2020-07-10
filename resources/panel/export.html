@@ -67,13 +67,14 @@
             },
             sendOrderRequest = function () {
                 if (!window.meaxure) return;
-                let order = $('input[name=order]:checked').val();
-                let reverse = $('input[name=reverse]:checked').val() == '1';
-                meaxure.postMessage('sort', {
-                    order: order,
-                    reverse, reverse
+                let data = {
+                    order: $('input[name=order]:checked').val(),
+                    reverse: $('input[name=reverse]:checked').val() == '1',
+                    exportInfluenceRect: $('input[name=export-influenceRect]:checked').length > 0,
+                    exportOption: $('input[name=export-option]:checked').length > 0,
+                    selection: {},
                 }
-                ).then(data => updateArtboardsList(data));
+                meaxure.postMessage('sort', data).then(data => updateArtboardsList(data));
             },
             filter = function (data) {
                 var $filter = $('#filter'),
@@ -344,19 +345,17 @@
                 $('input[name=export-option]').change(checkedOption);
 
                 $('#submit').click(function () {
-                    var data = {}
+                    var data = {
+                        order: $('input[name=order]:checked').val(),
+                        reverse: $('input[name=reverse]:checked').val() == '1',
+                        exportInfluenceRect: $('input[name=export-influenceRect]:checked').length > 0,
+                        exportOption: $('input[name=export-option]:checked').length > 0,
+                        selection: {},
+                    }
                     $('input[name=artboards]:checked').each(function () {
                         var objectID = $(this).val();
-                        data[objectID] = true;
+                        data.selection[objectID] = true;
                     });
-                    data.exportOption = false;
-                    if ($('input[name=export-option]:checked').length > 0) data.exportOption = true;
-
-                    data.exportInfluenceRect = false;
-                    if ($('input[name=export-influenceRect]:checked').length > 0) data.exportInfluenceRect = true;
-
-                    data.order = $('input[name=order]:checked').val();
-
                     meaxure.postMessage('submit', data);
                 });
 

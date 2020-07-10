@@ -38,6 +38,14 @@ interface ExportData {
     reverse: boolean;
 }
 
+interface SubmitData {
+    selection: { [key: string]: boolean };
+    exportOption: boolean;
+    exportInfluenceRect: boolean;
+    order: OptionArtboardOrder;
+    reverse: boolean;
+}
+
 interface ExportConfig {
     selection: { artboard: Artboard, children: Layer[] }[];
     layersCount: number;
@@ -55,32 +63,10 @@ export function exportPanel(): Promise<ExportConfig> {
     if (!panel) return undefined;
 
     let [data, allArtboards] = prepareExportData();
-    function onSubmit(rdata: ExportData, resolve: (boolean) => void) {
-        let exportArtboards: { artboard: Artboard, children: Layer[] }[] = [];
-        let layersCount = 0;
-        for (let page of data.pages) {
-            // don't sort again, already done in sort requests.
-            // artboards = sortArtboards(artboards, message.data.order, message.data.reverse);
-            for (let info of page.artboards) {
-                if (rdata[info.objectID]) {
-                    let artboard = allArtboards[info.objectID];
-                    let children = artboard.getAllChildren();
-                    layersCount += children.length;
-                    exportArtboards.push({ artboard: artboard, children: children });
-                }
-            }
-        }
-        resolve(<ExportConfig>{
-            selection: exportArtboards,
-            layersCount: layersCount,
-            advancedMode: rdata.exportOption,
-            byInfluence: rdata.exportInfluenceRect,
-        });
-        panel.close();
-    }
     panel.onDidReceiveMessage<ExportData>('init', () => data);
-    panel.onDidReceiveMessage<ExportData>('sort', rdata => {
+    panel.onDidReceiveMessage<SubmitData>('sort', rdata => {
         data.order = rdata.order;
+        data.reverse = rdata.reverse;
         for (let p = 0; p < data.pages.length; p++) {
             data.pages[p].artboards = sortArtboards(data.pages[p].artboards, rdata.order, rdata.reverse);
         }
@@ -88,7 +74,29 @@ export function exportPanel(): Promise<ExportConfig> {
     });
     return new Promise<ExportConfig>((resolve, reject) => {
         panel.onClose(() => resolve(undefined));
-        panel.onDidReceiveMessage<ExportData>('submit', rdata => onSubmit(rdata, resolve));
+        panel.onDidReceiveMessage<SubmitData>('submit', rdata => {
+            let exportArtboards: { artboard: Artboard, children: Layer[] }[] = [];
+            let layersCount = 0;
+            for (let page of data.pages) {
+                // don't sort again, already done in sort requests.
+                // artboards = sortArtboards(artboards, message.data.order, message.data.reverse);
+                for (let info of page.artboards) {
+                    if (rdata.selection[info.objectID]) {
+                        let artboard = allArtboards[info.objectID];
+                        let children = artboard.getAllChildren();
+                        layersCount += children.length;
+                        exportArtboards.push({ artboard: artboard, children: children });
+                    }
+                }
+            }
+            resolve(<ExportConfig>{
+                selection: exportArtboards,
+                layersCount: layersCount,
+                advancedMode: rdata.exportOption,
+                byInfluence: rdata.exportInfluenceRect,
+            });
+            panel.close();
+        });
         panel.show();
     });
 }
