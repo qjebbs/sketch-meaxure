@@ -1,5 +1,6 @@
 import { state, project } from "../common";
 import { zoomSize, percentageSize, unitSize } from "./helper";
+import { SMType } from "../../src/meaxure/interfaces";
 
 export var MapArtboardIDToIndex: { [key: string]: number } = undefined;
 export function layers() {
@@ -10,6 +11,7 @@ export function layers() {
 function specLayers() {
     let layersHTML = [];
     state.current.layers.forEach((layer, index) => {
+        if (layer.type == SMType.group) return;
         let x = zoomSize(layer.rect.x);
         let y = zoomSize(layer.rect.y);
         let width = zoomSize(layer.rect.width);
