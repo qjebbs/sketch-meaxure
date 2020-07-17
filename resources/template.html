@@ -586,6 +586,7 @@ var I18N = {},
             var self = this,
                 layersHTML = [];
             $.each(this.current.layers, function(index, layer) {
+                if (layer.type == 'group') return;
                 var x = self.zoomSize( layer.rect.x ),
                     y = self.zoomSize( layer.rect.y ),
                     width = self.zoomSize( layer.rect.width ),

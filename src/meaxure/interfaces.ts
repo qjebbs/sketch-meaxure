@@ -70,6 +70,7 @@ export enum SMType {
     symbol = "symbol",
     slice = "slice",
     shape = "shape",
+    group = "group",
 };
 export interface LayerData {
     // shared

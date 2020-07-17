@@ -82,6 +82,7 @@ function getSMType(layer: Layer): SMType {
     if (master && master.exportFormats.length) return SMType.slice;
     if (layer.type == sketch.Types.Text) return SMType.text;
     if (layer.type == sketch.Types.SymbolInstance) return SMType.symbol;
+    if (layer.type == sketch.Types.Group) return SMType.group;
     return SMType.shape;
 }
 
