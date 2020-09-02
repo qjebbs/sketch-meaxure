@@ -27,7 +27,7 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         return;
     }
     // stopwatch.tik('applyMasks');
-    let note = makeNote(layer, artboard);
+    let note = makeNote(layer, artboard, symbolLayer);
     if (note) {
         data.notes.push(note);
         onLayerEnd(layer);
