@@ -170,7 +170,7 @@ function getFragmentLinesFromSVG(svg: string) {
     while (execArray = REG_TSPAN.exec(svg)) {
         let x = parseFloat(execArray[1]);
         let y = parseFloat(execArray[2]);
-        let text = execArray[3].replace(/&[#0-9a-z]+;/i, " ");
+        let text = execArray[3].replace(/&[#0-9a-z]+;/ig, " ");
         if (curY === undefined) {
             curY = y;
         } else if (curY !== y) {
