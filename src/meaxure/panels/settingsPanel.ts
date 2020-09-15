@@ -27,13 +27,13 @@ export function settingsPanel() {
     let data: any = {};
     data.language = getLanguageScript();
     if (context.configs) {
-        data.scale = context.configs.scale;
+        data.scale = context.configs.resolution;
         data.units = context.configs.units;
         data.colorFormat = context.configs.format;
     }
     panel.onDidReceiveMessage('init', () => data);
     panel.onDidReceiveMessage<SettingData>('submit', data => {
-        context.configs.scale = data.scale;
+        context.configs.resolution = data.scale;
         context.configs.units = data.units;
         context.configs.format = data.colorFormat;
         panel.close();

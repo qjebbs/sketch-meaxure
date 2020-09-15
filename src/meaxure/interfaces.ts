@@ -134,7 +134,10 @@ export interface SMColorAsset {
     color: SMColor,
 }
 export interface ExportData {
-    scale: number,
+    /**
+     * Design resolution, 2 represents @2x
+     */
+    resolution: number,
     unit: string,
     colorFormat: string,
     artboards: ArtboardData[],

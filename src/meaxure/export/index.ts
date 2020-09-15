@@ -66,7 +66,7 @@ export async function exportSpecification() {
     }
     let template = NSString.stringWithContentsOfFile_encoding_error(getResourcePath() + "/template.html", 4, nil);
     let data: ExportData = {
-        scale: context.configs.scale,
+        resolution: context.configs.resolution,
         unit: context.configs.units,
         colorFormat: context.configs.format,
         artboards: [],
@@ -179,10 +179,9 @@ function exportArtboardAdvanced(artboard: Artboard, data: ExportData, savePath: 
         {
             format: 'png',
             // always export @2x (logic points * 2)
-            // exportData.scale: design 
             // if design resolution @2x, we export as is (scale=1)
             // if design resolution @4x, we export half size (scale=0.5)
-            scale: 2 / data.scale,
+            scale: 2 / data.resolution,
         },
         savePath + "/preview", data.artboards[i].slug
     );
@@ -206,16 +205,15 @@ function exportArtboard(artboard: Artboard, exportData: ExportData, index: numbe
         {
             format: 'png',
             // always export @2x (logic points * 2)
-            // exportData.scale: design resolution
             // if design resolution @2x, we export as is (scale=1)
             // if design resolution @4x, we export half size (scale=0.5)
-            scale: 2 / exportData.scale,
+            scale: 2 / exportData.resolution,
         }
     ).toString('base64');
 
     data.imageBase64 = 'data:image/png;base64,' + imageBase64;
     let newData = <ExportData>{
-        scale: exportData.scale,
+        resolution: exportData.resolution,
         unit: exportData.unit,
         colorFormat: exportData.colorFormat,
         artboards: [data],
