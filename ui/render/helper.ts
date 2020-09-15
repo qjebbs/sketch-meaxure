@@ -1,10 +1,7 @@
 import { project, state } from "../common";
 
 export function zoomSize(size: number) {
-    // export resolution determined by exportArtboard(), exportArtboardAdvanced()
-    // 2 represents @2x
-    const EXPORT_RESOLUTION = 2
-    return size * state.zoom / EXPORT_RESOLUTION;
+    return size * state.zoom / project.resolution;
 }
 
 export function percentageSize(size: number, size2: number) {
