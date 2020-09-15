@@ -129,7 +129,7 @@ export async function exportSpecification() {
             // stopwatch.tik('show process');
         }
         if (results.advancedMode) {
-            exportArtboardAdvanced(artboard, data.artboards[i], savePath, i);
+            exportArtboardAdvanced(artboard, data, savePath, i);
         } else {
             exportArtboard(artboard, data, i, savePath, template);
         }
@@ -170,31 +170,47 @@ function getLayerTask(artboard: Artboard, layer: Layer, data: ArtboardData, byIn
     });
 }
 
-function exportArtboardAdvanced(artboard: Artboard, data: ArtboardData, savePath: string, index: number) {
+function exportArtboardAdvanced(artboard: Artboard, data: ExportData, savePath: string, i: number) {
     // data.artboards[artboardIndex].imagePath = "preview/" + objectID + ".png";
-    data.imagePath = "preview/" + encodeURI(data.slug) + ".png";
-    data.imageIconPath = "preview/icons/" + encodeURI(data.slug) + ".png";
-    exportImage(artboard, {
-        format: 'png',
-        scale: 2,
-    }, savePath + "/preview", data.slug);
+    data.artboards[i].imagePath = "preview/" + encodeURI(data.artboards[i].slug) + ".png";
+    data.artboards[i].imageIconPath = "preview/icons/" + encodeURI(data.artboards[i].slug) + ".png";
+    exportImage(
+        artboard,
+        {
+            format: 'png',
+            // always export @2x (logic points * 2)
+            // exportData.scale: design 
+            // if design resolution @2x, we export as is (scale=1)
+            // if design resolution @4x, we export half size (scale=0.5)
+            scale: 2 / data.scale,
+        },
+        savePath + "/preview", data.artboards[i].slug
+    );
 
     exportImage(artboard, {
         format: 'png',
-        scale: 128 / Math.max(data.width, data.height),
-    }, savePath + "/preview/icons", data.slug);
+        scale: 128 / Math.max(data.artboards[i].width, data.artboards[i].height),
+    }, savePath + "/preview/icons", data.artboards[i].slug);
 
     writeFile({
-        content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#" + index + "\">",
+        content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#" + i + "\">",
         path: savePath + "/links",
-        fileName: data.slug + ".html"
+        fileName: data.artboards[i].slug + ".html"
     });
 }
 
 function exportArtboard(artboard: Artboard, exportData: ExportData, index: number, savePath: string, template: string) {
     let data = JSON.parse(JSON.stringify(exportData.artboards[index]));
     let imageBase64 = exportImageToBuffer(
-        artboard, { format: 'png', scale: 2 }
+        artboard,
+        {
+            format: 'png',
+            // always export @2x (logic points * 2)
+            // exportData.scale: design resolution
+            // if design resolution @2x, we export as is (scale=1)
+            // if design resolution @4x, we export half size (scale=0.5)
+            scale: 2 / exportData.scale,
+        }
     ).toString('base64');
 
     data.imageBase64 = 'data:image/png;base64,' + imageBase64;
