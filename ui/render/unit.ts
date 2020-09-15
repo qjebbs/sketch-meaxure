@@ -3,35 +3,32 @@ import { localize } from "../common";
 export function unit() {
     let unitsData = [
         {
+            name: localize('Device switch'),
             units: [
-                { name: localize('Standard'), unit: 'px', scale: 1 }
+                { name: localize('Web View') + '- px', unit: 'px', scale: 1 },
+                { name: localize('iOS Devices') + '- pt', unit: 'pt', scale: 1 },
+                { name: localize('Android Devices') + '- dp/sp', unit: 'dp/sp', scale: 1 },
             ]
         },
         {
-            name: localize('iOS Devices'),
+            name: localize('Convert to pixels'),
             units: [
-                { name: localize('Points') + ' @1x', unit: 'pt', scale: 1 },
-                { name: localize('Retina') + ' @2x', unit: 'pt', scale: 2 },
-                { name: localize('Retina HD') + ' @3x', unit: 'pt', scale: 3 }
+                { name: 'IOS' + localize('Points') + ' @1x', unit: 'px', scale: 1 },
+                { name: 'IOS' + localize('Retina') + ' @2x', unit: 'px', scale: 2 },
+                { name: 'IOS' + localize('Retina HD') + ' @3x', unit: 'px', scale: 3 },
+                { name: 'Android LDPI @0.75x', unit: 'px', scale: .75 },
+                { name: 'Android MDPI @1x', unit: 'px', scale: 1 },
+                { name: 'Android HDPI @1.5x', unit: 'px', scale: 1.5 },
+                { name: 'Android XHDPI @2x', unit: 'px', scale: 2 },
+                { name: 'Android XXHDPI @3x', unit: 'px', scale: 3 },
+                { name: 'Android XXXHDPI @4x', unit: 'px', scale: 4 }
             ]
         },
         {
-            name: localize('Android Devices'),
-            units: [
-                { name: 'LDPI @0.75x', unit: 'dp/sp', scale: .75 },
-                { name: 'MDPI @1x', unit: 'dp/sp', scale: 1 },
-                { name: 'HDPI @1.5x', unit: 'dp/sp', scale: 1.5 },
-                { name: 'XHDPI @2x', unit: 'dp/sp', scale: 2 },
-                { name: 'XXHDPI @3x', unit: 'dp/sp', scale: 3 },
-                { name: 'XXXHDPI @4x', unit: 'dp/sp', scale: 4 }
-            ]
-        },
-        {
-            name: localize('Web View'),
-            units: [
-                { name: 'CSS Rem 12px', unit: 'rem', scale: 12 },
-                { name: 'CSS Rem 14px', unit: 'rem', scale: 14 },
-                { name: 'CSS Rem 16px', unit: 'rem', scale: 16 }
+            name: localize('Convert to rem'),
+            units: [{ name: 'CSS Rem 12px', unit: 'rem', scale: 1 / 12 },
+            { name: 'CSS Rem 14px', unit: 'rem', scale: 1 / 14 },
+            { name: 'CSS Rem 16px', unit: 'rem', scale: 1 / 16 }
             ]
         }
     ];
@@ -43,7 +40,7 @@ export function unit() {
         if (data.name) unitList.push('<li class="sub-title">' + localize(data.name) + '</li>');
         data.units.forEach(unit => {
             var checked = '';
-            if (unit.unit == state.unit && unit.scale == state.scale) {
+            if (!hasCurrent && unit.unit == state.unit) {
                 checked = ' checked="checked"';
                 hasCurrent = localize(unit.name);
             }
@@ -54,14 +51,14 @@ export function unit() {
                 '><span>' + localize(unit.name) + '</span></label></li>');
         });
     });
-    if (!hasCurrent) {
-        unitCurrent = '<li><label><input type="radio" name="resolution" data-name="' + localize('Custom') +
-            ' (' + state.scale + ', ' + state.unit + ')" data-unit="' + state.unit +
-            '" data-scale="' + state.scale +
-            '" checked="checked"><span>' + localize('Custom') + ' (' + state.scale + ', ' + state.unit + ')</span></label></li>';
-        hasCurrent = localize('Custom') + ' (' + state.scale + ', ' + state.unit + ')';
-    }
-    unitHtml.push('<div class="overlay"></div>', '<h3>' + localize('Design resolution') +
+    // if (!hasCurrent) {
+    //     unitCurrent = '<li><label><input type="radio" name="resolution" data-name="' + localize('Custom') +
+    //         ' (' + state.scale + ', ' + state.unit + ')" data-unit="' + state.unit +
+    //         '" data-scale="' + state.scale +
+    //         '" checked="checked"><span>' + localize('Custom') + ' (' + state.scale + ', ' + state.unit + ')</span></label></li>';
+    //     hasCurrent = localize('Custom') + ' (' + state.scale + ', ' + state.unit + ')';
+    // }
+    unitHtml.push('<div class="overlay"></div>', '<h3>' + localize('Unit switch') +
         '</h3>', '<p>' + hasCurrent + '</p>', '<ul>', unitCurrent, unitList.join(''), '</ul>');
     document.querySelector('#unit').innerHTML = unitHtml.join('');
 }

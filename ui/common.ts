@@ -36,7 +36,7 @@ export type ProjectData = ExportData & { colorNames: { [key: string]: string } }
 export let project: ProjectData = <ProjectData>{};
 
 export function init(data: ProjectData): void {
-    state.scale = data.scale;
+    state.scale = 1;
     state.colorFormat = data.colorFormat;
     state.unit = data.unit;
     I18N = data.languages || {};
