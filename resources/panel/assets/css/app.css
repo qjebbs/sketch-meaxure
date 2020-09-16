@@ -365,11 +365,20 @@ button{
 .input-text{
     height: 28px;
 }
+.units.selectbox{
+    float: right;
+    width: 92px;
+    margin-top: -4px;
+}
+.units.selectbox:focus .selectwrap{
+    height: 178px;
+    z-index: 1;
+}
 .input-text input{
     float: right;
     text-align: center;
     padding: 6px 10px;
-    width: 64px;
+    width: 92px;
     height: 28px;
     line-height: 16px;
     border: 0;

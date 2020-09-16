@@ -12,7 +12,7 @@
     <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="assets/js/common.js"></script>
     <script type="text/javascript">
-        var getDesignResolutionID = function (scale, units) {
+        function getDesignResolutionID(scale, units) {
             var scale = scale || 1,
                 units = units || 'px';
 
@@ -25,186 +25,192 @@
 
             return id;
 
-        },
-            getScaleWidthunits = function (id) {
-                if (id == 'custom') return false;
-                var id = id.split('-'),
-                    units = id[0],
-                    scale = id[1];
+        }
+        function getScaleWidthunits(id) {
+            if (id == 'custom') return false;
+            var id = id.split('-'),
+                units = id[0],
+                scale = id[1];
 
-                return {
-                    scale: Number(scale.replace('_', '.')),
-                    units: units.replace('_', '/')
-                }
-            },
-            checkResolution = function (DRID) {
-                $('#' + DRID).click();
-            },
-            submit = function () {
-                meaxure.postMessage('submit', {
-                    scale: $('input[name=scale]').val(),
-                    units: $('input[name=units]').val(),
-                    colorFormat: $('input[name=format]:checked').val(),
-                });
-            },
-            init = function (data) {
-                if (data.language) eval(data.language);
-                $('body').html([
-                    '<div class="container">',
-                    '<div class="options" style="height:194px">',
-                    '<div class="resolution selectbox mrb16" tabindex="0">',
-                    '<div class="selectwrap">',
-                    '<h3>' + _('Design resolution') + '</h3>',
-                    '<p></p>',
-                    '<ul>',
-                    '<li><label id="custom"><input type="radio" name="resolution-type" value="custom"><span>' + _('Custom') + '</span></label></li>',
-                    '<li><label id="px-1"><input type="radio" name="resolution-type" value="px-1"><span>' + _('Standard') + '</span></label></li>',
-                    '<li class="sub-title">' + _('iOS Devices') + '</li>',
-                    '<li><label id="pt-1"><input type="radio" name="resolution-type" value="pt-1"><span>' + _('Points') + ' @1x</span></label></li>',
-                    '<li><label id="pt-2"><input type="radio" name="resolution-type" value="pt-2"><span>' + _('Retina') + ' @2x</span></label></li>',
-                    '<li><label id="pt-3"><input type="radio" name="resolution-type" value="pt-3"><span>' + _('Retina HD') + ' @3x</span></label></li>',
-                    '<li class="sub-title">' + _('Android Devices') + '</li>',
-                    '<li><label id="dp_sp-0_75"><input type="radio" name="resolution-type" value="dp_sp-0_75"><span>' + _('LDPI') + ' @0.75x</span></label></li>',
-                    '<li><label id="dp_sp-1"><input type="radio" name="resolution-type" value="dp_sp-1"><span>' + _('MDPI') + ' @1x</span></label></li>',
-                    '<li><label id="dp_sp-1_5"><input type="radio" name="resolution-type" value="dp_sp-1_5"><span>' + _('HDPI') + ' @1.5x</span></label></li>',
-                    '<li><label id="dp_sp-2"><input type="radio" name="resolution-type" value="dp_sp-2"><span>' + _('XHDPI') + ' @2x</span></label></li>',
-                    '<li><label id="dp_sp-3"><input type="radio" name="resolution-type" value="dp_sp-3"><span>' + _('XXHDPI') + ' @3x</span></label></li>',
-                    '<li><label id="dp_sp-4"><input type="radio" name="resolution-type" value="dp_sp-4"><span>' + _('XXXHDPI') + ' @4x</span></label></li>',
-                    // '<li class="sub-title">' + _('Other Devices') + '</li>',
-                    // '<li><label id="gu-27"><input type="radio" name="resolution-type" value="gu-27"><span>' + _('Ubuntu Grid') + '</span></label></li>',
-                    // '<li class="sub-title">' + _('Web View') + '</li>',
-                    // '<li><label id="rem-12"><input type="radio" name="resolution-type" value="rem-12"><span>' + _('CSS Rem') + ' 12px</span></label></li>',
-                    // '<li><label id="rem-14"><input type="radio" name="resolution-type" value="rem-14"><span>' + _('CSS Rem') + ' 14px</span></label></li>',
-                    // '<li><label id="rem-16"><input type="radio" name="resolution-type" value="rem-16"><span>' + _('CSS Rem') + ' 16px</span></label></li>',
-                    '</ul>',
-                    '</div>',
-                    '</div>',
-                    '<div class="input-text mrb16">',
-                    '<input type="text" name="scale" value="2">',
-                    '<label for="top">' + _('Scale') + '</label>',
-                    '</div>',
-                    '<div class="input-text mrb24">',
-                    '<input type="text" name="units" value="dp/sp" disabled="disabled">',
-                    '<label for="top">' + _('Units') + '</label>',
-                    '</div>',
-                    '<h3 class="title">' + _('Color format') + '</h3>',
-                    '<div class="color-format selectbox" tabindex="0">',
-                    '<div class="selectwrap">',
-                    '<h3>' + _('Color format') + '</h3>',
-                    '<p></p>',
-                    '<ul>',
-                    '<li><label id="color-hex"><input type="radio" name="format" value="color-hex"><span>' + _('Color hex') + '</span><i>#000000 100%</i></label></li>',
-                    '<li><label id="argb-hex"><input type="radio" name="format" value="argb-hex"><span>' + _('ARGB hex') + '</span><i>#FF000000</i></label></li>',
-                    '<li><label id="css-rgba"><input type="radio" name="format" value="css-rgba"><span>' + _('RGBA CSS') + '</span><i>rgba(0, 0, 0, 1)</i></label></li>',
-                    '<li><label id="ui-color"><input type="radio" name="format" value="ui-color"><span>' + _('UIColor') + '</span><i>r: 0.0, g: 0.0, b: 0.0, a: 1.0</i></label></li>',
-                    '</ul>',
-                    '</div>',
-                    '</div>',
-                    '</div>',
-                    '<div class="footer">',
-                    '<button id="submit" class="submit">' + _('Save') + '</button>',
-                    '</div>',
-                    '</div>'
-                ].join(''));
-                var data = $.extend({
-                    scale: 1,
-                    units: 'px',
-                    colorFormat: 'color-hex',
-                    artboardOrder: 'artboard-rows'
-                }, data),
-                    id = getDesignResolutionID(data.scale, data.units);
-                $('.resolution input').change(function () {
-                    var $this = $(this),
-                        id = $this.val(),
-                        scaleWidthunits = getScaleWidthunits(id);
+            return {
+                scale: Number(scale.replace('_', '.')),
+                units: units.replace('_', '/')
+            }
+        }
+        function clickToCheck(selector) {
+            let target = $(selector);
+            if (target.find('input').is(":checked")) return;
+            target.click();
+        }
 
-                    if (!scaleWidthunits) return false;
-                    $('input[name=scale]').val(scaleWidthunits.scale);
-                    $('input[name=units]').val(scaleWidthunits.units);
-                });
-
-                checkResolution(id);
-                $('#' + data.colorFormat).click();
-                $('#' + data.artboardOrder).click();
-
-                if (id == 'custom') {
-                    $('input[name=scale]').val(data.scale);
-                    $('input[name=units]').val(data.units);
-                }
-
-                $('.selectbox').each(function (index) {
-                    var $this = $(this);
-
-                    $this.find('h3').on('click', function () {
-                        $this.blur();
-                    });
-
-                    $this.find('input').change(function () {
-                        var $parent = $this.find('input:checked').parent(),
-                            text = $parent.find('span').text();
-                        $this.find('p').html(text);
-                        $this.blur();
-                    });
-
-                    var $parentLabel = $this.find('input:checked').parent(),
-                        $parentLi = $parentLabel.parent(),
-                        text = $parentLabel.find('span').text();
-
-                    $this.find('ul').scrollTop($parentLi.position().top);
-
-                    $this.find('p').html(text);
-                });
-
-                $('input[name=scale]').keypress(function (event) {
-                    var eventObj = event || e,
-                        keyCode = eventObj.keyCode || eventObj.which;
-
-                    if ((keyCode >= 48 && keyCode <= 57) || keyCode == 46)
-                        return true;
-                    else
-                        return false;
-                });
-
-                $('input[name=units]').keypress(function (event) {
-                    var eventObj = event || e,
-                        keyCode = eventObj.keyCode || eventObj.which;
-
-                    if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122) || keyCode == 47)
-                        return true;
-                    else
-                        return false;
-                });
-
-                $('input[type=text]').keyup(function () {
-                    var scale = $('input[name=scale]').val(),
-                        units = $('input[name=units]').val();
-
-                    if (scale && units) {
-                        checkResolution(getDesignResolutionID(scale, units));
-                        $('.resolution ul').scrollTop(0);
-                        var scrollTop = $('.resolution input:checked').parent().parent().position().top;
-                        $('.resolution ul').scrollTop(scrollTop);
-                    }
-                })
-                    .focus(function () {
-                        this.style.imeMode = 'disabled';
-                    })
-                    .blur(function () {
-                        var scale = $('input[name=scale]').val(),
-                            units = $('input[name=units]').val();
-                        if (!scale) {
-                            $('input[name=scale]').val(1);
-                        }
-
-                        if (!units) {
-                            $('input[name=units]').val('px');
-                        }
-                    });
-
-                $("#submit").click(submit);
-
-                $('.container').show();
+        function checkResolution(DRID) {
+            clickToCheck('#' + DRID);
+        }
+        function checkUnit(unit) {
+            clickToCheck('#' + unit.replace('/', '_'));
+        }
+        function submit() {
+            let resp = {
+                scale: $('input[name=scale]').val(),
+                units: $('input[name=units]:checked').val(),
+                colorFormat: $('input[name=format]:checked').val(),
             };
+            // console.log(resp)
+            meaxure.postMessage('submit', resp);
+        }
+        function init(data) {
+            if (data.language) eval(data.language);
+            $('body').html(`
+<div class="container">
+    <div class="options" style="height:194px">
+        <div class="resolution selectbox mrb16" tabindex="0">
+            <div class="selectwrap">
+                <h3>${_('Design resolution')}</h3>
+                <p></p>
+                <ul>
+                    <li><label id="custom"><input type="radio" name="resolution-type" value="custom"><span>${_('Custom')}</span></label></li>
+                    <li><label id="px-1"><input type="radio" name="resolution-type" value="px-1"><span>${_('Standard')}
+                            </span></label></li>
+                    <li class="sub-title">${_('iOS Devices')}</li>
+                    <li><label id="pt-1"><input type="radio" name="resolution-type" value="pt-1"><span>${_('Points')} @1x</span></label></li>
+                    <li><label id="pt-2"><input type="radio" name="resolution-type" value="pt-2"><span>${_('Retina')} @2x</span></label></li>
+                    <li><label id="pt-3"><input type="radio" name="resolution-type" value="pt-3"><span>${_('Retina HD')} @3x</span></label></li>
+                    <li class="sub-title">${_('Android Devices')}</li>
+                    <li><label id="dp_sp-0_75"><input type="radio" name="resolution-type" value="dp_sp-0_75"><span>${_('LDPI')} @0.75x</span></label></li>
+                    <li><label id="dp_sp-1"><input type="radio" name="resolution-type" value="dp_sp-1"><span>${_('MDPI')} @1x</span></label></li>
+                    <li><label id="dp_sp-1_5"><input type="radio" name="resolution-type" value="dp_sp-1_5"><span>${_('HDPI')} @1.5x</span></label></li>
+                    <li><label id="dp_sp-2"><input type="radio" name="resolution-type" value="dp_sp-2"><span>${_('XHDPI')} @2x</span></label></li>
+                    <li><label id="dp_sp-3"><input type="radio" name="resolution-type" value="dp_sp-3"><span>${_('XXHDPI')} @3x</span></label></li>
+                    <li><label id="dp_sp-4"><input type="radio" name="resolution-type" value="dp_sp-4"><span>${_('XXXHDPI')} @4x</span></label></li>
+                </ul>
+            </div>
+        </div>
+        <div class="input-text mrb16">
+            <input type="text" name="scale" value="2">
+            <label for="top">${_('Scale')}</label>
+        </div>
+        <div class="mrb24">
+            <div class="units selectbox mrb16" tabindex="0">
+                <div class="selectwrap">
+                    <h3>${_('Units')}</h3>
+                    <p></p>
+                    <ul>
+                        <li><label id="px"><input type="radio" name="units" value="px"><span>px</span></label></li>
+                        <li><label id="pt"><input type="radio" name="units" value="pt"><span>pt</span></label></li>
+                        <li><label id="dp_sp"><input type="radio" name="units" value="dp/sp"><span>dp/sp</span></label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <label for="top">${_('Units')}</label>
+        </div>
+        <h3 class="title">${_('Color format')}</h3>
+        <div class="color-format selectbox" tabindex="0">
+            <div class="selectwrap">
+                <h3>${_('Color format')}</h3>
+                <p></p>
+                <ul>
+                    <li><label id="color-hex"><input type="radio" name="format" value="color-hex"><span>${_('Color hex')}</span><i>#000000 100%</i></label></li>
+                    <li><label id="argb-hex"><input type="radio" name="format" value="argb-hex"><span>${_('ARGB hex')}</span><i>#FF000000</i></label></li>
+                    <li><label id="css-rgba"><input type="radio" name="format" value="css-rgba"><span>${_('RGBA CSS')}</span><i>rgba(0, 0, 0, 1)</i></label></li>
+                    <li><label id="ui-color"><input type="radio" name="format" value="ui-color"><span>${_('UIColor')}</span><i>r: 0.0, g: 0.0, b: 0.0, a: 1.0</i></label></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <button id="submit" class="submit">${_('Save')}</button>
+    </div>
+</div>'`);
+            data = $.extend({
+                scale: 1,
+                units: 'px',
+                colorFormat: 'color-hex',
+            }, data);
+            let id = getDesignResolutionID(data.scale, data.units);
+            $('.resolution input').change(function () {
+                var $this = $(this),
+                    id = $this.val(),
+                    scaleWidthunits = getScaleWidthunits(id);
+
+                if (!scaleWidthunits) return false;
+                $('input[name=scale]').val(scaleWidthunits.scale);
+                setTimeout(() => checkUnit(scaleWidthunits.units), 0);
+            });
+
+            checkResolution(id);
+            $('#' + data.colorFormat).click();
+            if (id == 'custom') {
+                $('input[name=scale]').val(data.scale);
+            }
+
+            checkUnit(data.units);
+
+            $('.selectbox').each(function (index) {
+                var $this = $(this);
+
+                $this.find('h3').on('click', function () {
+                    $this.blur();
+                });
+
+                $this.find('input').change(function () {
+                    var $parent = $this.find('input:checked').parent(),
+                        text = $parent.find('span').text();
+                    $this.find('p').html(text);
+                    $this.blur();
+                });
+
+                var $parentLabel = $this.find('input:checked').parent(),
+                    $parentLi = $parentLabel.parent(),
+                    text = $parentLabel.find('span').text();
+
+                $this.find('ul').scrollTop($parentLi.position().top);
+
+                $this.find('p').html(text);
+            });
+
+            $('input[name=scale]').keypress(function (event) {
+                var eventObj = event || e,
+                    keyCode = eventObj.keyCode || eventObj.which;
+
+                if ((keyCode >= 48 && keyCode <= 57) || keyCode == 46)
+                    return true;
+                else
+                    return false;
+            });
+            function updateResolution() {
+                var scale = $('input[name=scale]').val(),
+                    units = $('input[name=units]:checked').val();
+
+                if (scale && units) {
+                    setTimeout(() => checkResolution(getDesignResolutionID(scale, units)), 0);
+                    $('.resolution ul').scrollTop(0);
+                    var scrollTop = $('.resolution input:checked').parent().parent().position().top;
+                    $('.resolution ul').scrollTop(scrollTop);
+                }
+            }
+            $('.units input').change(updateResolution);
+            $('input[type=text]')
+                .keyup(updateResolution)
+                .focus(function () {
+                    this.style.imeMode = 'disabled';
+                })
+                .blur(function () {
+                    var scale = $('input[name=scale]').val(),
+                        units = $('input[name=units]:checked').val();
+                    if (!scale) {
+                        $('input[name=scale]').val(1);
+                    }
+
+                    if (!units) {
+                        checkUnit('px');
+                    }
+                });
+
+            $("#submit").click(submit);
+
+            $('.container').show();
+        };
     </script>
 </head>
 

@@ -5,17 +5,17 @@ export function unit() {
         {
             name: localize('Device switch'),
             units: [
-                { name: localize('Web View') + '- px', unit: 'px', scale: 1 },
-                { name: localize('iOS Devices') + '- pt', unit: 'pt', scale: 1 },
-                { name: localize('Android Devices') + '- dp/sp', unit: 'dp/sp', scale: 1 },
+                { name: localize('Web View') + ' - px', unit: 'px', scale: 1 },
+                { name: localize('iOS Devices') + ' - pt', unit: 'pt', scale: 1 },
+                { name: localize('Android Devices') + ' - dp/sp', unit: 'dp/sp', scale: 1 },
             ]
         },
         {
             name: localize('Convert to pixels'),
             units: [
-                { name: 'IOS' + localize('Points') + ' @1x', unit: 'px', scale: 1 },
-                { name: 'IOS' + localize('Retina') + ' @2x', unit: 'px', scale: 2 },
-                { name: 'IOS' + localize('Retina HD') + ' @3x', unit: 'px', scale: 3 },
+                { name: 'IOS ' + localize('Points') + ' @1x', unit: 'px', scale: 1 },
+                { name: 'IOS ' + localize('Retina') + ' @2x', unit: 'px', scale: 2 },
+                { name: 'IOS ' + localize('Retina HD') + ' @3x', unit: 'px', scale: 3 },
                 { name: 'Android LDPI @0.75x', unit: 'px', scale: .75 },
                 { name: 'Android MDPI @1x', unit: 'px', scale: 1 },
                 { name: 'Android HDPI @1.5x', unit: 'px', scale: 1.5 },
