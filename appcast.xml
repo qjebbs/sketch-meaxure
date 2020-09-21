@@ -62,8 +62,9 @@
     <item>
       <title>Changelog</title>
       <description>
-        Fix: Wrong marker postion, when drawing sizes and overlay for target in groups
-        Fix: Cannot select elements behind group, #15
+        Fix: Not hide note layers inside symbol, #21
+        Fix: Tint color of symbol not exported, #24
+        Fix: An error when export text fragments
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
