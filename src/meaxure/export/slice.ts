@@ -31,13 +31,15 @@ export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer)
     }
     if (!sliceLayer) return;
     let layerID = sliceLayer.id;
+    let layerName = sliceLayer.name;
+    layerData.objectID = layerID;
     // export it, if haven't yet
     if (!sliceCache[layerID]) {
         NSFileManager.defaultManager()
             .createDirectoryAtPath_withIntermediateDirectories_attributes_error(assetsPath, true, nil, nil);
         sliceCache[layerID] = layerData.exportable = getExportable(sliceLayer);
         slices.push({
-            name: layerData.name,
+            name: layerName,
             objectID: layerID,
             rect: layerData.rect,
             exportable: layerData.exportable
