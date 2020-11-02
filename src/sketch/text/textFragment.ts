@@ -2,6 +2,8 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
+import { sketch } from "..";
+
 export interface TextFragment {
     length: number;
     location: number;
@@ -17,14 +19,29 @@ export function getFragments(layer: Layer): TextFragment[] {
     let fragments: any[] = layer.sketchObject.attributedString().treeAsDictionary().value.attributes;
     let results: TextFragment[] = [];
     let styleStr = JSON.stringify(layer.style);
+
+    let styleBase = JSON.parse(styleStr);
+    if (styleBase.fontAxes) {
+        // fontAxes issue: https://github.com/sketch-hq/SketchAPI/issues/810
+        delete styleBase.fontAxes.Weight;
+    } else {
+        // bypass Sketch API evaluating Object.keys() on null fontAxes
+        delete styleBase.fontAxes;
+    }
+    styleStr = JSON.stringify(styleBase);
+
     for (let i = 0; i < fragments.length; i++) {
         let fragment = fragments[i];
         let styleBase = JSON.parse(styleStr);
-        let fontFamily = (fragment.NSFont && fragment.NSFont.family) ? fragment.NSFont.family : layer.style.fontFamily;
+        let fontFamily = (fragment.NSFont && fragment.NSFont.family) ?
+            String(fragment.NSFont.family) :
+            layer.style.fontFamily;
         let fontSize = (fragment.NSFont && fragment.NSFont.attributes && fragment.NSFont.attributes.NSFontSizeAttribute) ?
-            fragment.NSFont.attributes.NSFontSizeAttribute : layer.style.fontSize;
+            Number(fragment.NSFont.attributes.NSFontSizeAttribute) :
+            layer.style.fontSize;
         let textColor = (fragment.MSAttributedStringColorAttribute && fragment.MSAttributedStringColorAttribute.value) ?
-            parseColor(fragment.MSAttributedStringColorAttribute.value) : '#000000FF';
+            parseColor(fragment.MSAttributedStringColorAttribute.value) :
+            '#000000FF';
         results.push(<TextFragment>{
             location: fragment.location,
             length: fragment.length,
