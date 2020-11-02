@@ -65,9 +65,8 @@
     <item>
       <title>Changelog</title>
       <description>
-        Fix: Not hide note layers inside symbol, #21
-        Fix: Tint color of symbol not exported, #24
-        Fix: An error when export text fragments
+        Fix: Export exportable 
+        Fix: Errors when export text fragments, #28, #31
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
