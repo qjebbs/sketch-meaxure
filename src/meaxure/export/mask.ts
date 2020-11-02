@@ -67,7 +67,7 @@ export function updateMaskStackBeforeLayer(layer: Layer, artboard: Artboard) {
         let sibilings = (layer.parent as Group).layers;
         for (let i = layer.index + 1; i < sibilings.length; i++) {
             if (sibilings[i].shouldBreakMaskChain) {
-                breakMaskLayer = layer;
+                breakMaskLayer = sibilings[i];
                 break;
             }
         }
