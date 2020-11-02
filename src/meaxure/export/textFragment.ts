@@ -120,16 +120,21 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
         for (let element of line.elements) {
             if (!currentFragment) currentFragment = fragments.shift();
             while (
+                currentFragment.text.startsWith('\r') || // new line
                 currentFragment.text.startsWith('\n') || // new paragraph
                 currentFragment.text.startsWith('\u2028') // a LINE SEPARATOR, new line
             ) {
+                let count = 1;
+                if (currentFragment.text.startsWith('\r\n')) {
+                    count = 2;
+                }
                 // if currentFragment.text start with \n, it creates a new line, which doesn't appear in svg.
                 // so just push a null (presents a new paragraph) for it, and split the fragment
                 let leftPart: TextFragment;
-                [leftPart, currentFragment] = splitFragment(currentFragment, 1);
+                [leftPart, currentFragment] = splitFragment(currentFragment, count);
                 if (isPrevNewLine) fragmentsByLines.push([]);
                 // push a null to represent a new paragraph
-                if (leftPart.text === '\n') fragmentsByLines.push(null);
+                if (leftPart.text === '\n' || leftPart.text === '\r\n') fragmentsByLines.push(null);
                 if (!currentFragment) currentFragment = fragments.shift();
                 isPrevNewLine = true;
             }
@@ -140,6 +145,7 @@ function getFragmentsByLines(layer: Text, fragments: TextFragment[]): TextFragme
             } else {
                 // element is short than fragment, fragment wrapped
                 let leftPart: TextFragment;
+                // console.log(`split "${currentFragment.text}" (${currentFragment.length}) for ${element}`);
                 [leftPart, currentFragment] = splitFragment(currentFragment, element.length);
                 lineFragments.push(leftPart);
             }
