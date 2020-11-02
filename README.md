@@ -1,6 +1,6 @@
 # Sketch MeaXure
 
-> Thanks [@atom](https://github.com/utom) for his great work, `Sketch Measure` is really a life saver when I share design specifications to co-workers.
+> Thanks [@utom](https://github.com/utom) for his great work, `Sketch Measure` is really a life saver when I share design specifications to co-workers.
 > But it lack of maintenance in recent year, that's why I start this project.
 
 Sketch MeaXure is a re-implemention of `Sketch Measure` with TypeScript, uses Sketch JavaScript API. 

@@ -13,7 +13,7 @@ let tintStack: Group[] = [];
 export function clearTintStack(): void {
     tintStack = [];
 }
-function pushStackIfHasTint(layer: Layer): void {
+export function pushStackIfHasTint(layer: Layer): void {
     if (layer.type !== sketch.Types.Group) return;
     if (!layer.style.fills || !layer.style.fills.filter(f => f.enabled).length) return;
     // logger.debug(`Find tint in ${layer.name}`)

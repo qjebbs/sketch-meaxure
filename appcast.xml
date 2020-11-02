@@ -6,6 +6,12 @@
     <description>Make it a fun to create spec for developers and teammates</description>
     <language>en</language>
     <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.11/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.11"/>
+    </item>
+    <item>
+      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.10/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.10"/>
+    </item>
+    <item>
       <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.9/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.9"/>
     </item>
     <item>
@@ -59,8 +65,8 @@
     <item>
       <title>Changelog</title>
       <description>
-        Fix: Wrong marker postion, when drawing sizes and overlay for target in groups
-        Fix: Cannot select elements behind group, #15
+        Fix: Export exportable 
+        Fix: Errors when export text fragments, #28, #31
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
