@@ -72,6 +72,11 @@ export enum SMType {
     shape = "shape",
     group = "group",
 };
+
+export interface SMFlow {
+    targetId: string | 'back';
+    animationType: AnimationType;
+}
 export interface LayerData {
     // shared
     objectID: string,
@@ -98,6 +103,8 @@ export interface LayerData {
     exportable: SMExportable[],
     // css
     css: string[],
+    // flow
+    flow?: SMFlow,
 }
 export interface SMNote { rect: SMRect, note: string }
 export interface ArtboardData {
@@ -110,9 +117,16 @@ export interface ArtboardData {
     width: number,
     height: number,
     imagePath?: string,
+    imageIconPath?: string,
     imageBase64?: string,
     notes: SMNote[],
     layers: LayerData[],
+    flowStartPoint: boolean,
+}
+
+export interface SMColorAsset {
+    name: string,
+    color: SMColor,
 }
 
 export interface SMColorAsset {
@@ -120,7 +134,10 @@ export interface SMColorAsset {
     color: SMColor,
 }
 export interface ExportData {
-    scale: number,
+    /**
+     * Design resolution, 2 represents @2x
+     */
+    resolution: number,
     unit: string,
     colorFormat: string,
     artboards: ArtboardData[],

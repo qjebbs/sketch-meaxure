@@ -66,7 +66,7 @@ export async function exportSpecification() {
     }
     let template = NSString.stringWithContentsOfFile_encoding_error(getResourcePath() + "/template.html", 4, nil);
     let data: ExportData = {
-        scale: context.configs.scale,
+        resolution: context.configs.resolution,
         unit: context.configs.units,
         colorFormat: context.configs.format,
         artboards: [],
@@ -94,6 +94,7 @@ export async function exportSpecification() {
         data.artboards[i].objectID = artboard.id;
         data.artboards[i].width = artboard.frame.width;
         data.artboards[i].height = artboard.frame.height;
+        data.artboards[i].flowStartPoint = artboard.flowStartPoint;
         // stopwatch.tik('collect artboards info');
         for (let layer of select.children) {
             layerIndex++;
@@ -128,7 +129,7 @@ export async function exportSpecification() {
             // stopwatch.tik('show process');
         }
         if (results.advancedMode) {
-            exportArtboardAdvanced(artboard, data.artboards[i], savePath, i);
+            exportArtboardAdvanced(artboard, data, savePath, i);
         } else {
             exportArtboard(artboard, data, i, savePath, template);
         }
@@ -142,6 +143,11 @@ export async function exportSpecification() {
             content: buildTemplate(template, data),
             path: savePath,
             fileName: "index.html"
+        });
+        writeFile({
+            content: '<meta http-equiv="refresh" content="0;url=index.html#p">',
+            path: savePath,
+            fileName: "proto.html"
         });
         selectingPath = savePath + "/index.html";
     }
@@ -164,31 +170,50 @@ function getLayerTask(artboard: Artboard, layer: Layer, data: ArtboardData, byIn
     });
 }
 
-function exportArtboardAdvanced(artboard: Artboard, data: ArtboardData, savePath: string, index: number) {
+function exportArtboardAdvanced(artboard: Artboard, data: ExportData, savePath: string, i: number) {
     // data.artboards[artboardIndex].imagePath = "preview/" + objectID + ".png";
-    data.imagePath = "preview/" + encodeURI(data.slug) + ".png";
+    data.artboards[i].imagePath = "preview/" + encodeURI(data.artboards[i].slug) + ".png";
+    data.artboards[i].imageIconPath = "preview/icons/" + encodeURI(data.artboards[i].slug) + ".png";
+    exportImage(
+        artboard,
+        {
+            format: 'png',
+            // always export @2x (logic points * 2)
+            // if design resolution @2x, we export as is (scale=1)
+            // if design resolution @4x, we export half size (scale=0.5)
+            scale: 2 / data.resolution,
+        },
+        savePath + "/preview", data.artboards[i].slug
+    );
 
     exportImage(artboard, {
         format: 'png',
-        scale: 2,
-    }, savePath + "/preview", data.slug);
+        scale: 128 / Math.max(data.artboards[i].width, data.artboards[i].height),
+    }, savePath + "/preview/icons", data.artboards[i].slug);
 
     writeFile({
-        content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#artboard" + index + "\">",
+        content: "<meta http-equiv=\"refresh\" content=\"0;url=../index.html#" + i + "\">",
         path: savePath + "/links",
-        fileName: data.slug + ".html"
+        fileName: data.artboards[i].slug + ".html"
     });
 }
 
 function exportArtboard(artboard: Artboard, exportData: ExportData, index: number, savePath: string, template: string) {
     let data = JSON.parse(JSON.stringify(exportData.artboards[index]));
     let imageBase64 = exportImageToBuffer(
-        artboard, { format: 'png', scale: 2 }
+        artboard,
+        {
+            format: 'png',
+            // always export @2x (logic points * 2)
+            // if design resolution @2x, we export as is (scale=1)
+            // if design resolution @4x, we export half size (scale=0.5)
+            scale: 2 / exportData.resolution,
+        }
     ).toString('base64');
 
     data.imageBase64 = 'data:image/png;base64,' + imageBase64;
     let newData = <ExportData>{
-        scale: exportData.scale,
+        resolution: exportData.resolution,
         unit: exportData.unit,
         colorFormat: exportData.colorFormat,
         artboards: [data],

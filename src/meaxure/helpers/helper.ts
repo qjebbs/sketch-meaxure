@@ -13,7 +13,7 @@ export function convertUnit(value: number | number[], isText?: boolean, percenta
         if (units.length > 1 && isText) {
             unit = units[1];
         }
-        let scale = context.configs.scale;
+        let scale = context.configs.resolution;
         let tempValues = [];
         value.forEach(function (element) {
             tempValues.push(Math.round(element / scale * 10) / 10);
@@ -28,7 +28,7 @@ export function convertUnit(value: number | number[], isText?: boolean, percenta
                 return Math.round((value / artboardRect.height) * 1000) / 10 + "%";
             }
         }
-        let val = Math.round(value / context.configs.scale * 10) / 10;
+        let val = Math.round(value / context.configs.resolution * 10) / 10;
         let units: string[] = context.configs.units.split("/");
         let unit = units[0];
         if (units.length > 1 && isText) {
@@ -38,12 +38,12 @@ export function convertUnit(value: number | number[], isText?: boolean, percenta
     }
 }
 
-export function lengthUnit(value: number, t?, flag?: boolean) {
-    if (t && !flag) return Math.round(value / t * 1e3) / 10 + "%";
-    value = Math.round(value / context.configs.scale * 10) / 10;
+export function lengthUnit(value: number, percentageToValue?: number, isText?: boolean) {
+    if (percentageToValue && !isText) return Math.round(value / percentageToValue * 1e3) / 10 + "%";
+    value = Math.round(value / context.configs.resolution * 10) / 10;
     let units = context.configs.units.split("/"),
         unit = units[0];
-    if (flag && units.length > 1) unit = units[1];
+    if (isText && units.length > 1) unit = units[1];
     return "" + value + unit;
 }
 

@@ -9,10 +9,16 @@ export class ConfigsMaster {
     constructor(document) {
         this._document = document;
     }
-    get scale(): number {
+    /**
+     * Design resolution, 2 represents @2x
+     */
+    get resolution(): number {
         return this._readDocumentSetting<number>('scale', 1);
     }
-    set scale(value: number) {
+    /**
+     * Design resolution, 2 represents @2x
+     */
+    set resolution(value: number) {
         this._setDocumentSetting<number>('scale', value);
     }
     get units(): string {

@@ -13,15 +13,7 @@ module.exports = function (config, isPluginCommand) {
     /** you can change config here **/
     if (!isPluginCommand) return;
     let debug = !!process.env.DEBUG;
-    if (!debug) {
-        let dir = 'sketch-meaxure.sketchplugin/Contents/Sketch';
-        fs.readdirSync(dir).forEach(file => {
-            if (file.endsWith('.js.map')) {
-                console.log('remove js map file', file);
-                fs.unlinkSync(path.resolve(dir, file));
-            }
-        })
-    }
+    if (!debug) clearMapFilesForProduction('sketch-meaxure.sketchplugin/Contents');
     config.mode = debug ? 'development' : 'production';
     config.entry = {
         mark: './src/index.ts',
@@ -40,4 +32,18 @@ module.exports = function (config, isPluginCommand) {
     //     path: path.resolve(__dirname, skpmConfig.main, 'Contents', 'Sketch'),
     //     filename: '[name]_bundle.js'
     // }
+}
+
+function clearMapFilesForProduction(dir) {
+    fs.readdirSync(dir).forEach(file => {
+        let fullName = path.resolve(dir, file);
+        if (fs.statSync(fullName).isDirectory()) {
+            clearMapFilesForProduction(fullName);
+            return;
+        }
+        if (file.endsWith('.js.map')) {
+            console.log('remove js map file', file);
+            fs.unlinkSync(fullName);
+        }
+    })
 }

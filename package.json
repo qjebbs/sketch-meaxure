@@ -20,10 +20,12 @@
     ]
   },
   "scripts": {
-    "build": "skpm-build",
+    "build": "node scripts/buildTmpl.js && skpm-build",
     "watch": "export DEBUG=1; skpm-build --watch",
     "start": "export DEBUG=1; skpm-build --watch --run",
-    "postinstall": "npm run build && skpm-link"
+    "postinstall": "npm run build && skpm-link",
+    "tmpl": "export DEBUG=1; node scripts/buildTmpl.js",
+    "play": "node scripts/playground.js"
   },
   "devDependencies": {
     "@skpm/builder": "^0.7.0",

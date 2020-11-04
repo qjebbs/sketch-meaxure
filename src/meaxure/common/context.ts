@@ -10,9 +10,10 @@ interface Context {
     document: any;
     selection: any;
     scriptPath: string;
+    script?: string;
 }
 
-interface SMContext {
+export interface SMContext {
     sketchObject: Context;
     document: Document;
     selection: Selection;
