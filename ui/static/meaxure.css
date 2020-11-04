@@ -1107,30 +1107,28 @@ main {
 }
 
 .exportable {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	border-radius: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #191A1E;
+    border: 1px solid #2D2F31;
+    border-radius: 4px;
 }
 
 .exportable li {
-	padding: 0 8px;
-	height: 50px;
-	line-height: 50px;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	border-radius: 2px;
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAATFJREFUWAntl0sLAjEMhH0/LqIe/f//zZviSVF85EMWutMpuBd76YC4mWZjSaZJHY889kGvZOka9lk4zIPh8MM/xTqMXUrwPFHi33bbQPUMjKPmCE5xD+Ip5DTsuXCYN8Phh3+KVxjE7WEWlqodBxTsVLxhUeBOBorXuGxUY7ZTUD8DaMCJCAFRxxRwzpdaI+YUCFh94TTmW1/sgrhWTMBT55B8t1acJGP4Y/VOWH0DiLAkIlUxas/meXBHk/htcKp44mVdk2NYwru0ILzzK52uzLd6CdoGqJWKhRIv4qPznFb6YFGwDFtrztxn/qcg28TtARFmMzo4NuXm+aX39tdA8YrSfUJj1p+GTYRDRZhdKqP4TsT4uUutFaFrrz//tYofohVrhyOmXmDtfaJpoGXgA8vkM5+Aw1d2AAAAAElFTkSuQmCC) repeat;
-	background-color: rgba(255,255,255,.05);
+    position: relative;
+    padding: 0 8px;
+    height: 32px;
+    line-height: 32px;
+    border-bottom: 1px solid #222;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .exportable li a {
-	text-decoration: none;
-	outline: 0;
-	display: flex;
-	overflow: hidden;
-	align-items: center;
-	color: inherit;
+    color: #FFF;
+    text-decoration: none;
+    outline: 0;
 }
 
 .exportable li:last-child {
@@ -1138,10 +1136,12 @@ main {
 }
 
 .exportable img {
-	width: 32px;
-  	max-height: 32px;
-	margin: 8px;
-	display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
 }
 
 .asset-list li,
