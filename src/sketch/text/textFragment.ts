@@ -20,10 +20,15 @@ export function getFragments(layer: Layer): TextFragment[] {
     let results: TextFragment[] = [];
     let styleStr = JSON.stringify(layer.style);
 
-    let styleBase = JSON.parse(styleStr);
+    let styleBase = JSON.parse(styleStr) as Style;
     if (styleBase.fontAxes) {
         // fontAxes issue: https://github.com/sketch-hq/SketchAPI/issues/810
-        delete styleBase.fontAxes.Weight;
+        styleBase.fontAxes = Object.assign({}, <FontAxes>{
+            id: styleBase.fontAxes.id,
+            min: styleBase.fontAxes.min,
+            max: styleBase.fontAxes.max,
+            value: styleBase.fontAxes.value
+        })
     } else {
         // bypass Sketch API evaluating Object.keys() on null fontAxes
         delete styleBase.fontAxes;
@@ -32,7 +37,7 @@ export function getFragments(layer: Layer): TextFragment[] {
 
     for (let i = 0; i < fragments.length; i++) {
         let fragment = fragments[i];
-        let styleBase = JSON.parse(styleStr);
+        let styleBase = JSON.parse(styleStr) as Style;
         let fontFamily = (fragment.NSFont && fragment.NSFont.family) ?
             String(fragment.NSFont.family) :
             layer.style.fontFamily;
