@@ -9,64 +9,15 @@
       <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.11/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.11"/>
     </item>
     <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.10/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.10"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.9/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.9"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.7/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.7"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.6/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.6"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.5/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.5"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.4/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.4"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.3/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.3"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.2/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.2"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.1/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.1"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.2.0/sketch-meaxure.sketchplugin.zip" sparkle:version="3.2.0"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.6/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.6"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.5/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.5"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.4/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.4"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.3/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.3"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.2/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.2"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.1/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.1"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.1.0/sketch-meaxure.sketchplugin.zip" sparkle:version="3.1.0"/>
-    </item>
-    <item>
-      <enclosure url="https://github.com/qjebbs/sketch-meaxure/releases/download/v3.0.0/sketch-meaxure.sketchplugin.zip" sparkle:version="3.0.0"/>
-    </item>
-    <item>
       <title>Changelog</title>
       <description>
-        Fix: Export exportable 
-        Fix: Errors when export text fragments, #28, #31
+        New: Rewrite export template with TypeScript.
+        New: Prototype flow support.
+        Improvement: Use small preview in artboard list, avoid lagging
+        Improvement: keep viewport position after zoom
+        Improvement: New scale and unit switch logic
+        Fix: A bug exporting masked layers
+        Fix: Another fragments export bug, #36
 			</description>
       <enclosure url="" sparkle:version="3.1.0" type="application/octet-stream"/>
     </item>
