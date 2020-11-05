@@ -19,8 +19,8 @@ export function settingsPanel() {
     let panel = createWebviewPanel({
         identifier: 'co.jebbs.sketch-meaxure.settings',
         url: getResourcePath() + "/panel/settings.html",
-        width: 240,
-        height: 316,
+        width: 280,
+        height: 338,
     });
     if (!panel) return undefined;
 

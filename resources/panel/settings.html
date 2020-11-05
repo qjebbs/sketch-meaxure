@@ -62,7 +62,7 @@
             if (data.language) eval(data.language);
             $('body').html(`
 <div class="container">
-    <div class="options" style="height:194px">
+    <div class="options" style="height:216px">
         <div class="resolution selectbox mrb16" tabindex="0">
             <div class="selectwrap">
                 <h3>${_('Design resolution')}</h3>
@@ -85,10 +85,6 @@
                 </ul>
             </div>
         </div>
-        <div class="input-text mrb16">
-            <input type="text" name="scale" value="2">
-            <label for="top">${_('Scale')}</label>
-        </div>
         <div class="mrb24">
             <div class="units selectbox mrb16" tabindex="0">
                 <div class="selectwrap">
@@ -102,8 +98,13 @@
                     </ul>
                 </div>
             </div>
-            <label for="top">${_('Units')}</label>
+            <label for="top">${_('Device Unit')}</label>
         </div>
+        <div class="input-text mrb16">
+            <input type="text" name="scale" value="2">
+            <label for="top">${_('Design Resolution')}</label>
+        </div>
+        <p id="resolution-tip" class="mrb16" style="font-size: 12px; color: #999; text-align: right;"></p>
         <h3 class="title">${_('Color format')}</h3>
         <div class="color-format selectbox" tabindex="0">
             <div class="selectwrap">
@@ -134,6 +135,8 @@
                     scaleWidthunits = getScaleWidthunits(id);
 
                 if (!scaleWidthunits) return false;
+                var tip = $('#resolution-tip');
+                tip.text(_('%@px on Sketch = 1%@ on device', scaleWidthunits.scale, scaleWidthunits.units));
                 $('input[name=scale]').val(scaleWidthunits.scale);
                 setTimeout(() => checkUnit(scaleWidthunits.units), 0);
             });
@@ -179,9 +182,11 @@
                     return false;
             });
             function updateResolution() {
-                var scale = $('input[name=scale]').val(),
-                    units = $('input[name=units]:checked').val();
+                var scale = $('input[name=scale]').val();
+                var units = $('input[name=units]:checked').val();
+                var tip = $('#resolution-tip');
 
+                tip.text(_('%@px on Sketch = 1%@ on device', scale, units));
                 if (scale && units) {
                     setTimeout(() => checkResolution(getDesignResolutionID(scale, units)), 0);
                     $('.resolution ul').scrollTop(0);
@@ -208,7 +213,7 @@
                 });
 
             $("#submit").click(submit);
-
+            updateResolution()
             $('.container').show();
         };
     </script>

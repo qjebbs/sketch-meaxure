@@ -238,7 +238,7 @@ button{
 }
 .selectwrap ul{
     position: relative;
-    height: 240px;
+    height: 262px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -300,7 +300,7 @@ button{
     outline: 0;
 }
 .selectbox:focus .selectwrap{
-    height: 268px;
+    height: 290px;
     z-index: 1;
 }
 .selectbox:focus .selectwrap h3{
@@ -371,7 +371,7 @@ button{
     margin-top: -4px;
 }
 .units.selectbox:focus .selectwrap{
-    height: 178px;
+    height: 140px;
     z-index: 1;
 }
 .input-text input{
@@ -398,7 +398,7 @@ button{
     font-weight: normal;
 }
 .color-format:focus .selectwrap{
-    margin-top: -166px;
+    margin-top: -188px;
 }
 .color-format .selectwrap label{
     height: auto;

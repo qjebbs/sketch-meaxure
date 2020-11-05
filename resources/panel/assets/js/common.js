@@ -1,7 +1,12 @@
 var I18N = {};
 var lang = navigator.language.toLocaleLowerCase();
-var _ = function (str) {
-    return (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
+var _ = function (str, ...data) {
+    str = (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
+    let idx = -1;
+    return str.replace(/\%\@/gi, function () {
+        idx++;
+        return data[idx];
+    });
 }
 
 function onInitOK() {
