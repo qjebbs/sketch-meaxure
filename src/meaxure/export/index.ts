@@ -124,7 +124,7 @@ export async function exportSpecification() {
             // or we get a promise reject of reply timeout.
             processingPanel.postMessage('process', {
                 percentage: Math.round(layerIndex / results.layersCount * 100),
-                text: localize("Processing layer %@ of %@", [layerIndex, results.layersCount])
+                text: localize("Processing layer %@ of %@", layerIndex, results.layersCount)
             });
             // stopwatch.tik('show process');
         }
@@ -154,7 +154,7 @@ export async function exportSpecification() {
     // stopwatch.tik('generate index.html');
     onFinishCleanup();
     sketch.UI.showFiles([selectingPath]);
-    sketch.UI.message(localize("Export complete! Takes %s seconds", [stopwatch.elpased() / 1000]));
+    sketch.UI.message(localize("Export complete! Takes %@ seconds", stopwatch.elpased() / 1000));
     // let statistics = stopwatch.statistics()
     // sketch.UI.alert('statistics', Object.keys(statistics).map(key => `${key}: ${statistics[key] / 1000}s`).join('\n'))
 }

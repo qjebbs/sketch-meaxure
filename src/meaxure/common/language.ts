@@ -17,7 +17,7 @@ export function getLanguageObject(): { [key: string]: string } {
     return I18N;
 }
 
-export function localize(str, data?) {
+export function localize(str: string, ...data) {
     if (!currentLang) initialize();
     str = (I18N[currentLang] && I18N[currentLang][str]) ? I18N[currentLang][str] : str;
     let idx = -1;

@@ -38,7 +38,7 @@ export async function renameOldMarkers() {
             }
             processingPanel.postMessage('process', {
                 percentage: Math.round((i + (j + 1) / page.layers.length) / doc.pages.length * 100),
-                text: localize("Processing artboard %@ of %@", [i + 1, doc.pages.length])
+                text: localize("Processing artboard %@ of %@", i + 1, doc.pages.length)
             });
         }
     }
