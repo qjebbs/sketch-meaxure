@@ -65,6 +65,10 @@ export function extendLayer() {
                 let attribute = new String(layerCSSAttributes[i]).toString();
                 css.push(attribute);
             }
+            if (this.sketchObject.font && this.sketchObject.font()) {
+                const fontWeightCss = `font-weight: ${AppKitWeightToCssWeightIndex[Number(NSFontManager.sharedFontManager().weightOfFont(this.sketchObject.font()))]};`;
+                css.push(fontWeightCss);
+            }
             return css;
         }
     });
@@ -101,3 +105,5 @@ export function extendLayer() {
         alignLayersByPosition(this, target, position);
     };
 }
+
+const AppKitWeightToCssWeightIndex = [100, 100, 100, 200, 300, 400, 500, 500, 600, 700, 800, 900, 900, 900, 900, 900];
