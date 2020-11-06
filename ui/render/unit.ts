@@ -25,10 +25,14 @@ export function unit() {
             ]
         },
         {
-            name: localize('Convert to rem'),
-            units: [{ name: 'CSS Rem 12px', unit: 'rem', scale: 1 / 12 },
-            { name: 'CSS Rem 14px', unit: 'rem', scale: 1 / 14 },
-            { name: 'CSS Rem 16px', unit: 'rem', scale: 1 / 16 }
+            name: localize('Convert to others'),
+            units: [
+                { name: 'CSS Rem 8px', unit: 'rem', scale: 1 / 8 },
+                { name: 'CSS Rem 10px', unit: 'rem', scale: 1 / 10 },
+                { name: 'CSS Rem 12px', unit: 'rem', scale: 1 / 12 },
+                { name: 'CSS Rem 14px', unit: 'rem', scale: 1 / 14 },
+                { name: 'CSS Rem 16px', unit: 'rem', scale: 1 / 16 },
+                { name: 'Ubuntu Grid', unit: 'gu', scale: 1 / 27 }
             ]
         }
     ];
