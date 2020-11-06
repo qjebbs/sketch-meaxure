@@ -46,6 +46,8 @@ export function setFlowMode(enabled: boolean) {
     flowMode = enabled;
     let viewer = document.querySelector('.screen-viewer') as HTMLDivElement;
     let screen = document.querySelector('#screen') as HTMLDivElement;
+    let selectedTabArtboards = document.querySelector('.icon-artboards') as HTMLDivElement;
+    let showNavbar = document.querySelector('.navbar') as HTMLDivElement;
     let currentRect = screen.getBoundingClientRect();
     let inputFlowMode = document.querySelector('#flow-mode') as HTMLInputElement;
     // set checked won't trigge change event
@@ -78,6 +80,8 @@ export function setFlowMode(enabled: boolean) {
         hideNavBar();
     } else {
         screen.classList.remove('flow');
+        selectedTabArtboards.classList.add('current');
+        showNavbar.classList.add('on');
     }
     updateScreen();
     alignElement({
