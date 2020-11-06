@@ -128,3 +128,11 @@ declare namespace NSData {
 declare namespace NSSavePanel {
     function savePanel();
 }
+
+interface SharedFontManager {
+    weightOfFont(NSFont: any): number;
+}
+
+declare namespace NSFontManager {
+    function sharedFontManager(): SharedFontManager;
+}

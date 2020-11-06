@@ -16,7 +16,8 @@ export function getFragmentsCount(layer: Layer): number {
     return fragments.length;
 }
 export function getFragments(layer: Layer): TextFragment[] {
-    let fragments: any[] = layer.sketchObject.attributedString().treeAsDictionary().value.attributes;
+    let TextMSAttributedString = layer.sketchObject.attributedString();
+    let fragments: any[] = TextMSAttributedString.treeAsDictionary().value.attributes;
     let results: TextFragment[] = [];
     let styleStr = JSON.stringify(layer.style);
 
@@ -44,6 +45,9 @@ export function getFragments(layer: Layer): TextFragment[] {
         let fontSize = (fragment.NSFont && fragment.NSFont.attributes && fragment.NSFont.attributes.NSFontSizeAttribute) ?
             Number(fragment.NSFont.attributes.NSFontSizeAttribute) :
             layer.style.fontSize;
+        let fontWeight = TextMSAttributedString.attributedString().fontAttributesInRange ?
+            NSFontManager.sharedFontManager().weightOfFont(TextMSAttributedString.attributedString().fontAttributesInRange(NSMakeRange(fragment.location, fragment.length)).NSFont) :
+            layer.style.fontWeight;
         let textColor = (fragment.MSAttributedStringColorAttribute && fragment.MSAttributedStringColorAttribute.value) ?
             parseColor(fragment.MSAttributedStringColorAttribute.value) :
             '#000000FF';
@@ -55,6 +59,7 @@ export function getFragments(layer: Layer): TextFragment[] {
                 textColor: textColor,
                 fontSize: fontSize,
                 fontFamily: fontFamily,
+                fontWeight: fontWeight,
                 textStrikethrough: fragment.NSStrikethrough ? 'single' : null,
                 textUnderline: fragment.NSUnderline ? 'single' : null,
             }),
