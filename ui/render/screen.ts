@@ -31,6 +31,7 @@ export function updateScreen(resetScroll: boolean = false) {
     // set scroll
     if (resetScroll) {
         viewer.scrollLeft = flowMode ? 0 : (maxSize - viewer.clientWidth) / 2;
-        viewer.scrollTop = flowMode ? 0 : (maxSize - viewer.clientHeight) / 2;
+        let suitHight = screen.clientHeight > viewer.clientHeight ? screen.clientHeight :viewer.clientHeight;
+        viewer.scrollTop = flowMode ? 0 : (maxSize - suitHight) / 2;
     }
 }
