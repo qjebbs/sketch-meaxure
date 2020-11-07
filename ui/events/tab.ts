@@ -27,3 +27,9 @@ export function hideNavBar() {
     let navbar = document.querySelector('.navbar') as HTMLDivElement;
     navbar.classList.remove('on');
 }
+export function showNavBar() {
+    let tab = document.querySelector('.icon-artboards') as HTMLDivElement;
+    tab.classList.add('current');
+    let navbar = document.querySelector('.navbar') as HTMLDivElement;
+    navbar.classList.add('on');
+}
