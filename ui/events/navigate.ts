@@ -67,14 +67,16 @@ export function parseURLHash() {
         artboardIndex: 0,
     }
     /**
-     *  #<s|p>[index]  
+     *  #[s|p][index]  
       s: specification mode  
       p: prototype mode  
       index: artboard index
      */
     let hash = window.location.hash;
     result.flowMode = hash.substr(1, 1) === 'p';
-    result.artboardIndex = Number(hash.substr(2));
-    if (isNaN(result.artboardIndex)) result.artboardIndex = 0;
+    let index = Number(hash.substr(1));
+    if (isNaN(index)) index = Number(hash.substr(2));
+    if (isNaN(index)) index = 0
+    result.artboardIndex = index;
     return result;
 }
