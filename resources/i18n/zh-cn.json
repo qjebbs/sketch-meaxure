@@ -114,6 +114,8 @@
 	"Export spec": "导出规范",
 	"Export to:": "导出到:",
 	"Exporting...": "导出中...",
+	"Please wait for former task to exit": "请等待先前的任务完成",
+	"Cancelled by user": "用户取消了任务",
 	"Export complete! Takes %@ seconds": "导出完成! 耗时 %@ 秒",
 	"The slice not in current artboard.": "切图不在当前画板",
 	"Inside Border": "内边框",

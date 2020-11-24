@@ -23,10 +23,10 @@ export let savePath: string;
 export let assetsPath: string;
 export let stopwatch = newStopwatch();
 
-let exporting = false;
 export async function exportSpecification() {
-    if (exporting) {
-        sketch.UI.message('Please wait for former task to exit.');
+    const RUNNING_FLAG_KEY = "co.jebbs.sketch-meaxure.exporting"
+    if (sketch.Settings.sessionVariable<boolean>(RUNNING_FLAG_KEY)) {
+        sketch.UI.message(localize('Please wait for former task to exit'));
         return;
     }
     let results = await exportPanel();
@@ -43,7 +43,7 @@ export async function exportSpecification() {
     if (!savePath) return;
     assetsPath = savePath + "/assets";
 
-    exporting = true;
+    sketch.Settings.setSessionVariable<boolean>(RUNNING_FLAG_KEY, true);
     stopwatch.restart();
     clearMaskStack();
     // stopwatch.tik('clearMaskStack');
@@ -61,7 +61,7 @@ export async function exportSpecification() {
     // stopwatch.tik('processingPanel');
     let onFinishCleanup = function () {
         tempLayers.removeAll();
-        exporting = false;
+        sketch.Settings.setSessionVariable<boolean>(RUNNING_FLAG_KEY, false);
         processingPanel.close();
     }
     let template = NSString.stringWithContentsOfFile_encoding_error(getResourcePath() + "/template.html", 4, nil);
@@ -100,7 +100,7 @@ export async function exportSpecification() {
             layerIndex++;
             if (cancelled) {
                 onFinishCleanup();
-                sketch.UI.message('Cancelled by user.');
+                sketch.UI.message(localize('Cancelled by user'));
                 return;
             }
             // compatible with meaxure markers
