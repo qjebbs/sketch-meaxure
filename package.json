@@ -20,7 +20,7 @@
     ]
   },
   "scripts": {
-    "build": "node scripts/buildTmpl.js && skpm-build",
+    "build": "skpm-build && node scripts/buildTmpl.js",
     "watch": "export DEBUG=1; skpm-build --watch",
     "start": "export DEBUG=1; skpm-build --watch --run",
     "postinstall": "npm run build && skpm-link",
