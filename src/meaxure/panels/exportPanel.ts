@@ -28,8 +28,8 @@ interface ArtboardInfo {
 }
 interface ExportData {
     language: string;
-    selection: any[];
-    current: any[];
+    selection: string[];
+    current: string[];
     currentPageID: string;
     pages: PageInfo[];
     exportOption: boolean;
@@ -114,10 +114,10 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
         reverse: false,
     };
 
+    let artboardSet = new Set<string>();
     if (context.selection.length > 0) {
-        let artboardSet = new Set<string>();
         for (let layer of context.selection.layers) {
-            if (layer.type == sketch.Types.Artboard) {
+            if (layer.type == sketch.Types.Artboard || layer.type == sketch.Types.SymbolMaster) {
                 artboardSet.add(layer.id);
                 continue;
             }
@@ -135,7 +135,7 @@ function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
 
     for (let page of context.document.pages) {
         let pageData = <PageInfo>{};
-        let artboards = page.layers.filter(p => p.type == sketch.Types.Artboard) as Artboard[];
+        let artboards = page.layers.filter(p => p.type == sketch.Types.Artboard || artboardSet.has(p.id)) as Artboard[];
         pageData.name = page.name;
         pageData.objectID = page.id;
         pageData.artboards = [];
