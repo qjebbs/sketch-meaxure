@@ -5,7 +5,6 @@ export function confirm(title: string, prompt: string, defaultButton?: string, a
     var response = alert.runModal();
     if (response == NSAlertDefaultReturn) {
         return true;
-    } else if (response == NSAlertAlternateReturn) {
-        return false;
     }
+    return false;
 }
