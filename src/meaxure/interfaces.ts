@@ -71,6 +71,7 @@ export enum SMType {
     slice = "slice",
     shape = "shape",
     group = "group",
+    hotspot = "hotspot",
 };
 
 export interface SMFlow {

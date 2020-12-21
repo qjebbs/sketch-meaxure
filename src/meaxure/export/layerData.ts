@@ -57,6 +57,13 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
         name: toHTMLEncode(emojiToEntities(layer.name)),
         rect: layerRect,
     };
+    data.layers.push(layerData);
+    getFlow(layer, layerData);
+    // stopwatch.tik('getFlow');
+    if (layerType == SMType.hotspot) {
+        onLayerEnd(layer);
+        return;
+    }
     // stopwatch.tik('prepare layer data');
     getLayerStyles(layer, layerType, layerData);
     // stopwatch.tik('getLayerStyles');
@@ -64,9 +71,6 @@ export function getLayerData(artboard: Artboard, layer: Layer, data: ArtboardDat
     // stopwatch.tik('applyTint');
     getSlice(layer, layerData, symbolLayer);
     // stopwatch.tik('getSlice');
-    getFlow(layer, layerData);
-    // stopwatch.tik('getFlow');
-    data.layers.push(layerData);
     if (layerData.type == SMType.symbol) {
         getSymbol(artboard, layer as SymbolInstance, layerData, data, byInfluence);
     }
@@ -86,6 +90,7 @@ function getSMType(layer: Layer): SMType {
     if (layer.type == sketch.Types.Text) return SMType.text;
     if (layer.type == sketch.Types.SymbolInstance) return SMType.symbol;
     if (layer.type == sketch.Types.Group) return SMType.group;
+    if (layer.type == sketch.Types.HotSpot) return SMType.hotspot;
     return SMType.shape;
 }
 
@@ -139,7 +144,8 @@ function isExportable(layer: Layer) {
         layer.type == sketch.Types.ShapePath ||
         layer.type == sketch.Types.Image ||
         layer.type == sketch.Types.Slice ||
-        layer.type == sketch.Types.SymbolInstance
+        layer.type == sketch.Types.SymbolInstance ||
+        layer.type == sketch.Types.HotSpot
 }
 function getLayerStates(layer: Layer): LayerStates {
     let isHidden = false;

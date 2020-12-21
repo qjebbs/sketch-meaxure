@@ -11,7 +11,7 @@ export function layers() {
 function specLayers() {
     let layersHTML = [];
     state.current.layers.forEach((layer, index) => {
-        if (layer.type == SMType.group) return;
+        if (layer.type == SMType.group || layer.type == SMType.hotspot) return;
         let x = zoomSize(layer.rect.x);
         let y = zoomSize(layer.rect.y);
         let width = zoomSize(layer.rect.width);
