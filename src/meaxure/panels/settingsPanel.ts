@@ -6,10 +6,10 @@ import { context } from '../common/context';
 import { createWebviewPanel } from '../../webviewPanel';
 import { logger } from '../common/logger';
 import { getResourcePath } from '../helpers/helper';
-import { getLanguageScript } from '../common/language';
+import { getLanguage } from '../common/language';
 
 interface SettingData {
-    language?: string;
+    language?: Object;
     scale: number;
     units: string;
     colorFormat: string;
@@ -24,8 +24,8 @@ export function settingsPanel() {
     });
     if (!panel) return undefined;
 
-    let data: any = {};
-    data.language = getLanguageScript();
+    let data = <SettingData>{};
+    data.language = getLanguage();
     if (context.configs) {
         data.scale = context.configs.resolution;
         data.units = context.configs.units;

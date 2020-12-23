@@ -13,7 +13,7 @@
     <script type="text/javascript" src="assets/js/common.js"></script>
     <script>
         function init(data) {
-            if (data && data.language) eval(data.language);
+            if (data && data.language) loadLanguage(data.language);
             let html = `
 <div class="toolbar">
     <div class="section">

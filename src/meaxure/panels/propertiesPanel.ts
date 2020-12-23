@@ -6,7 +6,7 @@ import { context } from '../common/context';
 import { createWebviewPanel } from '../../webviewPanel';
 import { logger } from '../common/logger';
 import { getResourcePath } from '../helpers/helper';
-import { getLanguageScript } from '../common/language';
+import { getLanguage } from '../common/language';
 
 export function propertiesPanel() {
     let panel = createWebviewPanel({
@@ -18,7 +18,7 @@ export function propertiesPanel() {
     if (!panel) return false;
 
     let data = {
-        language: getLanguageScript(),
+        language: getLanguage(),
         // placement: context.runningConfig.placement ? context.runningConfig.placement : "top",
         properties: context.configs.properties && context.configs.properties.length ? context.configs.properties : ["color", "border"],
     };

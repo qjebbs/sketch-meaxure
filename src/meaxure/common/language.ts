@@ -4,22 +4,31 @@
 
 import { getResourcePath } from "../helpers/helper";
 
-let currentLang = '';
-let I18N: { [key: string]: string } = {};
-
-export function getLanguageScript(): string {
-    if (!currentLang) initialize();
-    return `I18N['${currentLang}'] = ${JSON.stringify(I18N[currentLang])}`;
+let aliases = {
+    "zh-Hans": "zh-cn",
+    "zh-Hant": "zh-tw"
 }
 
-export function getLanguageObject(): { [key: string]: string } {
-    if (!currentLang) initialize();
-    return I18N;
+let caches: { [key: string]: Object } = {};
+
+export function getLanguage(): Object | null {
+    return loadLanguage(getLangCode());
+}
+
+export function getAllLanguage(): { [key: string]: Object } {
+    let all: { [key: string]: Object } = {}
+    for (let v of Object.values(aliases)) {
+        let lang = loadLanguage(v);
+        if (lang) all[v] = lang;
+    }
+    return all;
 }
 
 export function localize(str: string, ...data) {
-    if (!currentLang) initialize();
-    str = (I18N[currentLang] && I18N[currentLang][str]) ? I18N[currentLang][str] : str;
+    let langs = loadLanguage(getLangCode());
+    if (langs && langs[str]) {
+        str = langs[str];
+    }
     let idx = -1;
     return str.replace(/\%\@/gi, function () {
         idx++;
@@ -27,19 +36,26 @@ export function localize(str: string, ...data) {
     });
 }
 
-function initialize() {
-    let aliases = {
-        "zh-Hans": "zh-cn",
-        "zh-Hant": "zh-tw"
+function loadLanguage(code: string): Object | null {
+    if (!code) return null;
+    if (caches[code] !== undefined) {
+        return caches[code];
     }
-    let macOSVersion = NSDictionary.dictionaryWithContentsOfFile("/System/Library/CoreServices/SystemVersion.plist").objectForKey("ProductVersion") + "";
-    let sysLanguage = NSUserDefaults.standardUserDefaults().objectForKey("AppleLanguages").objectAtIndex(0);
-    currentLang = (macOSVersion >= "10.12") ? sysLanguage.split("-").slice(0, -1).join("-") : sysLanguage;
-    currentLang = aliases[currentLang];
-    let langFile = getResourcePath() + "/i18n/" + currentLang + ".json";
+    let langFile = getResourcePath() + "/i18n/" + code + ".json";
     if (!NSFileManager.defaultManager().fileExistsAtPath(langFile)) {
-        return "";
+        return null;
     }
     let language = NSString.stringWithContentsOfFile_encoding_error(langFile, 4, nil) as string;
-    I18N[currentLang] = JSON.parse(language);
+    return caches[code] = JSON.parse(language);
+}
+
+function getLangCode(): string {
+    let sysLanguage = String(NSUserDefaults.standardUserDefaults().objectForKey("AppleLanguages").objectAtIndex(0)).toLowerCase();
+    for (let key of Object.keys(aliases)) {
+        let lkey = key.toLowerCase();
+        if (sysLanguage.startsWith(lkey)) {
+            return aliases[key];
+        }
+    }
+    return "";
 }

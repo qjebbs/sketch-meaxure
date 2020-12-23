@@ -12,7 +12,7 @@
     <script type="text/javascript" src="assets/js/common.js"></script>
     <script type="text/javascript">
     var init = function(options){
-        if (options.language) eval(options.language);
+        if (options && options.language) loadLanguage(options.language);
         $('body').html([
             '<div class="container">',
                 '<div class="options">',

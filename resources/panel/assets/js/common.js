@@ -1,12 +1,15 @@
 var I18N = {};
-var lang = navigator.language.toLocaleLowerCase();
 var _ = function (str, ...data) {
-    str = (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
+    if (I18N[str]) str = I18N[str];
     let idx = -1;
     return str.replace(/\%\@/gi, function () {
         idx++;
         return data[idx];
     });
+}
+
+function loadLanguage(obj) {
+    if (obj && obj instanceof Object) I18N = obj;
 }
 
 function onInitOK() {

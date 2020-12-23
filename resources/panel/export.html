@@ -138,7 +138,7 @@
             pagesData = {},
             pagesName = {},
             init = function (data) {
-                if (data.language) eval(data.language);
+                if (data && data.language) loadLanguage(data.language);
                 $('body').html([
                     '<div class="container">',
                     '<div id="artboards-list" class="list">',

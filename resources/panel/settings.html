@@ -59,7 +59,7 @@
             meaxure.postMessage('submit', resp);
         }
         function init(data) {
-            if (data.language) eval(data.language);
+            if (data && data.language) loadLanguage(data.language);
             $('body').html(`
 <div class="container">
     <div class="options" style="height:216px">

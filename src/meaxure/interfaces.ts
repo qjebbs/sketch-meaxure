@@ -144,7 +144,7 @@ export interface ExportData {
     artboards: ArtboardData[],
     slices: any[],
     colors: SMColorAsset[],
-    languages: { [key: string]: string },
+    languages: { [key: string]: Object },
 }
 
 export interface SMExportFormat {

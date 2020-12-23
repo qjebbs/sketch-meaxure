@@ -4,7 +4,7 @@
 
 import { exportPanel } from "../panels/exportPanel";
 import { sketch } from "../../sketch";
-import { localize, getLanguageObject } from "../common/language";
+import { localize, getAllLanguage } from "../common/language";
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
 import { toHTMLEncode, newStopwatch, toSlug, emojiToEntities, getResourcePath } from "../helpers/helper";
@@ -72,7 +72,7 @@ export async function exportSpecification() {
         artboards: [],
         slices: [],
         colors: getDocumentColors(document),
-        languages: getLanguageObject(),
+        languages: getAllLanguage(),
     };
     // stopwatch.tik('load template');
 

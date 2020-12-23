@@ -6,7 +6,7 @@ import { context, updateContext } from '../common/context';
 import { createWebviewPanel } from '../../webviewPanel';
 import { logger } from '../common/logger';
 import { getResourcePath } from '../helpers/helper';
-import { getLanguageScript } from '../common/language';
+import { getLanguage } from '../common/language';
 import { drawSizes } from '../size';
 import { drawCoordinate } from '../coordinate';
 import { drawSpacings } from '../spacings';
@@ -49,7 +49,7 @@ export function markToolbar() {
     if (!panel) return undefined;
 
     let data: any = {};
-    data.language = getLanguageScript();
+    data.language = getLanguage();
     if (context.configs) {
         data.byInfluence = context.configs.byInfluence;
         data.byPercentage = context.configs.byPercentage;

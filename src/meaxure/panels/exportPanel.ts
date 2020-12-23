@@ -5,7 +5,7 @@
 import { context } from "../common/context";
 import { createWebviewPanel } from "../../webviewPanel";
 import { getResourcePath } from "../helpers/helper";
-import { getLanguageScript } from "../common/language";
+import { getLanguage } from "../common/language";
 import { sketch } from "../../sketch";
 
 type OptionArtboardOrder = 'artboard-rows' | 'artboard-cols' | 'layer-order' | 'alphabet';
@@ -27,7 +27,7 @@ interface ArtboardInfo {
     layerOrder: number,
 }
 interface ExportData {
-    language: string;
+    language: Object;
     selection: string[];
     current: string[];
     currentPageID: string;
@@ -104,7 +104,7 @@ export function exportPanel(): Promise<ExportConfig> {
 function prepareExportData(): [ExportData, { [key: string]: Artboard }] {
     let allArtboards: { [key: string]: Artboard } = {};
     let data = <ExportData>{
-        language: getLanguageScript(),
+        language: getLanguage(),
         selection: [],
         current: [],
         pages: [],
