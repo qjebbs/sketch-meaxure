@@ -150,8 +150,8 @@ export interface ExportData {
 export interface SMExportFormat {
     format: string,
     scale: number,
-    prefix?: string,
-    suffix?: string,
+    prefix: string,
+    suffix: string,
 }
 export enum shadowType {
     outer = "Outer",

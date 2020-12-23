@@ -52,55 +52,7 @@ function getExportable(layer: Layer): SMExportable[] {
     let exportable = [];
     let sizes = layer.exportFormats;
     let fileFormat = sizes[0].fileFormat;
-    let matchFormat = /png|jpg|tiff|webp/.exec(fileFormat);
-    let exportFormats: SMExportFormat[];
-    if (context.configs.units == "dp/sp" && matchFormat) {
-        exportFormats = [{
-            scale: 1 / context.configs.resolution,
-            prefix: "drawable-mdpi/",
-            format: fileFormat
-        },
-        {
-            scale: 1.5 / context.configs.resolution,
-            prefix: "drawable-hdpi/",
-            format: fileFormat
-        },
-        {
-            scale: 2 / context.configs.resolution,
-            prefix: "drawable-xhdpi/",
-            format: fileFormat
-        },
-        {
-            scale: 3 / context.configs.resolution,
-            prefix: "drawable-xxhdpi/",
-            format: fileFormat
-        },
-        {
-            scale: 4 / context.configs.resolution,
-            prefix: "drawable-xxxhdpi/",
-            format: fileFormat
-        }
-        ]
-    } else if (context.configs.units == "pt" && matchFormat) {
-        exportFormats = [{
-            scale: 1 / context.configs.resolution,
-            suffix: "",
-            format: fileFormat
-        },
-        {
-            scale: 2 / context.configs.resolution,
-            suffix: "@2x",
-            format: fileFormat
-        },
-        {
-            scale: 3 / context.configs.resolution,
-            suffix: "@3x",
-            format: fileFormat
-        }
-        ]
-    } else {
-        exportFormats = sizes.map(s => parseExportFormat(s, layer));
-    }
+    let exportFormats = sizes.map(s => parseExportFormat(s, layer));
     for (let exportFormat of exportFormats) {
         let prefix = exportFormat.prefix || "",
             suffix = exportFormat.suffix || "";
@@ -125,7 +77,7 @@ function parseExportFormat(format: ExportFormat, layer: Layer): SMExportFormat {
     let numberReg = /\d+(\.\d+)?/i;
     let sizeNumber = parseFloat(numberReg.exec(format.size)[0]);
     if (format.size.endsWith('x')) {
-        scale = sizeNumber;
+        scale = sizeNumber / context.configs.resolution;
     } else if (format.size.endsWith('h') || format.size.endsWith('height')) {
         scale = sizeNumber / layer.frame.height;
     } else if (format.size.endsWith('w') || format.size.endsWith('width') || format.size.endsWith('px')) {
@@ -133,8 +85,8 @@ function parseExportFormat(format: ExportFormat, layer: Layer): SMExportFormat {
     }
     return {
         scale: scale,
-        suffix: !format.suffix && scale !== 1 ? '@' + format.size : format.suffix,
-        prefix: format.prefix,
+        suffix: format.suffix ? format.suffix : "",
+        prefix: format.prefix ? format.prefix : "",
         format: format.fileFormat,
     }
 }

@@ -182,6 +182,8 @@ function exportArtboardAdvanced(artboard: Artboard, data: ExportData, savePath: 
             // if design resolution @2x, we export as is (scale=1)
             // if design resolution @4x, we export half size (scale=0.5)
             scale: 2 / data.resolution,
+            prefix: "",
+            suffix: "",
         },
         savePath + "/preview", data.artboards[i].slug
     );
@@ -189,6 +191,8 @@ function exportArtboardAdvanced(artboard: Artboard, data: ExportData, savePath: 
     exportImage(artboard, {
         format: 'png',
         scale: 128 / Math.max(data.artboards[i].width, data.artboards[i].height),
+        prefix: "",
+        suffix: "",
     }, savePath + "/preview/icons", data.artboards[i].slug);
 
     writeFile({
@@ -208,6 +212,8 @@ function exportArtboard(artboard: Artboard, exportData: ExportData, index: numbe
             // if design resolution @2x, we export as is (scale=1)
             // if design resolution @4x, we export half size (scale=0.5)
             scale: 2 / exportData.resolution,
+            prefix: "",
+            suffix: "",
         }
     ).toString('base64');
 
