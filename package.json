@@ -3,7 +3,7 @@
   "description": "Make it a fun to create spec for developers and teammates",
   "version": "3.3.3",
   "engines": {
-    "sketch": ">=57.0"
+    "sketch": ">=69.0"
   },
   "repository": {
     "type": "git",
