@@ -15,9 +15,9 @@ import { getLayerData } from "./layerData";
 import { clearSliceCache, getCollectedSlices } from "./slice";
 import { clearMaskStack } from "./mask";
 import { getDocumentColors } from "./colors";
-import { clearTintStack } from "./tint";
-import { renameIfIsMarker } from "../helpers/renameOldMarkers";
+import { clearTintStack, TintInfo } from "./tint";
 import { tempLayers } from "./tempLayers";
+import { LayerPlaceholder } from "./layers";
 
 export let savePath: string;
 export let assetsPath: string;
@@ -103,8 +103,6 @@ export async function exportSpecification() {
                 sketch.UI.message(localize('Cancelled by user'));
                 return;
             }
-            // compatible with meaxure markers
-            renameIfIsMarker(layer);
             // stopwatch.tik('renameIfIsMarker');
             let taskError: Error;
             // stopwatch.tik('before promise');
@@ -112,10 +110,14 @@ export async function exportSpecification() {
                 .catch(err => taskError = err);
             if (taskError) {
                 onFinishCleanup();
-                // select the error layer
-                document.selectedLayers.layers = [layer];
-                let msg = `Error processing layer ${layer.name}.`;
-                logger.error(msg, taskError);
+                if (!(layer instanceof LayerPlaceholder)) {
+                    // select the error layer
+                    document.selectedLayers.layers = [layer];
+                    let msg = `Error processing layer ${layer.name}.`;
+                    logger.error(msg, taskError);
+                } else {
+                    logger.error(taskError);
+                }
                 return;
             }
             // stopwatch.tik('after promise');
@@ -159,7 +161,7 @@ export async function exportSpecification() {
     // sketch.UI.alert('statistics', Object.keys(statistics).map(key => `${key}: ${statistics[key] / 1000}s`).join('\n'))
 }
 
-function getLayerTask(artboard: Artboard, layer: Layer, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
+function getLayerTask(artboard: Artboard, layer: Layer | LayerPlaceholder, data: ArtboardData, byInfluence: boolean, symbolLayer?: Layer): Promise<boolean> {
     return new Promise<true>((resolve, reject) => {
         try {
             getLayerData(artboard, layer, data, byInfluence, symbolLayer)

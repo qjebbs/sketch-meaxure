@@ -6,7 +6,7 @@ import { LayerData, ArtboardData, SMType } from "../interfaces";
 import { stopwatch } from ".";
 import { getLayerData } from "./layerData";
 import { tempLayers } from "./tempLayers";
-import { pushStackIfHasTint } from "./tint";
+import { getChildrenForExport, LayerPlaceholder } from "./layers";
 
 export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: LayerData, data: ArtboardData, byInfluence: boolean) {
     if (layerData.type != SMType.symbol) return;
@@ -28,19 +28,22 @@ export function getSymbol(artboard: Artboard, layer: SymbolInstance, layerData: 
     let tempGroup = tempInstance.detach({ recursively: false });
     tempLayers.add(tempGroup);
 
-    let instanceAllLayers = tempGroup.getAllChildren();
-    if (masterAllLayers.length < instanceAllLayers.length) {
+    let [instanceAllLayers, count] = getChildrenForExport(tempGroup);
+    if (masterAllLayers.length < count) {
         // console.log('insert undefined into masterAllLayers[1] as master backgroud layer');
         masterAllLayers.splice(1, 0, undefined);
     }
     // stopwatch.tik('create temp detached symbol');
     // should keep its tint, though temp group is ignored
-    pushStackIfHasTint(instanceAllLayers[0]);
     // starts from 1, skip temp group which is create on detach
-    for (let i = 1; i < instanceAllLayers.length; i++) {
-        let instanceLayer = instanceAllLayers[i];
-        let masterLayer = masterAllLayers[i];
-        // console.log(instanceLayer.name + ":" + (masterLayer ? masterLayer.name : 'undefined'));
+    let idx = 0;
+    for (let instanceLayer of instanceAllLayers) {
+        let masterLayer: Layer;
+        if (!(instanceLayer instanceof LayerPlaceholder)) {
+            masterLayer = masterAllLayers[idx];
+            idx++;
+            // console.log(instanceLayer.name + ":" + (masterLayer ? masterLayer.name : 'undefined'));
+        }
         getLayerData(artboard, instanceLayer, data, byInfluence, masterLayer);
     }
     tempGroup.remove();

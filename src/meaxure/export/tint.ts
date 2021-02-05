@@ -7,20 +7,23 @@ import { sketch } from "../../sketch";
 import { logger } from "../common/logger";
 import { LayerData } from "../interfaces";
 import { parseColor } from "../helpers/styles";
+import { LayerPlaceholder } from "./layers";
 
-let tintStack: Group[] = [];
+
+export interface TintInfo {
+    color: string;
+    stopLayerID: string;
+}
+
+let tintStack: TintInfo[] = [];
 
 export function clearTintStack(): void {
     tintStack = [];
 }
-export function pushStackIfHasTint(layer: Layer): void {
-    if (layer.type !== sketch.Types.Group) return;
-    if (!layer.style.fills || !layer.style.fills.filter(f => f.enabled).length) return;
-    // logger.debug(`Find tint in ${layer.name}`)
-    tintStack.push(layer as Group);
+export function pushTintStack(tint: TintInfo): void {
+    tintStack.push(tint);
 }
-export function updateTintStackAfterLayer(layer: Layer) {
-    pushStackIfHasTint(layer);
+export function updateTintStackBeforeLayer(layer: Layer) {
     if (!tintStack.length) return;
     // check if tints still applies
     // remove tint from stack if meet stop layer
@@ -28,8 +31,7 @@ export function updateTintStackAfterLayer(layer: Layer) {
         // pop all stopped tint stops from stack
         if (!tintStack.length) return;
         let tint = tintStack[tintStack.length - 1];
-        let lastLayer = tint.getLastChildren();
-        if (layer.id !== lastLayer.id) return;
+        if (layer.id !== tint.stopLayerID) return;
         tintStack.pop();
     }
 }
@@ -41,19 +43,18 @@ export function applyTint(layer: Layer, layerData: LayerData) {
     // logger.debug(`${layer.name} has tint from ${tintStack.reduce((p, c) => p += c.name + ',', '')}`)
     let tint = tintStack[0];
     // apply tint to fills and text color
-    let tintFill = tint.style.fills.filter(f => f.enabled)[0];
     if (layerData.fills) layerData.fills.forEach(
         fill => {
             if (fill.fillType == sketch.Style.FillType.Color) {
-                fill.color = applyTintToSMColor(fill.color, tintFill.color);
+                fill.color = applyTintToSMColor(fill.color, tint.color);
                 return;
             } else if (fill.fillType == sketch.Style.FillType.Gradient) {
-                fill.gradient = applyTintToSMGradient(fill.gradient, tintFill.color);
+                fill.gradient = applyTintToSMGradient(fill.gradient, tint.color);
                 return;
             }
         }
     );
-    if (layerData.color) layerData.color = applyTintToSMColor(layerData.color, tintFill.color)
+    if (layerData.color) layerData.color = applyTintToSMColor(layerData.color, tint.color)
 }
 export function applyTintToSMColor(color: SMColor, tintColor: string): SMColor {
     if (!color) return color;
@@ -72,4 +73,12 @@ export function applyTintToSMGradient(gradient: SMGradient, tintColor: string): 
         stop.color = applyTintToSMColor(stop.color, tintColor);
     })
     return gradient;
+}
+
+export function getTintInfo(layer: Layer): LayerPlaceholder {
+    if (layer.type !== sketch.Types.Group || !layer.style.fills || !layer.style.fills.length) return null;
+    let fills = layer.style.fills.filter(f => f.enabled);
+    if (!fills.length) return null;
+    let tint = <TintInfo>{ color: fills[0].color, stopLayerID: layer.id };
+    return LayerPlaceholder.fromTint(tint);
 }
