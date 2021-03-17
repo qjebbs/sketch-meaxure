@@ -51,7 +51,6 @@ export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer)
 function getExportable(layer: Layer): SMExportable[] {
     let exportable = [];
     let sizes = layer.exportFormats;
-    let fileFormat = sizes[0].fileFormat;
     let exportFormats = sizes.map(s => parseExportFormat(s, layer));
     for (let exportFormat of exportFormats) {
         let prefix = exportFormat.prefix || "",
@@ -65,7 +64,7 @@ function getExportable(layer: Layer): SMExportable[] {
 
         exportable.push({
             name: layer.name,
-            format: fileFormat,
+            format: exportFormat.format,
             path: prefix + layer.name + suffix + "." + exportFormat.format
         });
     }
