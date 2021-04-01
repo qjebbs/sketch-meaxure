@@ -19,39 +19,44 @@ export function getCollectedSlices(): any[] {
     return slices;
 }
 export function getSlice(layer: Layer, layerData: LayerData, symbolLayer: Layer) {
-    let sliceLayer: Layer;
+    let sliceID = layer.id;
+    let sliceName = layer.name;
+    let formats: ExportFormat[];
     if (layer.exportFormats.length > 0) {
-        sliceLayer = symbolLayer || layer;
+        formats = layer.exportFormats;
+        if (symbolLayer) {
+            sliceID = symbolLayer.id;
+            sliceName = symbolLayer.name;
+        }
     } else if (layer.type == sketch.Types.SymbolInstance) {
         let layerMaster = (layer as SymbolInstance).master;
         // symbol instance of none, #4
         if (!layerMaster) return;
         if (!layerMaster.exportFormats.length) return;
-        sliceLayer = layerMaster;
+        formats = layerMaster.exportFormats;
+        sliceID = layerMaster.id
+        sliceName = layerMaster.name
     }
-    if (!sliceLayer) return;
-    let layerID = sliceLayer.id;
-    let layerName = sliceLayer.name;
-    layerData.objectID = layerID;
+    if (!formats) return;
+    layerData.objectID = sliceID;
     // export it, if haven't yet
-    if (!sliceCache[layerID]) {
+    if (!sliceCache[sliceID]) {
         NSFileManager.defaultManager()
             .createDirectoryAtPath_withIntermediateDirectories_attributes_error(assetsPath, true, nil, nil);
-        sliceCache[layerID] = layerData.exportable = getExportable(sliceLayer);
+        sliceCache[sliceID] = layerData.exportable = getExportable(layer,formats);
         slices.push({
-            name: layerName,
-            objectID: layerID,
+            name: sliceName,
+            objectID: sliceID,
             rect: layerData.rect,
             exportable: layerData.exportable
         })
-    } else if (sliceCache[layerID]) {
-        layerData.exportable = sliceCache[layerID];
+    } else if (sliceCache[sliceID]) {
+        layerData.exportable = sliceCache[sliceID];
     }
 }
-function getExportable(layer: Layer): SMExportable[] {
+function getExportable(layer: Layer, formats: ExportFormat[]): SMExportable[] {
     let exportable = [];
-    let sizes = layer.exportFormats;
-    let exportFormats = sizes.map(s => parseExportFormat(s, layer));
+    let exportFormats = formats.map(s => parseExportFormat(s, layer));
     for (let exportFormat of exportFormats) {
         let prefix = exportFormat.prefix || "",
             suffix = exportFormat.suffix || "";
