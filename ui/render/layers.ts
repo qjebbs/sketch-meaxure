@@ -17,6 +17,7 @@ function specLayers() {
         let width = zoomSize(layer.rect.width);
         let height = zoomSize(layer.rect.height);
         let classNames = ['layer'];
+        let rotation = layer.rotation;
         classNames.push('layer-' + layer.objectID);
         if (state.selectedIndex == index) classNames.push('selected');
         layersHTML.push([`
@@ -26,7 +27,7 @@ function specLayers() {
     percentage-height="${percentageSize(layer.rect.height, state.current.height)}" 
     data-width="${unitSize(layer.rect.width)}" 
     data-height="${unitSize(layer.rect.height)}" 
-    style="left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px;"
+    style="left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px; transform: rotate(${rotation}deg)"
 >
     <i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i>
     <b class="et h"></b><b class="er v"></b><b class="eb h"></b><b class="el v"></b>
