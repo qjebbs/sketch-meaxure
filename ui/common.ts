@@ -26,7 +26,7 @@ export const state: State = <State>{
 
 export var I18N = {};
 export var lang = navigator.language.toLocaleLowerCase();
-export var timestamp = new Date().getTime();
+export var timestamp = ((location.search || '?') + '&_=' + new Date().getTime()).substring(1);
 
 export function localize(str) {
     return (I18N[lang] && I18N[lang][str]) ? I18N[lang][str] : str;
